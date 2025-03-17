@@ -22,7 +22,6 @@ export const useLogin = () => {
       // }
       const session = await account.createEmailPasswordSession(data.email, data.password);
       const jwt = await account.createJWT();
-      console.log(jwt);
       Cookies.set(AUTH_COOKIE, jwt.jwt, {expires: 30})
       return session;
     },

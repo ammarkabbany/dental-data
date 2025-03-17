@@ -18,9 +18,9 @@ export const useLogout = () => {
     },
     onSuccess: async () => {
       // queryClient.invalidateQueries({queryKey: ["current"]});
-      queryClient.clear();
       await clear();
       window.location.replace('/auth/login')
+      // queryClient.clear();
     }
   })
   return mutation;
