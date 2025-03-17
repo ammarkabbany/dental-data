@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { useAuth } from './auth-provider';
 import { getTeamMembers, getUserTeams } from '@/lib/team-service';
 import { Team } from '@/types';
+import SimplePageLoader from '@/components/page-loader';
 
 type TeamContextType = {
   teams: Team[];
@@ -88,7 +89,8 @@ export function TeamProvider({ children }: { children: React.ReactNode }) {
         userRole,
       }}
     >
-      {children}
+      <SimplePageLoader isLoading={isLoading} fullScreen  />
+      {!isLoading && children}
     </TeamContext.Provider>
   );
 }

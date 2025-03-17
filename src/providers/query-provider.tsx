@@ -1,4 +1,3 @@
-// app/providers/QueryProvider.tsx
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -12,25 +11,24 @@ export default function QueryProvider({ children }: { children: React.ReactNode 
     defaultOptions: {
       queries: {
         gcTime: 1000 * 60 * 60 * 24, // 24 hours
-        // refetchOnMount: 'always'
-        // refetchOnMount: 'always'
+        refetchOnMount: 'always'
       },
     },
   }));
   
   // Set up persistence on the client side only
-  // useEffect(() => {
-  //   if (typeof window !== "undefined") {
-  //     const persister = createIDBPersister();
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const persister = createIDBPersister();
       
-  //     persistQueryClient({
-  //       queryClient,
-  //       persister,
-  //       maxAge: 1000 * 60 * 60 * 24, // 24 hours
-  //       buster: "v1", // Cache version
-  //     });
-  //   }
-  // }, [queryClient]);
+      persistQueryClient({
+        queryClient,
+        persister,
+        maxAge: 1000 * 60 * 60 * 24, // 24 hours
+        buster: "v1", // Cache version
+      });
+    }
+  }, [queryClient]);
 
   return (
     <QueryClientProvider client={queryClient}>

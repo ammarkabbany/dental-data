@@ -40,13 +40,13 @@ export default function CasesPage() {
     </ContentLayout>
   ); // Redirect to dashboard if no team is selected
 
-  if (isTeamLoading || isCasesLoading) return (
-    <ContentLayout title="Cases">
-      <div className="h-full min-h-[80vh] flex items-center justify-center">
-        <LoadingSpinner />
-      </div>
-    </ContentLayout>
-  );
+  // if (isTeamLoading || isCasesLoading) return (
+  //   <ContentLayout title="Cases">
+  //     <div className="h-full min-h-[80vh] flex items-center justify-center">
+  //       <LoadingSpinner />
+  //     </div>
+  //   </ContentLayout>
+  // );
 
   return (
     <>
