@@ -22,6 +22,19 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    ".eslintrc.json",
+    "prettier.config.js",
+    ".eslintrc.cjs",
+    "eslint.config.mjs",
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.cjs",
+    "**/*.mjs",
+    "**/*.js",
+    ".next/types/**/*.ts",
+    "src/theme/customizations/inputs.tsX",
+    "src/theme/customizations/navigation.tsX"],
   "exclude": ["node_modules"]
 }

@@ -12,6 +12,8 @@
 
 # testing
 /coverage
+mock_data_template.json
+generate_mock_cases.py
 
 # next.js
 /.next/
