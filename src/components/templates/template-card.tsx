@@ -66,12 +66,14 @@ export const TemplateCard = ({ template }: { template: Template }) => {
       <CardFooter className="flex justify-between">
         <Button
           onClick={() =>
-            router.push(`/dashboard/cases/new?templateId=${template.$id}`)
+            router.push(
+              `/dashboard/cases/new?templateId=${template.$id}&doctor=${template.doctor}&material=${template.material}&note=${template.note}&shade=${template.shade}`)
           }
-          variant="outline"
+          variant="secondary"
           size="sm"
+          className="items-center text-xs"
         >
-          <Check className="mr-1 h-4 w-4" /> Apply
+          <Check className="h-4 w-4" /> Apply
         </Button>
         <div className="flex gap-1">
           {usePermission(userRole).checkPermission('templates', 'update') && <TemplateUpdateModal trigger={

@@ -14,6 +14,7 @@ export async function GET(req: NextRequest) {
 
   try {
     const { account } = await createSessionClient();
+    
     account.client.setSession(authCookie.value);
     const user = await account.get();
 

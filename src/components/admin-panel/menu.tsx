@@ -71,9 +71,9 @@ export function Menu({ isOpen }: MenuProps) {
                             >
                               <Link href={href}>
                                 <span
-                                  className={cn(isOpen === false ? "" : "mr-2")}
+                                  className={cn(isOpen === false ? "-translate-x-[3px]" : "mr-2")}
                                 >
-                                  <HugeiconsIcon icon={Icon} className={`size-6 ${color}`} />
+                                  <HugeiconsIcon icon={Icon} className={`size-[24px] ${color}`} />
                                 </span>
                                 <p
                                 // truncate

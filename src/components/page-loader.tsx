@@ -21,7 +21,7 @@ export default function SimplePageLoader({
         <motion.div
           className={`${
             fullScreen ? "fixed inset-0" : "relative"
-          } z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm`}
+          } z-50 flex items-center justify-center bg-chat-accent backdrop-blur-sm`}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0, transition: { duration: 0.3 } }}

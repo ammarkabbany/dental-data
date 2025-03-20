@@ -22,11 +22,12 @@ export default function TemplatesPage() {
           type="text"
           placeholder="Search templates..."
           value={searchTerm}
+          variant={"default"}
           onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
-          className="w-full sm:max-w-sm rounded-md bg-secondary px-3 py-2"
+          className="w-full sm:max-w-sm rounded-md px-3 py-2"
         />
         <div className="ml-auto">
-          <Button onClick={() => openModal(Modals.CREATE_TEMPLATE_MODAL)} variant="outline" className="py-2">
+          <Button onClick={() => openModal(Modals.CREATE_TEMPLATE_MODAL)} variant="default" className="py-2">
             <PlusIcon />
             Add Template
           </Button>
