@@ -2,7 +2,7 @@ import { AUTH_COOKIE, NEXT_URL } from "@/lib/constants";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest, res: NextResponse) {
+export async function GET(req: NextRequest) {
   const cookieStore = req.cookies;
 
   const session = cookieStore.get(AUTH_COOKIE)
@@ -15,5 +15,5 @@ export async function GET(req: NextRequest, res: NextResponse) {
   (await cookies()).delete(AUTH_COOKIE);
   // await account.deleteSession('current');
 
-  return NextResponse.redirect(new URL(`${NEXT_URL}/auth/login`, req.url))
+  return NextResponse.json(true, {status: 200})
 }
