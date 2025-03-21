@@ -26,12 +26,12 @@ export const getColumns = (): ColumnDef<Case>[] => [
         }
         onCheckedChange={(value: boolean) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
-        className="size-[18px] !p-0 !m-0 block transition-all duration-200 border-accent"
+        className="size-[18px] !p-0 !m-0 block transition-all duration-200 border-accent-foreground/25"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
-        className="size-[18px] !p-0 !m-0 block transition-all duration-200 border-accent"
+        className="size-[18px] !p-0 !m-0 block transition-all duration-200 border-accent-foreground/25"
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"

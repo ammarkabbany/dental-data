@@ -2,7 +2,6 @@
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { CasesDataTable } from "@/components/cases/data-table";
 import { Button } from "@/components/ui/button";
-import LoadingSpinner from "@/components/ui/loading-spinner";
 import { useGetCases } from "@/features/cases/hooks/use-get-cases";
 import { usePermission } from "@/hooks/use-permissions";
 import { useTeam } from "@/providers/team-provider";

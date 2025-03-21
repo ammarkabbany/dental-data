@@ -25,3 +25,8 @@ export const formatZodIssue = (issue: ZodIssue): string => {
 
   return `${pathString}: ${message}`
 }
+
+export const shortenString = (name?: string, length: number = 15) => {
+  if (!name) return 'Undefined String'
+  return name.length > length ? name.substring(0, length) + "..." : name
+}

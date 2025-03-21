@@ -33,16 +33,18 @@ export default function RootLayout({
     <html
       suppressHydrationWarning
       lang="en"
-      className={`${poppins.variable} antialiased`}
+      className={`${geist.variable} antialiased`}
     >
-      <body className={geist.variable}>
+      <body>
         {/* <ClerkProvider> */}
           <QueryProvider>
             <AuthProvider>
               <TeamProvider>
               <ThemeProvider
                 attribute="class"
-                defaultTheme="light"
+                defaultTheme="dark"
+                forcedTheme="dark"
+                enableSystem={false}
               >
                 <Toaster richColors position="bottom-right" />
                 {children}

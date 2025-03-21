@@ -51,7 +51,7 @@ export function DatePicker({
         {customComponent ?? (
           <Button
             id={id}
-            variant={"outline"}
+            variant={"secondary"}
             className={cn(
               "text-sm justify-start font-normal gap-2",
               !date && "text-muted-foreground",

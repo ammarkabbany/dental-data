@@ -1,21 +1,15 @@
 "use client";
 
-import Link from "next/link";
-import { Ellipsis, LogOut } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { BarChart3, FileText, HelpCircle, PieChart, Settings, Users, LayoutDashboard } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 import { getMenuList } from "@/lib/menu-list";
-import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { CollapseMenuButton } from "@/components/admin-panel/collapse-menu-button";
-import {
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-  TooltipProvider
-} from "@/components/ui/tooltip";
-import {HugeiconsIcon} from '@hugeicons/react'
+import { Badge } from "../ui/badge";
+import { Separator } from "../ui/separator";
+import { usePermission } from "@/hooks/use-permissions";
+import { useTeam } from "@/providers/team-provider";
 
 interface MenuProps {
   isOpen: boolean | undefined;
@@ -23,128 +17,156 @@ interface MenuProps {
 
 export function Menu({ isOpen }: MenuProps) {
   const pathname = usePathname();
+  const router = useRouter();
+  const { userRole } = useTeam();
   const menuList = getMenuList(pathname);
+  const isActive = (href: string) => pathname.endsWith(href)
+  const navigate = (href: string) => {
+    if (pathname === href) return;
+    router.push(href);
+  };
+  const permission = usePermission(userRole);
 
   return (
     <ScrollArea className="[&>div>div[style]]:!block">
-      <nav className="mt-8 h-full w-full">
-        <ul className="flex flex-col min-h-[calc(100vh-48px-36px-16px-32px)] lg:min-h-[calc(100vh-32px-40px-32px)] items-start space-y-1 px-2">
-          {menuList.map(({ groupLabel, menus }, index) => (
-            <li className={cn("w-full", groupLabel ? "pt-5" : "")} key={index}>
-              {(isOpen && groupLabel) || isOpen === undefined ? (
-                <p className="text-sm font-medium text-muted-foreground px-4 pb-2 max-w-[248px] truncate">
-                  {groupLabel}
-                </p>
-              ) : !isOpen && isOpen !== undefined && groupLabel ? (
-                <TooltipProvider>
-                  <Tooltip delayDuration={100}>
-                    <TooltipTrigger className="w-full">
-                      <div className="w-full flex justify-center items-center">
-                        <Ellipsis className="h-5 w-5" />
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent side="right">
-                      <p>{groupLabel}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              ) : (
-                <p className="pb-2"></p>
-              )}
-              {menus.map(
-                ({ href, label, icon: Icon, active, submenus, color }, index) =>
-                  !submenus || submenus.length === 0 ? (
-                    <div className="w-full" key={index}>
-                      <TooltipProvider disableHoverableContent>
-                        <Tooltip delayDuration={100}>
-                          <TooltipTrigger asChild>
-                            <Button
-                              variant={
-                                (active === undefined &&
-                                  pathname.endsWith(href)) ||
-                                active
-                                  ? "secondary"
-                                  : "ghost"
-                              }
-                              className="w-full justify-start h-10 mb-1"
-                              asChild
-                            >
-                              <Link href={href}>
-                                <span
-                                  className={cn(isOpen === false ? "-translate-x-[3px]" : "mr-2")}
-                                >
-                                  <HugeiconsIcon icon={Icon} className={`size-[24px] ${color}`} />
-                                </span>
-                                <p
-                                // truncate
-                                  className={cn(
-                                    "max-w-[200px]",
-                                    isOpen === false
-                                      ? "-translate-x-96 opacity-0"
-                                      : "translate-x-0 opacity-100"
-                                  )}
-                                >
-                                  {label}
-                                </p>
-                              </Link>
-                            </Button>
-                          </TooltipTrigger>
-                          {isOpen === false && (
-                            <TooltipContent side="right">
-                              {label}
-                            </TooltipContent>
-                          )}
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
-                  ) : (
-                    <div className="w-full" key={index}>
-                      <CollapseMenuButton
-                        icon={Icon}
-                        label={label}
-                        active={
-                          active === undefined
-                            ? pathname.startsWith(href)
-                            : active
-                        }
-                        submenus={submenus}
-                        isOpen={isOpen}
-                      />
-                    </div>
-                  )
-              )}
-            </li>
-          ))}
-          <li className="w-full grow flex items-end">
-            <TooltipProvider disableHoverableContent>
-              <Tooltip delayDuration={100}>
-                <TooltipTrigger asChild>
-                  <Button
-                    onClick={() => {}}
-                    variant="outline"
-                    className="w-full justify-center h-10 mt-5"
-                  >
-                    <span className={cn(isOpen === false ? "" : "mr-4")}>
-                      <LogOut size={18} />
-                    </span>
-                    <p
-                      className={cn(
-                        "whitespace-nowrap",
-                        isOpen === false ? "opacity-0 hidden" : "opacity-100"
-                      )}
-                    >
-                      Sign out
-                    </p>
-                  </Button>
-                </TooltipTrigger>
-                {isOpen === false && (
-                  <TooltipContent side="right">Sign out</TooltipContent>
-                )}
-              </Tooltip>
-            </TooltipProvider>
-          </li>
-        </ul>
-      </nav>
+      <div className="space-y-1 px-3 py-2">
+        <h3 className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-gray-400">Dashboard</h3>
+        <NavItem
+          icon={LayoutDashboard}
+          label="Overview"
+          active={isActive('dashboard')}
+          onClick={() => navigate('/dashboard')}
+        />
+        <NavItem comingSoon icon={BarChart3} label="Analytics" />
+
+        <Separator className="my-3 bg-gray-800" />
+
+        <h3 className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-gray-400">Lab Management</h3>
+        <NavItem
+          icon={FileText}
+          label="Cases"
+          active={isActive('cases')}
+          onClick={() => navigate('/dashboard/cases')}
+        />
+        <NavItem
+          icon={Users}
+          label="Doctors"
+        // active={activeTab === "doctors"}
+        // onClick={() => setActiveTab("doctors")}
+        />
+
+        {permission.canViewDue() && <><Separator className="my-3 bg-gray-800" />
+
+          <h3 className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-gray-400">Reports</h3>
+          <NavItem
+            icon={PieChart}
+            label="Reports"
+            disabled
+          />
+          <NavItem disabled icon={BarChart3} label="Financial" /></>}
+
+        <Separator className="my-3 bg-gray-800" />
+
+        <NavItem
+          icon={Settings}
+          label="Settings"
+        // active={activeTab === "settings"}
+        // onClick={() => setActiveTab("settings")}
+        />
+        <NavItem icon={HelpCircle} label="Help & Support" />
+      </div>
     </ScrollArea>
+  );
+}
+
+function NavItem({
+  icon: Icon,
+  label,
+  active = false,
+  disabled = false,
+  comingSoon = false,
+  badge,
+  badgeVariant = "default",
+  variant = "default",
+  onClick,
+}: {
+  icon: any;
+  label: string;
+  active?: boolean;
+  disabled?: boolean;
+  comingSoon?: boolean;
+  badge?: string;
+  badgeVariant?: "default" | "warning" | "destructive";
+  variant?: "default" | "danger";
+  onClick?: () => void;
+}) {
+  return (
+    <button
+      onClick={disabled || comingSoon ? undefined : onClick}
+      disabled={disabled || comingSoon}
+      aria-disabled={disabled || comingSoon}
+      title={comingSoon ? "Coming Soon" : undefined}
+      className={cn(
+        "group flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200",
+        disabled || comingSoon
+          ? "cursor-not-allowed opacity-50 text-muted-foreground"
+          : active
+            ? "bg-blue-600 text-white shadow-lg shadow-blue-900/20"
+            : variant === "danger"
+              ? "text-red-400 hover:bg-gray-800"
+              : "text-gray-400 hover:bg-gray-800 hover:text-white"
+      )}
+    >
+      <div className="flex items-center gap-3">
+        <Icon
+          className={cn(
+            "h-4 w-4",
+            disabled || comingSoon
+              ? "text-gray-600"
+              : active
+                ? "text-white"
+                : variant === "danger"
+                  ? "text-red-400"
+                  : "text-gray-500 group-hover:text-gray-300"
+          )}
+        />
+        <span>{label}</span>
+      </div>
+      {comingSoon ? (
+        <Badge
+          variant="default"
+          className="ml-auto text-[10px] px-1.5 py-0.5 rounded-sm bg-gray-700 text-gray-300"
+        >
+          Coming Soon
+        </Badge>
+      ) : (
+        badge &&
+        (disabled ? (
+          <Badge
+            variant={badgeVariant}
+            className={cn(
+              "ml-auto text-[10px]",
+              badgeVariant === "default" && "bg-blue-600 text-white",
+              badgeVariant === "warning" && "bg-amber-500 text-white",
+              badgeVariant === "destructive" && "bg-red-500 text-white"
+            )}
+          >
+            {badge}
+          </Badge>
+        ) : (
+          <Badge
+            variant={badgeVariant}
+            className={cn(
+              "ml-auto text-[10px]",
+              badgeVariant === "default" && "bg-blue-600 text-white",
+              badgeVariant === "warning" && "bg-amber-500 text-white",
+              badgeVariant === "destructive" && "bg-red-500 text-white"
+            )}
+          >
+            {badge}
+          </Badge>
+        ))
+      )}
+    </button>
   );
 }

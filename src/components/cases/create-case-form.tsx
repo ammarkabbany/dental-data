@@ -386,7 +386,7 @@ export const CreateCaseForm = () => {
                       <CustomComboBox
                         label="doctor"
                         property="$id"
-                        variant={"outline"}
+                        variant={"secondary"}
                         values={doctors || []}
                         value={field.value}
                         action={field.onChange}
@@ -408,7 +408,7 @@ export const CreateCaseForm = () => {
                         <CustomComboBox
                           label="material"
                           property="$id"
-                          variant={"outline"}
+                          variant={"secondary"}
                           values={materials || []}
                           value={field.value}
                           action={field.onChange}

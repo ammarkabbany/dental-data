@@ -89,8 +89,8 @@ export function TeamProvider({ children }: { children: React.ReactNode }) {
         userRole,
       }}
     >
-      <SimplePageLoader isLoading={isLoading} fullScreen  />
-      {!isLoading && children}
+      <SimplePageLoader isLoading={isLoading} fullScreen />
+      {children}
     </TeamContext.Provider>
   );
 }

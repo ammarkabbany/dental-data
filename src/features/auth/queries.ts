@@ -4,7 +4,7 @@ import { User } from "@/types";
 export const getCurrent = async (): Promise<User | null> => {
   try {
     const user = await account.get();
-    const avatar = avatars.getInitials(user.name);
+    const avatar = avatars.getInitials(user.name, 50, 50, "7c68fe");
     return {
      ...user,
       avatar,

@@ -23,7 +23,7 @@ export const RecentCaseRow = ({ caseItem }: { caseItem: Partial<Case> }) => {
                     {new Date(caseItem.dueDate).toLocaleDateString()}
                   </td> */}
       <td className="whitespace-nowrap py-3 flex items-center gap-x-2">
-        <UserAvatar image={user?.avatar || "?"} name={user?.name || ""} />
+        <UserAvatar className="bg-white" image={user?.avatar || "?"} name={user?.name || ""} />
         {user?.name}
       </td>
       {canViewDue && <td className="py-4 whitespace-nowrap">

@@ -19,7 +19,7 @@ const inputVariants = cva(
         dashed: 'border-dashed border-2 focus:outline-primary',
       },
     },
-    defaultVariants: { variant: 'default' },
+    defaultVariants: { variant: 'filled' },
   }
 );
 

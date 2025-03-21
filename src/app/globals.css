@@ -3,7 +3,7 @@
 @plugin "tailwindcss-animate";
 
 @custom-variant dark (&:is(.dark *));
-
+/* 
 :root {
   --background: oklch(92.92% 0.031 322.6);
   --foreground: oklch(32.41% 0.1161 325.04);
@@ -42,7 +42,6 @@
   --chat-accent: #f5edf9;
   --chat-border: oklch(85.66% 0.083 328.91);
 }
-/* oklch(21.18% 0.0158 265.44) */
 .dark {
   --background: oklch(21.29% 0.0278 335.08);
   --foreground: oklch(98.14% 0.0032 308.42);
@@ -80,6 +79,90 @@
   --chat-foreground: oklch(98.14% 0.0032 308.42);
   --chat-accent: rgba(25, 21, 29);
   --chat-border: oklch(27.37% 0.0474 353.52)
+} */
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.141 0.005 285.823);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.141 0.005 285.823);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.141 0.005 285.823);
+  --primary: hsl(242, 67%, 53%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(242, 10%, 90%);
+  --secondary-foreground: hsl(0, 0%, 0%);
+  --muted: hsl(204, 10%, 95%);
+  --muted-foreground: hsl(242, 0%, 40%);
+  --accent: hsl(204, 10%, 90%);
+  --accent-foreground: hsl(242, 0%, 15%);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.92 0.004 286.32);
+  --input: oklch(0.92 0.004 286.32);
+  --ring: oklch(0.705 0.015 286.067);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.141 0.005 285.823);
+  --sidebar-primary: oklch(0.21 0.006 285.885);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.967 0.001 286.375);
+  --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
+  --sidebar-border: oklch(0.92 0.004 286.32);
+  --sidebar-ring: oklch(0.705 0.015 286.067);
+}
+
+.dark {
+  --background: hsl(240, 33%, 5%);
+  --foreground: hsl(0, 0%, 98%);
+  
+  --card: hsl(240, 30%, 12%);
+  --card-foreground: hsl(0, 0%, 98%);
+  
+  --popover: hsl(240, 30%, 10%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  
+  --primary: hsl(221.2, 83.2%, 53.3%);
+  --primary-foreground: hsl(210, 40%, 98%);
+  
+  --secondary: hsl(240, 23%, 18%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  
+  --muted: hsl(240, 23%, 18%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  
+  --accent: hsl(240, 23%, 18%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 62.8%, 30.6%);
+  
+  --border: hsl(240, 24%, 18%);
+  --input: hsl(240, 24%, 18%);
+  --ring: hsl(221.2, 83.2%, 53.3%);
+  
+  --radius: 0.75rem;
+
+  /* Dental Dashboard Theme Colors */
+  --dental-bg-dark: hsl(240, 33%, 5%);
+  --dental-bg-card: hsl(240, 30%, 12%);
+  --dental-border: hsl(240, 24%, 18%);
+  --dental-blue-from: hsl(221.2, 83.2%, 53.3%);
+  --dental-blue-to: hsl(243, 75%, 59%);
+  --dental-purple-to: hsl(270, 67%, 60%);
+  --dental-text-primary: hsl(0, 0%, 100%);
+  --dental-text-secondary: hsl(240, 5%, 65%);
+  --dental-text-muted: hsl(240, 5%, 45%);
+  --dental-warning-from: hsl(38, 92%, 50%);
+  --dental-warning-to: hsl(25, 95%, 53%);
+  --dental-success-from: hsl(142, 72%, 50%);
+  --dental-success-to: hsl(142, 69%, 45%);
+  --dental-error-from: hsl(0, 84%, 60%);
+  --dental-error-to: hsl(336, 80%, 58%);
 }
 
 @theme inline {
@@ -119,10 +202,14 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --color-chat-background: var(--chat-background);
-  --color-chat-foreground: var(--chat-foreground);
-  --color-chat-accent: var(--chat-accent);
-  --color-chat-border: var(--chat-border);
+
+  /* Dental Dashboard Theme Colors */
+  --color-dental-bg-dark: var(--dental-bg-dark);
+  --color-dental-bg-card: var(--dental-bg-card);
+  --color-dental-border: var(--dental-border);
+  --color-dental-blue-from: var(--dental-blue-from);
+  --color-dental-blue-to: var(--dental-blue-to);
+  --color-dental-purple-to: var(--dental-purple-to);
 }
 
 @layer base {

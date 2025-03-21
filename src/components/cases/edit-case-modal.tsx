@@ -361,7 +361,7 @@ export const EditCaseModal = ({selectedCase}: {selectedCase: Case}) => {
           onCancel();
         }
       }}
-      className="md:min-w-3xl lg:min-w-4xl w-full overflow-x-hidden min-h-[90dvh]"
+      className="md:min-w-3xl lg:min-w-4xl w-full overflow-x-hidden"
       trigger={
         <DialogTrigger asChild>
           <Button onMouseDown={(e) => e.stopPropagation()} variant="ghost" className="w-full justify-start">
@@ -411,7 +411,7 @@ export const EditCaseModal = ({selectedCase}: {selectedCase: Case}) => {
                           <CustomComboBox
                             label="doctor"
                             property="$id"
-                            variant={"outline"}
+                            variant={"secondary"}
                             values={doctors || []}
                             value={field.value}
                             action={field.onChange}
@@ -433,7 +433,7 @@ export const EditCaseModal = ({selectedCase}: {selectedCase: Case}) => {
                             <CustomComboBox
                               label="material"
                               property="$id"
-                              variant={"outline"}
+                              variant={"secondary"}
                               values={materials || []}
                               value={field.value}
                               action={field.onChange}

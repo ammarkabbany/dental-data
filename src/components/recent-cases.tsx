@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronsRight } from "lucide-react";
+import { ChevronsRight, Clock } from "lucide-react";
 import { Button } from "./ui/button";
 import { Case } from "@/types";
 import { RecentCaseRow } from "./recent-case-row";
@@ -11,13 +11,16 @@ interface RecentCasesProps {
 }
 
 export default function RecentCases({ cases }: RecentCasesProps) {
-  const {userRole} = useTeam();
+  const { userRole } = useTeam();
   const canViewDue = usePermission(userRole).canViewDue()
   return (
-    <div className="rounded-lg shadow-sm border">
+    <div className="rounded-lg shadow-sm border bg-dental-bg-card/50">
       <div className="p-6 border-b">
         <div className="flex justify-between items-center">
-          <h2 className="text-lg font-semibold">Recent Cases</h2>
+          <div className="flex items-center gap-2">
+            <Clock className="h-5 w-5 text-blue-400" />
+            <h2 className="text-lg font-bold text-white">Recent Activity</h2>
+          </div>
           <Button
             variant="ghost"
             // endIcon={<ArrowRight size={16} />}

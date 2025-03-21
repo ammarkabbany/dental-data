@@ -8,7 +8,7 @@ import { useEffect } from "react";
 export default function DataFetcher() {
   const { data: doctors, isLoading: isDoctorsLoading } = useGetDoctors();
   const { data: materials, isLoading: isMaterialsLoading } = useGetMaterials();
-  const { data: cases, isLoading: isCasesLoading } = useGetCases();
+  const {} = useGetCases();
   
   const { setDoctors } = useDoctorsStore();
   const { setMaterials } = useMaterialsStore();

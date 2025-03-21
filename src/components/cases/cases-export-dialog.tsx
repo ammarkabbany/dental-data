@@ -53,7 +53,7 @@ export function CasesExportDialog({
     <ResponsiveModalWithTrigger
       trigger={
         <DialogTrigger asChild>
-          <Button className="transition" variant="outline">
+          <Button className="transition" variant="secondary">
             <Save className="mr-2 h-4 w-4" />
             Export
           </Button>

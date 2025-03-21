@@ -148,7 +148,7 @@ export default function CasesDataTableUtils({
                 }
                 table.getColumn("doctor")?.setFilterValue(newValue);
               }}
-              variant="outline"
+              variant="secondary"
               className="flex-1"
               values={doctors}
             />

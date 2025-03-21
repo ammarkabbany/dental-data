@@ -1,14 +1,3 @@
-import {
-  Tag,
-  Users,
-  Settings,
-  Bookmark,
-  SquarePen,
-  LayoutGrid,
-  LucideIcon,
-  FileTextIcon
-} from "lucide-react";
-
 import {BalanceScaleIcon, Chart02Icon, CreditCardIcon, DentalToothIcon, Layout01Icon, SchemeIcon, Settings01Icon, TagIcon, UserGroup02Icon} from "@hugeicons/core-free-icons";
 
 type Submenu = {

@@ -6,23 +6,28 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import {
   DentalToothIcon,
   Doctor02Icon,
-  UserMultiple02Icon,
 } from "@hugeicons/core-free-icons";
 import { useDashboardData } from "@/hooks/use-dashboard-data";
 import { useTeam } from "@/providers/team-provider";
-import { CubeIcon } from "@radix-ui/react-icons";
-import AnalyticsStatsCard from "@/components/analytics-card";
+import { CubeIcon, PlusCircledIcon } from "@radix-ui/react-icons";
 import StatsCard from "@/components/stats-card";
 import RecentCases from "@/components/recent-cases";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { PlusCircleIcon } from "lucide-react";
+import { Sparkles } from "lucide-react";
+import { useAuth } from "@/providers/auth-provider";
+import { QuickActionButton } from "@/components/quick-action-button";
+import { useRouter } from "next/navigation";
+import { Modals, useModalStore } from "@/store/modal-store";
+import { usePermission } from "@/hooks/use-permissions";
 
 export default function DashboardPage() {
-  // const { openModal } = useModalStore();
-  const { currentTeam } = useTeam();
+  const { openModal } = useModalStore();
+  const router = useRouter();
+  const { userRole } = useTeam();
+  const { user } = useAuth();
   const { data, isLoading } = useDashboardData();
+  const permission = usePermission(userRole)
 
   const sidebar = useStore(useSidebar, (x) => x);
   if (!sidebar) return null;
@@ -42,7 +47,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <ContentLayout title="Dashboard">
+    <ContentLayout title="Overview">
       {/* <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -56,9 +61,32 @@ export default function DashboardPage() {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb> */}
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Overview</h1>
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 p-6 text-white shadow-xl shadow-blue-900/20">
+        <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10 blur-3xl"></div>
+        <div className="absolute -bottom-12 left-1/3 h-40 w-40 rounded-full bg-white/10 blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black/20 to-transparent"></div>
+        <div className="absolute inset-0 bg-[url('/placeholder.svg?height=200&width=1000')] bg-cover bg-center opacity-10 mix-blend-overlay"></div>
+        <div className="relative flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
+          <div>
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-blue-200" />
+              <h1 className="text-lg font-bold">Welcome back, {user?.name}</h1>
+            </div>
+            <p className="mt-1 text-blue-100">Here&apos;s what&apos;s happening in your lab</p>
+          </div>
+          {/* <div className="mt-4 flex items-center gap-3 md:mt-0">
+            <div className="rounded-lg bg-white/20 px-3 py-1 text-sm backdrop-blur-sm">
+              <span className="font-semibold">42</span> Active Cases
+            </div>
+            <div className="rounded-lg bg-white/20 px-3 py-1 text-sm backdrop-blur-sm">
+              <span className="font-semibold">18</span> Doctors
+            </div>
+          </div> */}
+        </div>
       </div>
+      {/* <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Overview</h1>
+      </div> */}
 
       <div className="py-4">
         {isLoading ? (
@@ -76,7 +104,7 @@ export default function DashboardPage() {
           </motion.div>
         ) : (
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4"
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"
             initial="hidden"
             animate="visible"
             variants={containerVariants}
@@ -87,9 +115,8 @@ export default function DashboardPage() {
                 value={data?.casesCount ?? 0}
                 icon={<HugeiconsIcon icon={DentalToothIcon} />}
               >
-                {/* <Button size={"icon"} className="ml-auto cursor-pointer bg-gradient-to-r from-[#667eea] to-[#764ba2] text-white hover:opacity-90 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
-                  <PlusCircleIcon />
-                </Button> */}
+
+                {permission.checkPermission('cases', 'create') && <QuickActionButton onClick={() => router.push('/dashboard/cases/new')} icon={PlusCircledIcon} label="Add Case" />}
               </StatsCard>
             </motion.div>
             <motion.div variants={itemVariants}>
@@ -97,22 +124,27 @@ export default function DashboardPage() {
                 title="Doctors"
                 value={data?.doctorsCount ?? 0}
                 icon={<HugeiconsIcon icon={Doctor02Icon} />}
-              />
+              >
+                {permission.checkPermission('doctors', 'create') && 
+                  <QuickActionButton onClick={() => openModal(Modals.CREATE_DOCTOR_MODAL)} icon={PlusCircledIcon} label="Add Doctor" />}
+              </StatsCard>
             </motion.div>
             <motion.div variants={itemVariants}>
               <StatsCard
                 title="Materials"
                 value={data?.materialsCount ?? 0}
                 icon={<CubeIcon className="size-6" />}
-              />
+              >
+                {permission.checkPermission('materials', 'create') && <QuickActionButton onClick={() => openModal(Modals.CREATE_MATERIAL_MODAL)} icon={PlusCircledIcon} label="Add Material" />}
+              </StatsCard>
             </motion.div>
-            <motion.div variants={itemVariants}>
+            {/* <motion.div variants={itemVariants}>
               <StatsCard
                 title="Team Members"
                 value={currentTeam?.total ?? 0}
                 icon={<HugeiconsIcon icon={UserMultiple02Icon} />}
               />
-            </motion.div>
+            </motion.div> */}
           </motion.div>
         )}
       </div>

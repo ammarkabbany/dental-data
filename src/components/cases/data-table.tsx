@@ -130,7 +130,7 @@ export function CasesDataTable({ data = [] }: DataTableProps) {
       <div className="space-y-4">
         <ScrollArea id="table-scroll-area" className="h-[580px] overflow-auto border rounded-md">
           <Table className="w-max min-w-full">
-            <TableHeader className="sticky top-0 bg-chat-accent">
+            <TableHeader className="sticky top-0 bg-accent">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
