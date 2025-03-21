@@ -39,7 +39,6 @@ export default function RootLayout({
         {/* <ClerkProvider> */}
           <QueryProvider>
             <AuthProvider>
-              <TeamProvider>
               <ThemeProvider
                 attribute="class"
                 defaultTheme="dark"
@@ -49,7 +48,6 @@ export default function RootLayout({
                 <Toaster richColors position="bottom-right" />
                 {children}
               </ThemeProvider>
-              </TeamProvider>
             </AuthProvider>
           </QueryProvider>
         {/* </ClerkProvider> */}

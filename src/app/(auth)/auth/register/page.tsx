@@ -51,8 +51,8 @@ export default function LoginPage() {
   return (
     <Card className="max-w-md w-full">
       <CardHeader className="p-7 flex items-center justify-center">
-        <CardTitle className="text-xl">Login</CardTitle>
-        <CardDescription>Sign in to your account</CardDescription>
+        <CardTitle className="text-xl">Sign Up</CardTitle>
+        <CardDescription>Register a new account</CardDescription>
       </CardHeader>
       <CardContent className="p-7">
         <Form {...form}>
@@ -144,24 +144,15 @@ export default function LoginPage() {
         <h3 className="text-center text-sm text-muted-foreground mb-2">
           Or continue with
         </h3>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="">
           <Button
             onClick={() => account.createOAuth2Session(OAuthProvider.Google)}
-            className="items-center"
+            className="items-center w-full"
             variant="secondary"
             disabled={isPending}
           >
             <GoogleIcon />
             Google
-          </Button>
-          <Button
-            onClick={() => {}}
-            className="items-center bg-neutral-800 hover:bg-neutral-700 text-white"
-            variant="secondary"
-            disabled={isPending}
-          >
-            <GithubIcon />
-            GitHub
           </Button>
         </div>
       </CardContent>

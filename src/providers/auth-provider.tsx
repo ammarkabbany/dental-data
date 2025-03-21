@@ -4,9 +4,11 @@ import { createContext, useContext } from 'react';
 import { User } from '@/types';
 import { useLogout } from '@/features/auth/hooks/use-logout';
 import { useCurrent } from '@/features/auth/hooks/use-current';
+import * as React from 'react';
 
 type AuthContextType = {
   user: User | null | undefined;
+  isAuthenticated: boolean;
   isLoading: boolean;
   logOut: () => void;
 };
@@ -14,6 +16,7 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false)
   const {data: user, isLoading} = useCurrent();
 
   const {mutate} = useLogout();
@@ -22,8 +25,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     mutate();
   }
 
+  React.useEffect(() => {
+    if (!isLoading) {
+      setIsAuthenticated(!!user);
+    }
+  }, [isLoading, user, setIsAuthenticated])
+
   return (
-    <AuthContext.Provider value={{ user, isLoading, logOut }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, isLoading, logOut }}>
       {children}
     </AuthContext.Provider>
   );

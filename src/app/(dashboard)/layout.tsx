@@ -7,6 +7,7 @@ import DataFetcher from "@/components/data-fetcher";
 import { Case } from "@/types";
 import { useRealtimeUpdates } from "@/hooks/use-realtime-updates";
 import { CASES_COLLECTION_ID } from "@/lib/constants";
+import { TeamProvider } from "@/providers/team-provider";
 // import { CASES_COLLECTION_ID } from "@/lib/constants";
 // import { useRealtimeUpdates } from "@/hooks/use-realtime-updates";
 // import { Case } from "@/types";
@@ -20,7 +21,7 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const {isLoading} = DataFetcher();
+  const { isLoading } = DataFetcher();
 
   const queryClient = useQueryClient();
 
@@ -31,9 +32,9 @@ export default function DashboardLayout({
 
     if (events.includes('databases.*.collections.*.documents.*.create')) {
       // Add the new case to the cached data
-      queryClient.invalidateQueries({queryKey: ['dashboard']})
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] })
       // queryClient.setQueryData(['cases'], (oldData: any[]) => [caseData, ...oldData].sort((a,b) => b.date.localeCompare(a.date)));
-      queryClient.invalidateQueries({queryKey: ['cases'] });
+      queryClient.invalidateQueries({ queryKey: ['cases'] });
       // if (caseData.userId !== user?.$id) {
       //   toast.success(`New case added by team`);
       // }
@@ -50,19 +51,21 @@ export default function DashboardLayout({
       // if (caseData.userId !== user?.$id) {
       //   toast.success(`case deleted by team`);
       // }
-      queryClient.invalidateQueries({queryKey: ['dashboard']})
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] })
     }
   });
 
   return (
-    <AdminPanelLayout>
-      {/* Modals */}
-      {/*  */}
-      <DoctorCreateModal />
-      <MaterialCreateModal />
-      {/*  */}
-      {/* Content */}
-      {children}
-    </AdminPanelLayout>
+    <TeamProvider>
+      <AdminPanelLayout>
+        {/* Modals */}
+        {/*  */}
+        <DoctorCreateModal />
+        <MaterialCreateModal />
+        {/*  */}
+        {/* Content */}
+        {children}
+      </AdminPanelLayout>
+    </TeamProvider>
   );
 }
