@@ -2,13 +2,8 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useAuth } from './auth-provider';
-import { getTeamMembers, getUserTeams } from '@/lib/team-service';
 import { Team } from '@/types';
-import SimplePageLoader from '@/components/page-loader';
 import { useUserTeams } from '@/features/auth/hooks/use-team';
-import { getUserRole } from '@/features/auth/actions';
-import { useQuery } from '@tanstack/react-query';
-import { useTeamRole } from '@/features/auth/hooks/use-team-role';
 
 type TeamContextType = {
   teams: Team[] | undefined;
@@ -21,71 +16,92 @@ type TeamContextType = {
 const TeamContext = createContext<TeamContextType | undefined>(undefined);
 
 export function TeamProvider({ children }: { children: React.ReactNode }) {
-  const { user } = useAuth();
-  const {data: teamsData} = useUserTeams(user?.$id);
+  const { user, isLoading: isAuthLoading } = useAuth();
+  const { 
+    data: teamsData, 
+    isLoading: isTeamsLoading,
+    refetch: refetchTeams,
+    error
+  } = useUserTeams(user?.$id);
+  
   const [currentTeam, setCurrentTeam] = useState<Team | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [userRole, setUserRole] = useState<string | null>(null);
 
+  // Force refetch teams when user changes (especially on reload)
+  useEffect(() => {
+    if (user?.$id) {
+      refetchTeams();
+    }
+  }, [user?.$id, refetchTeams]);
+
+  // Handle teams data changes and restore current team from localStorage
   useEffect(() => {
     if (!user) {
-      // setTeams([]);
       setCurrentTeam(null);
       setUserRole(null);
-      setIsLoading(false);
+      localStorage.removeItem('currentTeamId');
+      return;
+    }
+    
+    if (!teamsData?.teams || teamsData.teams.length === 0) {
+      console.log('No teams available for user', user.$id);
+      setCurrentTeam(null);
+      setUserRole(null);
+      localStorage.removeItem('currentTeamId');
       return;
     }
 
-    const loadTeams = async () => {
-      setIsLoading(true);
-      try {
-        if (!teamsData || !teamsData.teams) {
-          setCurrentTeam(null);
-          setUserRole(null);
-          localStorage.removeItem('currentTeamId');
-          setIsLoading(false);
-          return;
-        }
-        // Get stored team or use first available
-        const storedTeamId = localStorage.getItem('currentTeamId');
-        if (storedTeamId && teamsData.teams.some(team => team.$id === storedTeamId)) {
-          const team = teamsData.teams.find(t => t.$id === storedTeamId) || null;
-          setCurrentTeam(team);
-          if (team) {
-            await loadUserRole(team.$id);
-          }
-        } else if (teamsData.teams.length > 0) {
-          setCurrentTeam(teamsData.teams[0]);
-          await loadUserRole(teamsData.teams[0].$id);
-          localStorage.setItem('currentTeamId', teamsData.teams[0].$id);
-        }
-      } catch (error) {
-        console.error('Error loading teams:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadTeams();
-  }, [user, teamsData]);
-
-  const loadUserRole = async (teamId: string) => {
-    if (!user) return;
+    // Get stored team or use first available
+    const storedTeamId = localStorage.getItem('currentTeamId');
+    let teamToSet: Team | null = null;
     
-    try {
-      const role = teamsData?.memberships.find(m => m.teamId === teamId && m.userId === user.$id)?.role;
-      setUserRole(role || null);
-    } catch (error) {
-      console.error('Error loading user role:', error);
+    // Try to find the stored team ID in the available teams
+    if (storedTeamId) {
+      teamToSet = teamsData.teams.find(team => team.$id === storedTeamId) || null;
+    }
+    
+    // If no stored team was found, use the first team
+    if (!teamToSet && teamsData.teams.length > 0) {
+      teamToSet = teamsData.teams[0];
+      localStorage.setItem('currentTeamId', teamToSet.$id);
+    }
+    
+    // Update current team state
+    setCurrentTeam(teamToSet);
+    
+    // Set user role for the selected team
+    if (teamToSet && teamsData.memberships) {
+      const membership = teamsData.memberships.find(
+        m => m.teamId === teamToSet?.$id && m.userId === user.$id
+      );
+      setUserRole(membership?.role || null);
+    } else {
       setUserRole(null);
     }
-  };
+    
+  }, [user, teamsData]);
 
+  // Handle team switching
   const handleSetCurrentTeam = (team: Team) => {
     setCurrentTeam(team);
     localStorage.setItem('currentTeamId', team.$id);
-    loadUserRole(team.$id);
+    
+    if (teamsData?.memberships && user) {
+      const role = teamsData.memberships.find(
+        m => m.teamId === team.$id && m.userId === user.$id
+      )?.role;
+      setUserRole(role || null);
+    }
   };
+
+  // Debug logging
+  useEffect(() => {
+    if (error) {
+      console.error('Error loading teams:', error);
+    }
+  }, [error]);
+
+  const isLoading = isAuthLoading || isTeamsLoading;
 
   return (
     <TeamContext.Provider
@@ -97,7 +113,6 @@ export function TeamProvider({ children }: { children: React.ReactNode }) {
         userRole,
       }}
     >
-      {/* <SimplePageLoader isLoading={isLoading} fullScreen /> */}
       {children}
     </TeamContext.Provider>
   );

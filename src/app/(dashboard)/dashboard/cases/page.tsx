@@ -26,18 +26,18 @@ export default function CasesPage() {
 
   const { data: cases, isLoading: isCasesLoading } = useGetCases();
 
-  if (!teamId && !isTeamLoading) return (
-    <ContentLayout title="Cases">
-      <div className="text-center">
-        <p className="text-red-500">No team selected. select a team or create one here</p>
-        <Button className="transition" asChild>
-          <Link href="/teams/create">
-            Create a team
-          </Link>
-        </Button>
-      </div>
-    </ContentLayout>
-  ); // Redirect to dashboard if no team is selected
+  // if (!currentTeam && !isTeamLoading) return (
+  //   <ContentLayout title="Cases">
+  //     <div className="text-center">
+  //       <p className="text-red-500">No team selected. select a team or create one here</p>
+  //       <Button className="transition" asChild>
+  //         <Link href="/teams/create">
+  //           Create a team
+  //         </Link>
+  //       </Button>
+  //     </div>
+  //   </ContentLayout>
+  // );
 
   // if (isTeamLoading || isCasesLoading) return (
   //   <ContentLayout title="Cases">
