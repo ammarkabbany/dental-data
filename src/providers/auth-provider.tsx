@@ -19,17 +19,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false)
   const {data: user, isLoading} = useCurrent();
 
-  const {mutate} = useLogout();
+  const {mutate, isSuccess} = useLogout();
 
   const logOut = () => {
     mutate();
+    setIsAuthenticated(false);
   }
 
   React.useEffect(() => {
-    if (!isLoading) {
-      setIsAuthenticated(!!user);
-    }
-  }, [isLoading, user, setIsAuthenticated])
+    setIsAuthenticated(!!user);
+  }, [isLoading, user, setIsAuthenticated, isSuccess])
 
   return (
     <AuthContext.Provider value={{ user, isAuthenticated, isLoading, logOut }}>

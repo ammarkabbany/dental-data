@@ -25,7 +25,7 @@ export function Sidebar() {
       <div
         onMouseEnter={() => setIsHover(true)}
         onMouseLeave={() => setIsHover(false)}
-        className="relative h-full flex flex-col px-3 py-4 gap-y-8 overflow-y-auto lg:overflow-y-hidden shadow-md dark:shadow-zinc-800"
+        className="relative h-[92%] flex flex-col px-3 py-3 gap-y-8 sidebar-container"
       >
         <Button
           className={cn(
@@ -52,15 +52,16 @@ export function Sidebar() {
                   : "translate-x-0 opacity-100"
               )}
             >
-              Dental Data
+              DentaFlow
             </h1>
           </Link>
         </Button>
         <Menu isOpen={getOpenState()} />
-        <div className="mt-auto space-y-2">
-          <h3 className="px-3 text-xs font-semibold uppercase tracking-wider text-gray-400">Team</h3>
-          <TeamSwitcher />
-        </div>
+      </div>
+      <div className="h-10 w-full" />
+      <div className="absolute left-0 bottom-2 px-2 z-10 w-full h-10">
+        {/* <h3 className="px-3 text-xs font-semibold uppercase tracking-wider text-gray-400">Team</h3> */}
+        <TeamSwitcher />
       </div>
     </aside>
   );

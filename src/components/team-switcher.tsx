@@ -20,7 +20,7 @@ export function TeamSwitcher() {
         >
           <div className="flex size-7 items-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
             {/* {team?.logo && <team.logo className="size-5" />} */}
-            <UserAvatar className="size-full" image={avatars.getInitials(team?.name)} name={team?.name ?? ""} />
+            <UserAvatar className="size-full ring-0" image={avatars.getInitials(team?.name)} name={team?.name ?? ""} />
           </div>
           <div className="grid flex-1 text-sm leading-tight">
             <span className="truncate font-semibold">{team?.name}</span>

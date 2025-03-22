@@ -22,16 +22,17 @@ export default function Homepage() {
     <div className="flex flex-col min-h-screen w-full mx-auto">
       <header className="border-b sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center justify-between mx-auto px-4 md:px-6">
-          <div className="flex items-center gap-2">
-            <Logo src='/old-fav.ico' className='size-16' />
-            <span className="text-xl font-bold">DentaFlow</span>
+          <div className="flex items-center gap-x-8">
+            <div className='flex items-center gap-2'>
+              <Logo src='/old-fav.ico' className='size-16' />
+              <span className="text-xl font-bold">DentaFlow</span>
+            </div>
+            <nav className="hidden md:flex items-center gap-6">
+              <Link href="#features" className="text-sm font-medium hover:text-primary transition-colors">Features</Link>
+              <Link href="#pricing" className="text-sm font-medium hover:text-primary transition-colors">Pricing</Link>
+            </nav>
           </div>
 
-          <nav className="hidden md:flex items-center gap-6">
-            <Link href="#features" className="text-sm font-medium hover:text-primary transition-colors">Features</Link>
-            <Link href="#pricing" className="text-sm font-medium hover:text-primary transition-colors">Pricing</Link>
-            <Link href="#faq" className="text-sm font-medium hover:text-primary transition-colors">FAQ</Link>
-          </nav>
 
           <div className="flex items-center gap-4">
             {isAuthenticated ? (
@@ -153,7 +154,7 @@ export default function Homepage() {
                   Seamless Integrations & Technology
                 </h2>
               </div>
-              <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12 lg:gap-16">
+              <div className="grid grid-cols-2 min-[540px]:grid-cols-4 items-center justify-center gap-8 md:gap-12 lg:gap-16">
                 {[
                   {
                     name: "Cloud Sync",
@@ -254,7 +255,7 @@ export default function Homepage() {
                 <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
                   Everything you need to manage your dental lab
                 </h2>
-                <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed dark:text-gray-400">
+                <p className="max-w-[900px] mx-auto text-gray-500 md:text-xl/relaxed dark:text-gray-400">
                   Our platform combines powerful features with an intuitive interface to help you
                   streamline operations and focus on what matters most.
                 </p>
@@ -362,7 +363,7 @@ export default function Homepage() {
                     <span className="text-lg font-bold">{item.step}</span>
                   </div>
                   {index < 2 && (
-                    <div className="absolute top-6 left-[calc(50%+34px)] w-[calc(100%-36px)] border-t border-dashed border-muted-foreground/30 md:block" />
+                    <div className="absolute top-6 left-[calc(50%+34px)] w-[calc(100%-36px)] border-t border-dashed border-muted-foreground/30 hidden md:block" />
                   )}
                   <h3 className="text-xl font-bold">{item.title}</h3>
                   <p className="mt-2 text-muted-foreground">{item.description}</p>
@@ -721,7 +722,6 @@ export default function Homepage() {
                 <li><Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">Privacy Policy</Link></li>
                 <li><Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">Terms of Service</Link></li>
                 <li><Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">Cookie Policy</Link></li>
-                <li><Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">HIPAA Compliance</Link></li>
               </ul>
             </div>
           </div>

@@ -254,3 +254,38 @@
     height: var(--radix-accordion-content-height);
   }
 }
+
+.sidebar-container::before {
+  content: '';
+  position: fixed;
+  bottom: -20;
+  left: 0;
+  right: 0;
+  height: 120px; /* Adjust the height of the gradient */
+  background: linear-gradient(
+    to bottom,
+    hsla(240, 31%, 12%, 0) 0%,
+    hsla(240, 31%, 12%, 0.9) 25%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Optional: Add a subtle blur effect */
+/* .sidebar-container::after {
+  content: '';
+  position: fixed;
+  bottom: 5;
+  left: 0;
+  right: 0;
+  height: 80px;
+  backdrop-filter: blur(0.5px);
+  -webkit-backdrop-filter: blur(0.5px);
+  background: linear-gradient(
+    to bottom,
+    hsla(240, 31%, 12%, 0) 0%,
+    hsla(240, 31%, 12%, 0.9) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+} */

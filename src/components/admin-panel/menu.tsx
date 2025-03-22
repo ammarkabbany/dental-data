@@ -1,6 +1,6 @@
 "use client";
 
-import { BarChart3, FileText, HelpCircle, PieChart, Settings, Users, LayoutDashboard } from "lucide-react";
+import { BarChart3, FileText, HelpCircle, PieChart, Settings, Users, LayoutDashboard, Layers } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 
 import { cn } from "@/lib/utils";
@@ -10,6 +10,7 @@ import { Badge } from "../ui/badge";
 import { Separator } from "../ui/separator";
 import { usePermission } from "@/hooks/use-permissions";
 import { useTeam } from "@/providers/team-provider";
+import { useEffect, useRef, useState } from "react";
 
 interface MenuProps {
   isOpen: boolean | undefined;
@@ -27,9 +28,11 @@ export function Menu({ isOpen }: MenuProps) {
   };
   const permission = usePermission(userRole);
 
+  const sidebarRef = useRef<HTMLDivElement>(null)
+
   return (
-    <ScrollArea className="[&>div>div[style]]:!block">
-      <div className="space-y-1 px-3 py-2">
+    <ScrollArea ref={sidebarRef} className="[&>div>div[style]]:!block overflow-y-auto">
+      <div className="space-y-1 px-3">
         <h3 className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-gray-400">Dashboard</h3>
         <NavItem
           icon={LayoutDashboard}
@@ -55,6 +58,16 @@ export function Menu({ isOpen }: MenuProps) {
         // onClick={() => setActiveTab("doctors")}
         />
 
+        <Separator className="my-3 bg-gray-800" />
+
+        <h3 className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-gray-400">Utilities</h3>
+        <NavItem
+          icon={Layers}
+          label="Templates"
+          active={isActive('templates')}
+          onClick={() => navigate('/dashboard/templates')}
+        />
+
         {permission.canViewDue() && <><Separator className="my-3 bg-gray-800" />
 
           <h3 className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-gray-400">Reports</h3>
@@ -73,7 +86,6 @@ export function Menu({ isOpen }: MenuProps) {
         // active={activeTab === "settings"}
         // onClick={() => setActiveTab("settings")}
         />
-        <NavItem icon={HelpCircle} label="Help & Support" />
       </div>
     </ScrollArea>
   );

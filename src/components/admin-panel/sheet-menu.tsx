@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MenuIcon, PanelsTopLeft } from "lucide-react";
+import { MenuIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Menu } from "@/components/admin-panel/menu";
@@ -10,7 +10,6 @@ import {
   SheetTrigger,
   SheetTitle,
 } from "@/components/ui/sheet";
-import Image from "next/image";
 import { TeamSwitcher } from "../team-switcher";
 
 export function SheetMenu() {
@@ -43,15 +42,16 @@ export function SheetMenu() {
                     "font-bold text-2xl whitespace-nowrap dark:text-[#e3bad1] transition-[transform,opacity,display] ease-in-out duration-300"
                   }
                 >
-                  Dental Data
+                  DentaFlow
                 </h1>
               </Link>
             </SheetTitle>
           </Button>
         </SheetHeader>
         <Menu isOpen />
-        <div className="mt-auto mb-2 space-y-2">
-          <h3 className="px-3 text-xs font-semibold uppercase tracking-wider text-gray-400">Team</h3>
+        <div className="h-14 w-full" />
+        <div className="absolute left-0 bottom-2 px-2 z-10 w-full h-10">
+          {/* <h3 className="px-3 text-xs font-semibold uppercase tracking-wider text-gray-400">Team</h3> */}
           <TeamSwitcher />
         </div>
       </SheetContent>

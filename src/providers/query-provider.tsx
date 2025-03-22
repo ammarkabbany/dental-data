@@ -37,7 +37,7 @@ export default function QueryProvider({ children }: { children: React.ReactNode 
   // }, [queryClient]);
 
   return (
-    <PersistQueryClientProvider client={queryClient} persistOptions={{persister, maxAge: 1000 * 60 * 60, buster: "v1"}}>
+    <PersistQueryClientProvider client={queryClient} persistOptions={{persister, maxAge: 1000 * 60 * 60 * 24, buster: "v1"}}>
       {children}
       <ReactQueryDevtools initialIsOpen={false} />
     </PersistQueryClientProvider>

@@ -30,6 +30,7 @@ import { useRegister } from "@/features/auth/hooks/use-register";
 import { signUpWithGoogle } from "@/features/auth/oauth";
 import { account } from "@/lib/appwrite/client";
 import { OAuthProvider } from "appwrite";
+import { NEXT_URL } from "@/lib/constants";
 
 export default function LoginPage() {
 
@@ -146,7 +147,7 @@ export default function LoginPage() {
         </h3>
         <div className="">
           <Button
-            onClick={() => account.createOAuth2Session(OAuthProvider.Google)}
+            onClick={() => account.createOAuth2Session(OAuthProvider.Google, `${NEXT_URL}/dashboard`, `${NEXT_URL}?authStatus=failed`)}
             className="items-center w-full"
             variant="secondary"
             disabled={isPending}

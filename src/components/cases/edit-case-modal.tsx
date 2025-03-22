@@ -18,8 +18,6 @@ import { useTeam } from "@/providers/team-provider";
 import { createCaseSchema } from "@/features/cases/schemas";
 import { DatePicker } from "../date-picker";
 import { CustomComboBox } from "../custom-combobox";
-import { useGetDoctors } from "@/features/doctors/hooks/use-get-doctors";
-import { useGetMaterials } from "@/features/materials/hooks/use-get-materials";
 import { useState } from "react";
 import TeethFormData from "../TeethFormData";
 import { Case, Material, Tooth, ToothCollection } from "@/types";
@@ -27,6 +25,8 @@ import { ResponsiveModalWithTrigger } from "../responsive-modal";
 import { DialogTrigger } from "../ui/dialog";
 import { useUpdateCase } from "@/features/cases/hooks/use-update-case";
 import { usePermission } from "@/hooks/use-permissions";
+import { useDoctorsStore } from "@/store/doctors-store";
+import { useMaterialsStore } from "@/store/material-store";
 
 export const EditCaseModal = ({selectedCase}: {selectedCase: Case}) => {
   const { currentTeam, userRole } = useTeam();
@@ -38,8 +38,8 @@ export const EditCaseModal = ({selectedCase}: {selectedCase: Case}) => {
     form.reset();
   }
 
-  const { data: doctors } = useGetDoctors();
-  const { data: materials } = useGetMaterials();
+  const {doctors} = useDoctorsStore();
+  const {materials} = useMaterialsStore();
   const getMatrialById = (id: string) => {
     return materials?.find((material) => material.$id === id);
   };

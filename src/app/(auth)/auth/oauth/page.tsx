@@ -1,30 +1,23 @@
 "use client"
+import { account } from "@/lib/appwrite/client";
+import { AUTH_COOKIE } from "@/lib/constants";
 import { Loader2 } from "lucide-react";
-import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import Cookies from 'js-cookie';
 
 export default function OAuthCallbackPage() {
-  const params = useSearchParams();
-  const userId = params.get("userId") as string;
-  const secret = params.get("secret") as string;
-  const provider = params.get("provider") as string;
   const [loading, setLoading] = useState(true)
 
   // Validate and store the OAuth callback data in your application
   useEffect(() => {
     async function validateOAuthCallback() {
-      const response = await fetch(
-        `/api/oauth?userId=${userId}&secret=${secret}&provider=${provider}`
-      );
-      if (response.ok) {
-        window.location.replace('/dashboard');
-      } else {
-        console.error("Failed to validate OAuth callback:", response.statusText);
-        window.location.replace('/auth/login');
-      }
+      const jwt = await account.createJWT();
+      Cookies.set(AUTH_COOKIE, jwt.jwt, {expires: 30})
     }
-    if (userId && secret) validateOAuthCallback();
-    setLoading(false)
+    validateOAuthCallback().then(() => {
+      setLoading(false)
+      window.location.replace('/dashboard'); // Redirect to your dashboard page after successful login
+    });
   }, [])
 
   return (
