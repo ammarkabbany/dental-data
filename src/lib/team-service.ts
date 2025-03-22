@@ -36,30 +36,25 @@ async function createTeam(name: string, userId: string) {
 }
 
 // Get teams for a user
-async function getUserTeams(userId: string | undefined) {
+async function getUserTeams(userId: string) {
   // First get team memberships for the user
   const { databases } = await createAdminClient();
-  const teams: Team[] = [];
-  const emptyMemberships: TeamMember[] = [];
-  if (!userId) {
-    return {teams, memberships: emptyMemberships};
-  }
   const teamMembers = await databases.listDocuments<TeamMember>(
     DATABASE_ID,
     TEAM_MEMBERS_COLLECTION_ID,
     [Query.equal("userId", userId)]
   );
-  
 
   // If no memberships, return empty array
   if (teamMembers.documents.length === 0) {
-    return {teams, memberships: teamMembers.documents}
+    return [];
   }
 
   // Extract team IDs
   const teamIds = teamMembers.documents.map((member) => member.teamId);
 
   // Fetch teams by ID
+  const teams = [];
   for (const teamId of teamIds) {
     try {
       const team = await databases.getDocument<Team>(
@@ -69,14 +64,15 @@ async function getUserTeams(userId: string | undefined) {
       );
       teams.push({
         ...team,
-        total: teamMembers.total
+        total: teamMembers.total,
+        members: teamMembers.documents
       });
     } catch (error) {
       console.error(`Error fetching team ${teamId}:`, error);
     }
   }
 
-  return {teams, memberships: teamMembers.documents};
+  return teams;
 }
 
 // Add a member to a team
@@ -97,7 +93,7 @@ async function addTeamMember(teamId: string, userId: string, role: string) {
 // Get team members
 async function getTeamMembers(teamId: string) {
   const { databases } = await createAdminClient();
-  const members = await databases.listDocuments<TeamMember>(
+  const members = await databases.listDocuments(
     DATABASE_ID,
     TEAM_MEMBERS_COLLECTION_ID,
     [Query.equal("teamId", teamId)]

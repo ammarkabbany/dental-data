@@ -2,7 +2,6 @@
 import { account } from "@/lib/appwrite/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { usePathname, useRouter } from "next/navigation";
-import { clear } from "idb-keyval";
 
 
 export const useLogout = () => {
