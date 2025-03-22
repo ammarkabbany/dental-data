@@ -4,7 +4,8 @@ import "./globals.css";
 import QueryProvider from "@/providers/query-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { AuthProvider } from "@/providers/auth-provider";
-import { TeamProvider } from "@/providers/team-provider";
+import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Analytics } from "@vercel/analytics/next"
 import { Toaster } from "@/components/ui/sonner";
 
 const geist = Geist({
@@ -46,6 +47,8 @@ export default function RootLayout({
                 enableSystem={false}
               >
                 <Toaster richColors position="bottom-right" />
+                <Analytics />
+                <SpeedInsights />
                 {children}
               </ThemeProvider>
             </AuthProvider>
