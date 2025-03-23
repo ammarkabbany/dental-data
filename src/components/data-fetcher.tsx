@@ -11,7 +11,7 @@ export default function DataFetcher() {
   const { data: doctors, isLoading: isDoctorsLoading } = useGetDoctors();
   const { data: materials, isLoading: isMaterialsLoading } = useGetMaterials();
   const {data: templates, isLoading: isTemplatesLoading} = useGetTemplates();
-  const {} = useGetCases();
+  // const {} = useGetCases();
   
   const { setDoctors } = useDoctorsStore();
   const { setMaterials } = useMaterialsStore();

@@ -8,6 +8,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from "@vercel/analytics/next"
 import { Toaster } from "@/components/ui/sonner";
 import { ClerkProvider } from "@clerk/nextjs";
+import { TeamProvider } from "@/providers/team-provider";
 
 const geist = Geist({
   variable: "--font-geist",
@@ -41,6 +42,7 @@ export default function RootLayout({
         <ClerkProvider>
           <QueryProvider>
             <AuthProvider>
+              <TeamProvider>
               <ThemeProvider
                 attribute="class"
                 defaultTheme="dark"
@@ -52,6 +54,7 @@ export default function RootLayout({
                 <SpeedInsights />
                 {children}
               </ThemeProvider>
+              </TeamProvider>
             </AuthProvider>
           </QueryProvider>
         </ClerkProvider>

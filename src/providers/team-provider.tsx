@@ -1,100 +1,45 @@
-'use client';
+"use client"
+import React, { createContext, useContext } from 'react';
+import { Team } from '@/types'; // Adjust the import based on your structure
+import { useAuth } from './auth-provider';
+import { Models } from 'appwrite';
+import { useTeamData } from '@/features/team/hooks/use-team';
 
-import { createContext, useContext, useEffect, useState } from 'react';
-import { getTeamMembers, getUserTeams } from '@/lib/team-service';
-import { Team } from '@/types';
-import SimplePageLoader from '@/components/page-loader';
-import { useUser } from '@clerk/nextjs';
-
-type TeamContextType = {
-  teams: Team[];
+interface TeamContextType {
   currentTeam: Team | null;
-  setCurrentTeam: (team: Team) => void;
-  isLoading: boolean;
+  // setCurrentTeam: (team: Team | null) => void;
+  appwriteTeam: Models.Team<Models.Preferences> | null;
   userRole: string | null;
-};
+  isLoading: boolean;
+}
 
 const TeamContext = createContext<TeamContextType | undefined>(undefined);
 
-export function TeamProvider({ children }: { children: React.ReactNode }) {
-  const { user, isLoaded, isSignedIn } = useUser();
-  const [teams, setTeams] = useState<Team[]>([]);
-  const [currentTeam, setCurrentTeam] = useState<Team | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [userRole, setUserRole] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!user || !isSignedIn) {
-      setTeams([]);
-      setCurrentTeam(null);
-      setIsLoading(false);
-      return;
-    }
-
-    const loadTeams = async () => {
-      setIsLoading(true);
-      try {
-        const userTeams = await getUserTeams(user.id);
-        setTeams(userTeams);
-        
-        // Get stored team or use first available
-        const storedTeamId = localStorage.getItem('currentTeamId');
-        if (storedTeamId && userTeams.some(team => team.$id === storedTeamId)) {
-          const team = userTeams.find(t => t.$id === storedTeamId) || null;
-          setCurrentTeam(team);
-          if (team) {
-            await loadUserRole(team.$id);
-          }
-        } else if (userTeams.length > 0) {
-          setCurrentTeam(userTeams[0]);
-          await loadUserRole(userTeams[0].$id);
-          localStorage.setItem('currentTeamId', userTeams[0].$id);
-        }
-      } catch (error) {
-        console.error('Error loading teams:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (isLoaded) loadTeams();
-  }, [user, isSignedIn, isLoaded]);
-
-  const loadUserRole = async (teamId: string) => {
-    if (!user) return;
-    
-    try {
-      const members = await getTeamMembers(teamId);
-      const userMember = members.find(member => member.userId === user.id);
-      setUserRole(userMember?.role || null);
-    } catch (error) {
-      console.error('Error loading user role:', error);
-      setUserRole(null);
-    }
-  };
-
-  const handleSetCurrentTeam = (team: Team) => {
-    setCurrentTeam(team);
-    localStorage.setItem('currentTeamId', team.$id);
-    loadUserRole(team.$id);
-  };
+export const TeamProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { isLoading } = useAuth();
+  
+  const { data, isLoading: isTeamLoading } = useTeamData();
+  const values: TeamContextType = {
+    currentTeam: null,
+    appwriteTeam: null,
+    userRole: null,
+    isLoading: isLoading || isTeamLoading,
+  }
+  if (data) {
+    const {team: currentTeam, appwriteTeam, role: userRole} = data;
+    values.currentTeam = currentTeam;
+    values.appwriteTeam = appwriteTeam;
+    values.userRole = userRole;
+  }
 
   return (
-    <TeamContext.Provider
-      value={{
-        teams,
-        currentTeam,
-        setCurrentTeam: handleSetCurrentTeam,
-        isLoading,
-        userRole,
-      }}
-    >
-      <SimplePageLoader isLoading={isLoading} fullScreen />
+    <TeamContext.Provider value={values}>
       {children}
     </TeamContext.Provider>
   );
-}
+};
 
+// Custom hook to use the Team context
 export const useTeam = () => {
   const context = useContext(TeamContext);
   if (context === undefined) {

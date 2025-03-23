@@ -194,7 +194,7 @@ export default function TeethFormData({
             onValueChange={doHandleSelectToothMaterial}
             // onChange={doHandleSelectToothMaterial}
           >
-            <SelectTrigger className="w-[200px]">
+            <SelectTrigger className="">
               <SelectValue placeholder="Select a material" />
             </SelectTrigger>{" "}
             <SelectContent className="">

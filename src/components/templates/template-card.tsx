@@ -25,6 +25,15 @@ export const TemplateCard = ({ template }: { template: Template }) => {
   const {toggleFavorite, favoriteTemplates} = useTemplatesStore();
   const {userRole} = useTeam();
 
+  const applyTemplate = (template: Template) => {
+    let uriString = `/dashboard/cases/new?templateId=${template.$id}`;
+    if (template.material) uriString += `&material=${template.material}`
+    if (template.doctor) uriString += `&doctor=${template.doctor}`
+    if (template.shade) uriString += `&shade=${template.shade}`
+    if (template.note) uriString += `&note=${template.note}`
+    router.push(uriString);
+  }
+
   return (
     <Card
       key={template.$id}
@@ -67,10 +76,7 @@ export const TemplateCard = ({ template }: { template: Template }) => {
 
       <CardFooter className="flex justify-between">
         <Button
-          onClick={() =>
-            router.push(
-              `/dashboard/cases/new?templateId=${template.$id}&doctor=${template.doctor}&material=${template.material}&note=${template.note}&shade=${template.shade}`)
-          }
+          onClick={() => applyTemplate(template)}
           variant="secondary"
           size="sm"
           className="items-center text-xs"

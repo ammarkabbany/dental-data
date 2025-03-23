@@ -18,7 +18,7 @@ export default function RecentCases({ cases }: RecentCasesProps) {
       <div className="p-6 border-b">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <Clock className="h-5 w-5 text-blue-400" />
+            <Clock className="h-5 w-5 text-primary" />
             <h2 className="text-lg font-bold text-white">Recent Activity</h2>
           </div>
           <Button

@@ -39,7 +39,7 @@ export function UserNav() {
       </TooltipProvider>
 
       <DropdownMenuContent
-        className="w-64 rounded-xl bg-sidebar p-2 shadow-xl"
+        className="w-64 rounded-xl p-2 shadow-xl"
         align="end"
         forceMount
       >
@@ -55,27 +55,29 @@ export function UserNav() {
           </div>
         </div>
         <DropdownMenuSeparator className="my-1" />
-        <DropdownMenuItem className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm hover:bg-sidebar-accent">
+        <DropdownMenuItem className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm transition">
           <Users className="h-4 w-4" />
           Profile
         </DropdownMenuItem>
-        <DropdownMenuItem className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm hover:bg-sidebar-accent" asChild>
+        <DropdownMenuItem className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm transition" asChild>
           <Link href={'/dashboard/cases'}>
             <FileText className="h-4 w-4" />
             Cases
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm hover:bg-sidebar-accent">
+        <DropdownMenuItem className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm transition" asChild>
+          <Link href={'/account'}>
           <Settings className="h-4 w-4" />
-          Settings
+          Settings</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator className="my-1" />
-        <DropdownMenuItem disabled className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm hover:bg-sidebar-accent">
+        <DropdownMenuItem className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm transition" asChild>
+          <Link href={'/team'}>
           <FlaskConical className="h-4 w-4" />
-          Lab Settings
+          Lab Settings</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator className="my-1" />
-        <DropdownMenuItem onClick={logOut} className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm hover:bg-sidebar-accent">
+        <DropdownMenuItem onClick={logOut} className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm transition">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"

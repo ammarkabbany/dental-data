@@ -1,6 +1,5 @@
 "use server"
 
-import { avatars } from "@/lib/appwrite/client";
 import { createAdminClient } from "@/lib/appwrite/appwrite"
 import { AUTH_COOKIE, DATABASE_ID, TEAM_MEMBERS_COLLECTION_ID } from "@/lib/constants";
 import { cookies } from "next/headers";

@@ -2,30 +2,25 @@
 import Header from "@/components/layout/Header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getAppwriteTeam } from "@/features/team/queries";
+import { usePermission } from "@/hooks/use-permissions";
 import { useTeam } from "@/providers/team-provider";
-import { useUser } from "@clerk/nextjs";
-import { Models } from "appwrite";
 import { Users2 } from "lucide-react";
-import { useEffect, useState } from "react";
 
 export default function TeamPage() {
-  const { user } = useUser();
-  const {currentTeam} = useTeam();
-  const [teamPrefs, setTeamPrefs] = useState<Models.Preferences>({});
-  
-  useEffect(() => {
-    const fetchUserTeamPrefs = async () => {
-      if (!currentTeam) return;
-      const team = await getAppwriteTeam(currentTeam.$id);
-      if (!team) return;
-      setTeamPrefs(team.prefs);
-    }
-    fetchUserTeamPrefs();
-  }, [currentTeam])
+  const {appwriteTeam, userRole} = useTeam();
+  const canUpdate = usePermission(userRole).checkPermission('team', 'update');
+
+  // useEffect(() => {
+  //   const fetchUserTeamPrefs = async () => {
+  //     if (!currentTeam) return;
+  //     const team = await getAppwriteTeam(currentTeam.$id);
+  //     if (!team) return;
+  //     setTeamPrefs(team.prefs);
+  //   }
+  //   fetchUserTeamPrefs();
+  // }, [currentTeam])
 
   return (
     <main>
@@ -74,14 +69,14 @@ export default function TeamPage() {
                   </p>
                 </div>
                 <div className="space-y-1 flex gap-x-2">
-                  <Input variant={"default"} className="w-[250px] bg-zinc-900" name="team-name" defaultValue={currentTeam?.name}>
+                  <Input disabled={!canUpdate} variant={"default"} className="w-[250px] bg-zinc-900" name="team-name" defaultValue={appwriteTeam?.name}>
                     <Input.Group>
                       <Input.LeftIcon>
                         <Users2 />
                       </Input.LeftIcon>
                     </Input.Group>
                   </Input>
-                  <Button variant={"outline"}>Save</Button>
+                  {canUpdate && <Button variant={"outline"}>Save</Button>}
                 </div>
               </div>
               <div className="border-t border-dashed" />
@@ -93,7 +88,7 @@ export default function TeamPage() {
                   </p>
                 </div>
                 <div className="space-y-1 flex gap-x-2">
-                  <Select value={teamPrefs.currency}>
+                  <Select disabled={!canUpdate} value={appwriteTeam?.prefs.currency}>
                     <SelectTrigger className="w-[250px] bg-zinc-900">
                       <SelectValue placeholder="Select a currency" />
                     </SelectTrigger>
@@ -108,7 +103,7 @@ export default function TeamPage() {
                       </SelectGroup>
                     </SelectContent>
                   </Select>
-                  <Button variant={"outline"}>Save</Button>
+                  {canUpdate && <Button variant={"outline"}>Save</Button>}
                 </div>
               </div>
             </TabsContent>

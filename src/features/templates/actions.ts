@@ -87,11 +87,11 @@ export const GetTemplates = async (): Promise<Template[]> => {
 export const GetTemplateById = async (id: Template["$id"]): Promise<Template> => {
   const { databases } = await createAdminClient();
 
-  const material = await databases.getDocument<Template>(
+  const template = await databases.getDocument<Template>(
     DATABASE_ID,
     TEMPLATES_COLLECTION_ID,
     id
   );
 
-  return material;
+  return template;
 };

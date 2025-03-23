@@ -38,7 +38,7 @@ import { account } from '@/lib/appwrite/client';
 // }
 
 interface AuthContextType {
-  isAuthenticated?: boolean;
+  isAuthenticated: boolean;
   isLoading: boolean;
   logOut: () => void;
 }

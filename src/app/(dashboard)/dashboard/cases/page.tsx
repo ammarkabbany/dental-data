@@ -2,6 +2,7 @@
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { CasesDataTable } from "@/components/cases/data-table";
 import { Button } from "@/components/ui/button";
+import LoadingSpinner from "@/components/ui/loading-spinner";
 import { useGetCases } from "@/features/cases/hooks/use-get-cases";
 import { usePermission } from "@/hooks/use-permissions";
 import { useTeam } from "@/providers/team-provider";
@@ -14,7 +15,7 @@ export default function CasesPage() {
 
   const canCreate = usePermission(userRole).checkPermission('cases', 'create');
 
-  const teamId = currentTeam?.$id;
+  // const teamId = currentTeam?.$id;
 
   // if (isLoading) return (
   //   <ContentLayout title="Cases">
@@ -39,13 +40,13 @@ export default function CasesPage() {
   //   </ContentLayout>
   // );
 
-  // if (isTeamLoading || isCasesLoading) return (
-  //   <ContentLayout title="Cases">
-  //     <div className="h-full min-h-[80vh] flex items-center justify-center">
-  //       <LoadingSpinner />
-  //     </div>
-  //   </ContentLayout>
-  // );
+  if (isTeamLoading || isCasesLoading) return (
+    <ContentLayout title="Cases">
+      <div className="h-full min-h-[80vh] flex items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    </ContentLayout>
+  );
 
   return (
     <>

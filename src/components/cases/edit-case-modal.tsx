@@ -28,18 +28,18 @@ import { usePermission } from "@/hooks/use-permissions";
 import { useDoctorsStore } from "@/store/doctors-store";
 import { useMaterialsStore } from "@/store/material-store";
 
-export const EditCaseModal = ({selectedCase}: {selectedCase: Case}) => {
+export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
   const { currentTeam, userRole } = useTeam();
-  const canViewDue = usePermission(userRole).canViewDue()
+  const canViewDue = usePermission(userRole).canViewDue();
   const [isDialogOpen, setDialogOpen] = useState(false);
-  
+
   const onCancel = () => {
     setDialogOpen(false);
     form.reset();
-  }
+  };
 
-  const {doctors} = useDoctorsStore();
-  const {materials} = useMaterialsStore();
+  const { doctors } = useDoctorsStore();
+  const { materials } = useMaterialsStore();
   const getMatrialById = (id: string) => {
     return materials?.find((material) => material.$id === id);
   };
@@ -47,11 +47,14 @@ export const EditCaseModal = ({selectedCase}: {selectedCase: Case}) => {
     return doctors?.find((doctor) => doctor.$id === id);
   };
 
-  const caseData: ToothCollection = JSON.parse(String(selectedCase?.teethData))
+  const caseData: ToothCollection = JSON.parse(String(selectedCase?.teethData));
 
-  const [teethData, setTeethData] = useState<Tooth[]>(caseData?.upper?.left?.concat(caseData?.upper?.right || [])?.concat(
-    caseData?.lower?.left || []
-  )?.concat(caseData?.lower?.right || []));
+  const [teethData, setTeethData] = useState<Tooth[]>(
+    caseData?.upper?.left
+      ?.concat(caseData?.upper?.right || [])
+      ?.concat(caseData?.lower?.left || [])
+      ?.concat(caseData?.lower?.right || [])
+  );
   const labels = [
     ...(caseData?.upper?.left?.map((t) => t.label) || []),
     ...(caseData?.upper?.right?.map((t) => t.label) || []),
@@ -331,7 +334,9 @@ export const EditCaseModal = ({selectedCase}: {selectedCase: Case}) => {
     resolver: zodResolver(createCaseSchema),
     defaultValues: {
       patient: selectedCase?.patient,
-      date: selectedCase?.date ? new Date(selectedCase.date).toLocaleDateString("en-CA") : undefined,
+      date: selectedCase?.date
+        ? new Date(selectedCase.date).toLocaleDateString("en-CA")
+        : undefined,
       doctorId: selectedCase?.doctorId,
       materialId: selectedCase?.materialId,
       teethData: caseData,
@@ -343,11 +348,19 @@ export const EditCaseModal = ({selectedCase}: {selectedCase: Case}) => {
   });
 
   const onSubmit = (values: z.infer<typeof createCaseSchema>) => {
-    mutate({ data: values, oldDue: selectedCase.due, caseId: selectedCase.$id, teamId: currentTeam?.$id }, {
-      onSuccess: () => {
-        onCancel();
+    mutate(
+      {
+        data: values,
+        oldDue: selectedCase.due,
+        caseId: selectedCase.$id,
+        teamId: currentTeam?.$id,
+      },
+      {
+        onSuccess: () => {
+          onCancel();
+        },
       }
-    });
+    );
   };
 
   return (
@@ -364,7 +377,11 @@ export const EditCaseModal = ({selectedCase}: {selectedCase: Case}) => {
       className="md:min-w-3xl lg:min-w-4xl w-full overflow-x-hidden"
       trigger={
         <DialogTrigger asChild>
-          <Button onMouseDown={(e) => e.stopPropagation()} variant="ghost" className="w-full justify-start">
+          <Button
+            onMouseDown={(e) => e.stopPropagation()}
+            variant="ghost"
+            className="w-full justify-start"
+          >
             Edit
           </Button>
         </DialogTrigger>
@@ -375,10 +392,10 @@ export const EditCaseModal = ({selectedCase}: {selectedCase: Case}) => {
           <CardTitle className="text-xl font-bold">
             Update case details
           </CardTitle>
+          <div className="mt-2">
+            <Separator />
+          </div>
         </CardHeader>
-        <div className="px-7">
-          <Separator />
-        </div>
         <CardContent className="w-full">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -509,19 +526,24 @@ export const EditCaseModal = ({selectedCase}: {selectedCase: Case}) => {
                       )}
                     />
                   </div>
-                </div>
-                <div className="mt-4">
-                  <TeethFormData
-                    data={[]}
-                    checkedTeeth={checkedTeeth}
-                    materials={materials || []}
-                    handleChangeToothMaterial={handleChangeToothMaterial}
-                    handleCheckTeeth={handleCheckTeeth}
+                  <FormField
+                    control={form.control}
+                    name="note"
+                    render={({ field }) => (
+                      <FormItem className="">
+                        <FormLabel>Note</FormLabel>
+                        <FormControl>
+                          <Input
+                            className="placeholder:text-muted-foreground/50"
+                            {...field}
+                            placeholder="note"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </div>
-              </div>
-              {/* <Separator className="mt-2" /> */}
-              <div className="flex items-center justify-between gap-4 mt-4">
+                  <div className="flex items-center justify-between gap-4 mt-4">
                 <Button
                   variant="secondary"
                   type="button"
@@ -541,6 +563,19 @@ export const EditCaseModal = ({selectedCase}: {selectedCase: Case}) => {
                   Save Changes
                 </Button>
               </div>
+                </div>
+                <div className="mt-4">
+                  <TeethFormData
+                    data={[]}
+                    checkedTeeth={checkedTeeth}
+                    materials={materials || []}
+                    handleChangeToothMaterial={handleChangeToothMaterial}
+                    handleCheckTeeth={handleCheckTeeth}
+                  />
+                </div>
+              </div>
+              {/* <Separator className="mt-2" /> */}
+              
             </form>
             {error && (
               <div className="text-red-500 text-xs mt-4">{error.message}</div>

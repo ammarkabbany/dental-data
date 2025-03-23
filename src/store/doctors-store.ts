@@ -3,7 +3,7 @@ import { DATABASE_ID, DOCTORS_COLLECTION_ID } from "@/lib/constants";
 import { Doctor } from "@/types";
 import { create } from "zustand";
 
-interface IDoctorsStore {
+export interface IDoctorsStore {
   doctors: Doctor[];
   totalDoctors: number;
   setDoctors: (doctors: Doctor[]) => void;

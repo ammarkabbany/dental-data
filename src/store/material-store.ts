@@ -1,7 +1,7 @@
 import { Material } from "@/types";
 import { create } from "zustand";
 
-interface IMaterialsStore {
+export interface IMaterialsStore {
   materials: Material[];
   setMaterials: (materials: Material[]) => void;
   getMaterialById(id: Material['$id']): Material | undefined;

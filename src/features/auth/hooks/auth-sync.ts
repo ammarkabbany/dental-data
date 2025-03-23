@@ -22,7 +22,6 @@ export function useAuthSyncEffect() {
         const appwriteSession = await account.getSession('current');
         setUserId(appwriteSession.userId)
         // return if session was available
-        console.log(appwriteSession)
         return;
       } catch (error) {
         console.log('session was not available')
@@ -38,7 +37,6 @@ export function useAuthSyncEffect() {
       // create a new appwrite session if not available
       const session = await account.createSession(appwrite.userId, appwrite.secret)
       setUserId(session.userId);
-      console.log(session)
     }
     void syncUser();
 
@@ -49,7 +47,7 @@ export function useAuthSyncEffect() {
 
   return {
     isLoading: !isLoaded || (isSignedIn && userId === null),
-    isAuthenticated: isSignedIn && userId !== null
+    isAuthenticated: (isSignedIn && userId !== null) || false
   }
   
 } 

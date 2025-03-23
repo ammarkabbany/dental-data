@@ -9,11 +9,11 @@ import { CubeIcon } from "@radix-ui/react-icons";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { EditCaseModal } from "./edit-case-modal";
 import { useModalStore } from "@/store/modal-store";
-import { useDoctorsStore } from "@/store/doctors-store";
-import { useMaterialsStore } from "@/store/material-store";
+import { IDoctorsStore, useDoctorsStore } from "@/store/doctors-store";
+import { IMaterialsStore, useMaterialsStore } from "@/store/material-store";
 import { Button } from "../ui/button";
 
-export const getColumns = (): ColumnDef<Case>[] => [
+export const getColumns = ({doctorsStore, materialsStore}: {doctorsStore: IDoctorsStore, materialsStore: IMaterialsStore}): ColumnDef<Case>[] => [
   {
     id: "select",
     size: 30,
@@ -95,7 +95,7 @@ export const getColumns = (): ColumnDef<Case>[] => [
     //   );
     // },
     accessorFn: (row) => {
-      const doctor = useDoctorsStore.getState().getDoctorById(row.doctorId);
+      const doctor = doctorsStore.getDoctorById(row.doctorId);
       const doctorName = doctor?.name || "Unknown"
       return doctorName.length > 20 ? doctorName.substring(0, 20) + "..." : doctorName;
     },
@@ -181,7 +181,7 @@ export const getColumns = (): ColumnDef<Case>[] => [
   {
     accessorKey: "material",
     accessorFn: (row) => {
-      const material = useMaterialsStore.getState().getMaterialById(row.materialId);
+      const material = materialsStore.getMaterialById(row.materialId);
       const materialName = material?.name || "Unknown"
       return materialName.length > 20 ? materialName.substring(0, 20) + "..." : materialName;
     },
