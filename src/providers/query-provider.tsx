@@ -1,9 +1,9 @@
 "use client";
 
-import { QueryClient } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
-import { createIDBPersister } from "@/lib/indexedDBPersister";
+// import { createIDBPersister } from "@/lib/indexedDBPersister";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -16,7 +16,7 @@ const queryClient = new QueryClient({
 
 export default function QueryProvider({ children }: { children: React.ReactNode }) {
   
-  const persister = createIDBPersister('query-idb');
+  // const persister = createIDBPersister('query-idb');
   
 
   // Set up persistence on the client side only
@@ -36,11 +36,10 @@ export default function QueryProvider({ children }: { children: React.ReactNode 
   // }, [queryClient]);
 
   return (
-    <PersistQueryClientProvider client={queryClient} persistOptions={{persister, maxAge: 1000 * 60 * 60 * 24, buster: "v1"}}>
-    {/* <QueryClientProvider client={queryClient} > */}
+    // PersistQueryClientProvider client={queryClient} persistOptions={{persister, maxAge: 1000 * 60 * 60 * 24, buster: "v1"}}>
+    <QueryClientProvider client={queryClient} >
       {children}
       <ReactQueryDevtools initialIsOpen={false} />
-    {/* </QueryClientProvider> */}
-    </PersistQueryClientProvider>
+    </QueryClientProvider>
   );
 }
