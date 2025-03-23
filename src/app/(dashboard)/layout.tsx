@@ -30,42 +30,44 @@ export default function DashboardLayout({
     const events = payload.events; // e.g., 'databases.*.collections.*.documents.*.create'
     const caseData: Case = payload.payload; // The updated/created/deleted case
 
-    if (events.includes('databases.*.collections.*.documents.*.create')) {
+    if (events.includes("databases.*.collections.*.documents.*.create")) {
       // Add the new case to the cached data
-      queryClient.invalidateQueries({ queryKey: ['dashboard'] })
+      queryClient.invalidateQueries({ queryKey: ["dashboard"] });
       // queryClient.setQueryData(['cases'], (oldData: any[]) => [caseData, ...oldData].sort((a,b) => b.date.localeCompare(a.date)));
-      queryClient.invalidateQueries({ queryKey: ['cases'] });
+      queryClient.invalidateQueries({ queryKey: ["cases"] });
       // if (caseData.userId !== user?.$id) {
       //   toast.success(`New case added by team`);
       // }
-    } else if (events.includes('databases.*.collections.*.documents.*.update')) {
+    } else if (
+      events.includes("databases.*.collections.*.documents.*.update")
+    ) {
       // Update the existing case in the cached data
-      queryClient.setQueryData(['cases'], (oldData: any[]) =>
+      queryClient.setQueryData(["cases"], (oldData: any[]) =>
         oldData.map((c) => (c.$id === caseData.$id ? caseData : c))
       );
-    } else if (events.includes('databases.*.collections.*.documents.*.delete')) {
+    } else if (
+      events.includes("databases.*.collections.*.documents.*.delete")
+    ) {
       // Remove the deleted case from the cached data
-      queryClient.setQueryData(['cases'], (oldData: any[]) =>
+      queryClient.setQueryData(["cases"], (oldData: any[]) =>
         oldData.filter((c) => c.$id !== caseData.$id)
       );
       // if (caseData.userId !== user?.$id) {
       //   toast.success(`case deleted by team`);
       // }
-      queryClient.invalidateQueries({ queryKey: ['dashboard'] })
+      queryClient.invalidateQueries({ queryKey: ["dashboard"] });
     }
   });
 
   return (
-    <TeamProvider>
-      <AdminPanelLayout>
-        {/* Modals */}
-        {/*  */}
-        <DoctorCreateModal />
-        <MaterialCreateModal />
-        {/*  */}
-        {/* Content */}
-        {children}
-      </AdminPanelLayout>
-    </TeamProvider>
+    <AdminPanelLayout>
+      {/* Modals */}
+      {/*  */}
+      <DoctorCreateModal />
+      <MaterialCreateModal />
+      {/*  */}
+      {/* Content */}
+      {children}
+    </AdminPanelLayout>
   );
 }
