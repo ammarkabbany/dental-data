@@ -7,8 +7,8 @@ import { UpdateCase } from "../actions";
 export const useUpdateCase = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({data, caseId, teamId}: {data: Partial<Case>, caseId: Case['$id'], teamId: Case['teamId'] | undefined}) => {
-      const Case = await UpdateCase(caseId, teamId, data)
+    mutationFn: async ({data, oldDue, caseId, teamId}: {data: Partial<Case>, oldDue: number, caseId: Case['$id'], teamId: Case['teamId'] | undefined}) => {
+      const Case = await UpdateCase(caseId, teamId, data, oldDue)
       return Case;
     },
     onSuccess: (data) => {

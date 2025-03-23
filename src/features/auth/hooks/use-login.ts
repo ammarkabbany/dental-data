@@ -21,12 +21,12 @@ export const useLogin = () => {
       //   throw new Error(result.message);
       // }
       const session = await account.createEmailPasswordSession(data.email, data.password);
-      const jwt = await account.createJWT();
-      Cookies.set(AUTH_COOKIE, jwt.jwt, {expires: 30})
+      // const jwt = await account.createJWT();
+      // Cookies.set(AUTH_COOKIE, jwt.jwt, {expires: 30})
       return session;
     },
     onSuccess: () => {
-      window.location.replace(redirectUrl ?? '/dashboard');
+      window.location.replace(redirectUrl ?? '/');
     }
   })
 

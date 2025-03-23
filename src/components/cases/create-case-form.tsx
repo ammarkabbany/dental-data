@@ -17,26 +17,31 @@ import { Button } from "../ui/button";
 import { useTeam } from "@/providers/team-provider";
 import { useCreateCase } from "@/features/cases/hooks/use-create-case";
 import { createCaseSchema } from "@/features/cases/schemas";
-import { useAuth } from "@/providers/auth-provider";
 import { DatePicker } from "../date-picker";
 import { CustomComboBox } from "../custom-combobox";
 import { useGetDoctors } from "@/features/doctors/hooks/use-get-doctors";
 import { useGetMaterials } from "@/features/materials/hooks/use-get-materials";
 import { useEffect, useState } from "react";
 import TeethFormData from "../TeethFormData";
-import { Material, Tooth } from "@/types";
+import { Material, Template, Tooth } from "@/types";
 import { useRouter } from "next/navigation";
 import TemplatesSidebar from "./templates-sidebar";
 import { usePermission } from "@/hooks/use-permissions";
+import { useUser } from "@clerk/nextjs";
+import { useTemplateParams } from "@/features/templates/hooks/use-template-params";
+import { useTemplatesStore } from "@/store/templates-store";
 
 export const CreateCaseForm = () => {
   const { currentTeam, userRole } = useTeam();
   const canViewDue = usePermission(userRole).canViewDue()
-  const { user } = useAuth();
+  const { user } = useUser();
   const router = useRouter();
+
+  const templateParams = useTemplateParams();
 
   const { data: doctors } = useGetDoctors();
   const { data: materials } = useGetMaterials();
+  const {addRecentTemplate, applyTemplate: storeCurrentTemplate} = useTemplatesStore();
   const getMatrialById = (id: string) => {
     return materials?.find((material) => material.$id === id);
   };
@@ -323,8 +328,8 @@ export const CreateCaseForm = () => {
     defaultValues: {
       patient: "",
       date: new Date().toLocaleDateString("en-CA"),
-      doctorId: "",
-      materialId: "",
+      doctorId: templateParams.doctorId || "",
+      materialId: templateParams.materialId || "",
       teethData: {
         upper: {
           left: [],
@@ -335,25 +340,36 @@ export const CreateCaseForm = () => {
           right: [],
         },
       },
-      shade: "",
+      shade: templateParams.shade || "",
       due: 0,
       invoice: false,
-      note: "",
+      note: templateParams.note || "",
     },
   });
 
   const onSubmit = (values: z.infer<typeof createCaseSchema>) => {
-    mutate({ data: values, teamId: currentTeam!.$id, userId: user!.$id });
+    mutate({ data: values, teamId: currentTeam!.$id, userId: user!.id }, {
+      onSuccess: () => {
+        if (templateParams.templateId) {
+          addRecentTemplate(templateParams.templateId)
+        }
+      }
+    });
   };
 
-  useEffect(() => {
-    // debug
-    console.log(form.getValues());
-  }, [form.watch()]);
+  const applyTemplate = (template: Template | undefined) => {
+    if (!template) return;
+    form.reset();
+    if (template.doctor) form.setValue('doctorId', template.doctor);
+    if (template.material) form.setValue('materialId', template.material);
+    if (template.shade) form.setValue('shade', template.shade);
+    if (template.note) form.setValue('note', template.note);
+    storeCurrentTemplate(template);
+  }
 
   return (
     <div className="flex flex-col sm:flex-row justify-evenly gap-4">
-    <TemplatesSidebar applyTemplate={() => {}} />
+    <TemplatesSidebar applyTemplate={applyTemplate} />
     <div className="max-w-4xl container rounded-none">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>

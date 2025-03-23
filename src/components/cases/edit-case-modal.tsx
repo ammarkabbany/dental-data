@@ -343,7 +343,7 @@ export const EditCaseModal = ({selectedCase}: {selectedCase: Case}) => {
   });
 
   const onSubmit = (values: z.infer<typeof createCaseSchema>) => {
-    mutate({ data: values, caseId: selectedCase.$id, teamId: currentTeam?.$id }, {
+    mutate({ data: values, oldDue: selectedCase.due, caseId: selectedCase.$id, teamId: currentTeam?.$id }, {
       onSuccess: () => {
         onCancel();
       }

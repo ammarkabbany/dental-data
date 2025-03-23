@@ -46,7 +46,7 @@ const CustomCheckbox = ({
       >
         <g transform="translate(0.000000,125.000000) scale(0.120000,-0.100000)">
           <path
-            className={`${checked ? "fill-ring" : "dark:fill-foreground"}`}
+            className={`${checked ? "fill-primary" : "dark:fill-foreground"}`}
             d="M496 1235 c-21 -7 -53 -27 -70 -44 -30 -29 -35 -30 -65 -20 -17 6
             -60 9 -95 7 -78 -5 -134 -39 -174 -107 -22 -38 -27 -60 -30 -139 -3 -55 1
             -119 8 -151 14 -62 61 -174 78 -185 7 -4 11 -45 11 -104 -1 -115 13 -201 47

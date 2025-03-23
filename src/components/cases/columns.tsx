@@ -11,13 +11,12 @@ import { EditCaseModal } from "./edit-case-modal";
 import { useModalStore } from "@/store/modal-store";
 import { useDoctorsStore } from "@/store/doctors-store";
 import { useMaterialsStore } from "@/store/material-store";
+import { Button } from "../ui/button";
 
 export const getColumns = (): ColumnDef<Case>[] => [
   {
     id: "select",
-    size: 40, // Reduce the width to 40px
-    minSize: 40, // Prevent it from expanding
-    maxSize: 40, // Ensure it doesn't grow beyond this
+    size: 30,
     header: ({ table }) => (
       <Checkbox
         checked={
@@ -26,12 +25,12 @@ export const getColumns = (): ColumnDef<Case>[] => [
         }
         onCheckedChange={(value: boolean) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
-        className="size-[18px] !p-0 !m-0 block transition-all duration-200 border-accent-foreground/25"
+        // className="size-[18px] !p-0 !m-0 block transition-all duration-200 border-accent-foreground/25"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
-        className="size-[18px] !p-0 !m-0 block transition-all duration-200 border-accent-foreground/25"
+        // className="size-[18px] !p-0 !m-0 block transition-all duration-200 border-accent-foreground/25"
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
@@ -71,6 +70,7 @@ export const getColumns = (): ColumnDef<Case>[] => [
 
       return <div className="flex items-center gap-2"><Calendar className="size-4" /> {date.toLocaleDateString("en-GB")}</div>;
     },
+    size: 120,
   },
   {
     accessorKey: "doctor",
@@ -111,6 +111,7 @@ export const getColumns = (): ColumnDef<Case>[] => [
         {isRecent && <Badge className="ml-1" variant="info">New</Badge>}
       </div>;
     },
+    size: 180,
     
     // filterFn: (row, _, filterValue) => {
     //   const {data: doctor, isLoading} = useGetDoctorById(row.original.doctorId)
@@ -129,6 +130,7 @@ export const getColumns = (): ColumnDef<Case>[] => [
       const patientName = patient.length > 20 ? patient.substring(0, 20) + "..." : patient
       return <div className="capitalize flex items-center gap-2"><BookUser className="size-4.5" />{patientName}</div>;
     },
+    size: 200,
   },
   {
     accessorKey: "teethData",
@@ -174,6 +176,7 @@ export const getColumns = (): ColumnDef<Case>[] => [
         </div>
       );
     },
+    size: 200,
   },
   {
     accessorKey: "material",
@@ -187,11 +190,14 @@ export const getColumns = (): ColumnDef<Case>[] => [
       const material: string = row.getValue('material');
       return <div className="capitalize flex items-center gap-2"><CubeIcon className="size-4" />{material}</div>;
     },
+    size: 130,
+    maxSize: 150
   },
   {
     accessorKey: "shade",
     header: "Shade",
     cell: ({ row }) => <div className="flex items-center gap-2"><Palette className="size-4" /><Badge variant={"secondary"}>{row.getValue("shade")}</Badge></div>,
+    size: 90,
   },
   // {
   //   accessorKey: "due",
@@ -214,6 +220,7 @@ export const getColumns = (): ColumnDef<Case>[] => [
     cell: ({ row }) => (
       <div>{row.getValue("note") ? row.getValue("note") : "N/A"}</div>
     ),
+    size: 150
   },
   {
     accessorKey: "actions",
@@ -222,8 +229,17 @@ export const getColumns = (): ColumnDef<Case>[] => [
       const _case: Case = row.original;
       return(
           <DropdownMenu>
-            <DropdownMenuTrigger className="px-2 border-none ring-0">
-              <MoreHorizontal className="inline-block text-muted-foreground" />
+            <DropdownMenuTrigger asChild>
+            <div className="flex justify-end">
+            <Button
+              size="icon"
+              variant="ghost"
+              className="shadow-none text-muted-foreground/60"
+              aria-label="Edit item"
+            >
+              <MoreHorizontal className="size-5" size={20} aria-hidden="true" />
+            </Button>
+          </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuLabel>
@@ -238,6 +254,7 @@ export const getColumns = (): ColumnDef<Case>[] => [
           </DropdownMenu>
         )
     },
+    size: 70,
     enableSorting: false,
     enableHiding: false,
   },

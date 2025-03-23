@@ -9,12 +9,7 @@ export const useDeleteCase = () => {
   const {currentTeam} = useTeam();
   return useMutation({
     mutationFn: async ({casesIds}: {casesIds: Case['$id'][]}) => {
-      const response = await DeleteCase(casesIds)
-      if (response.status === "completed") {
-        console.log(response.responseBody);
-      } else {
-        toast.error('Failed to delete case');
-      }
+      await DeleteCase(casesIds)
     },
     onSuccess: () => {
       toast.success('Case deleted successfully')

@@ -2,58 +2,92 @@
 
 import * as React from "react";
 import { Button } from "./ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 import { useTeam } from "@/providers/team-provider";
 import { UserAvatar } from "./user-avatar";
 import { avatars } from "@/lib/appwrite/client";
+import { ChevronsUpDown, ExpandIcon, PlusIcon, Users2 } from "lucide-react";
+import Image from "next/image";
 
 export function TeamSwitcher() {
-  const {currentTeam: team} = useTeam();
+  const { currentTeam: team } = useTeam();
   return (
-    <DropdownMenu open={false}>
+    <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
           size="lg"
-          variant={"secondary"}
-          className="w-full transition-all justify-start text-start pl-3"
-        // onClick={() => role === "owner" && router.push('/dashboard/team')}
+          className="bg-sidebar h-12 hover:bg-sidebar-accent w-full text-sidebar-accent-foreground focus-visible:ring-0 gap-3 [&>svg]:size-auto"
         >
-          <div className="flex size-7 items-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-            {/* {team?.logo && <team.logo className="size-5" />} */}
-            <UserAvatar className="size-full ring-0" image={avatars.getInitials(team?.name)} name={team?.name ?? ""} />
+          <div className="flex aspect-square size-8 items-center justify-center rounded-md overflow-hidden bg-sidebar-primary text-sidebar-primary-foreground">
+            {team && (
+              // <Image
+              //   src={activeTeam.logo}
+              //   width={36}
+              //   height={36}
+              //   alt={activeTeam.name}
+              // />
+              <Users2 className="size-5" />
+            )}
           </div>
-          <div className="grid flex-1 text-sm leading-tight">
-            <span className="truncate font-semibold">{team?.name}</span>
-            <span className={`truncate capitalize text-xs text-muted-foreground`}>
-              {team?.planId}
+          <div className="grid flex-1 text-left text-base leading-tight">
+            <span className="truncate font-medium">
+              {team?.name ?? "Select a Team"}
             </span>
           </div>
-          {/* <ChevronsUpDown className="ml-auto" /> */}
+          <ChevronsUpDown
+            className="ms-auto text-muted-foreground/60"
+            size={20}
+            aria-hidden="true"
+          />
         </Button>
       </DropdownMenuTrigger>
-      {/* <DropdownMenuContent
-        className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+      <DropdownMenuContent
+        className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-md"
         align="start"
-        side={"top"}
+        side="bottom"
         sideOffset={4}
       >
-        <DropdownMenuLabel className="text-xs text-muted-foreground">
+        <DropdownMenuLabel className="uppercase text-muted-foreground/60 text-xs">
           Teams
         </DropdownMenuLabel>
-        
+        {/* {teams.map((team, index) => (
+              <DropdownMenuItem
+                key={team.name}
+                // onClick={() => setActiveTeam(team)}
+                className="gap-2 p-2"
+              >
+                <div className="flex size-6 items-center justify-center rounded-md overflow-hidden">
+                  <Image
+                    src={"?placeholder"}
+                    width={36}
+                    height={36}
+                    alt={team.name}
+                  />
+                </div>
+                {team.name}
+                <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+              </DropdownMenuItem>
+            ))} */}
         <DropdownMenuSeparator />
         <DropdownMenuItem className="gap-2 p-2">
-          <div className="flex size-6 items-center justify-center rounded-md border bg-background">
-            <Plus className="size-4" />
-          </div>
-          <div className="font-medium text-muted-foreground">Add team</div>
+          <PlusIcon className="opacity-60" size={16} aria-hidden="true" />
+          <div className="font-medium">Add team</div>
         </DropdownMenuItem>
-      </DropdownMenuContent> */}
+      </DropdownMenuContent>
     </DropdownMenu>
   );
 }
 
-{/* {teams.map((team, index) => (
+{
+  /* {teams.map((team, index) => (
               <DropdownMenuItem
                 key={team.name}
                 onClick={() => setActiveTeam(team)}
@@ -64,4 +98,5 @@ export function TeamSwitcher() {
                 </div>
                 {team.name}
               </DropdownMenuItem>
-            ))} */}
+            ))} */
+}

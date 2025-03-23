@@ -1,40 +1,70 @@
 'use client';
 
-import { createContext, useContext } from 'react';
-import { User } from '@/types';
-import { useLogout } from '@/features/auth/hooks/use-logout';
-import { useCurrent } from '@/features/auth/hooks/use-current';
+import { createContext, ReactNode, useContext } from 'react';
+import { useAuth as useClerkAuth } from '@clerk/nextjs';
 import * as React from 'react';
+import { useAuthSyncEffect } from '@/features/auth/hooks/auth-sync';
+import { account } from '@/lib/appwrite/client';
 
-type AuthContextType = {
-  user: User | null | undefined;
-  isAuthenticated: boolean;
+// type AuthContextType = {
+//   user: User | null | undefined;
+//   isAuthenticated: boolean;
+//   isLoading: boolean;
+//   logOut: () => void;
+// };
+
+// const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+// export function AuthProvider({ children }: { children: React.ReactNode }) {
+//   const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false)
+//   const {data: user, isLoading} = useCurrent();
+
+//   const {mutate, isSuccess} = useLogout();
+
+//   const logOut = () => {
+//     mutate();
+//     setIsAuthenticated(false);
+//   }
+
+//   React.useEffect(() => {
+//     setIsAuthenticated(!!user);
+//   }, [isLoading, user, setIsAuthenticated, isSuccess])
+
+//   return (
+//     <AuthContext.Provider value={{ user, isAuthenticated, isLoading, logOut }}>
+//       {children}
+//     </AuthContext.Provider>
+//   );
+// }
+
+interface AuthContextType {
+  isAuthenticated?: boolean;
   isLoading: boolean;
   logOut: () => void;
-};
+}
 
+// Create the Auth Context with an initial undefined value
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false)
-  const {data: user, isLoading} = useCurrent();
+// Props for the AuthProvider component
+interface AuthProviderProps {
+  children: ReactNode;
+}
 
-  const {mutate, isSuccess} = useLogout();
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const {isAuthenticated, isLoading} = useAuthSyncEffect();
+  const {signOut} = useClerkAuth();
 
-  const logOut = () => {
-    mutate();
-    setIsAuthenticated(false);
-  }
-
-  React.useEffect(() => {
-    setIsAuthenticated(!!user);
-  }, [isLoading, user, setIsAuthenticated, isSuccess])
+  const handleLogout = async () => {
+    await account.deleteSession("current");
+    await signOut();
+  };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, isLoading, logOut }}>
+    <AuthContext.Provider value={{isAuthenticated, isLoading, logOut: handleLogout}}>
       {children}
     </AuthContext.Provider>
-  );
+  )
 }
 
 export const useAuth = () => {

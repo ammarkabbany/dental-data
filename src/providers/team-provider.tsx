@@ -1,10 +1,10 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
-import { useAuth } from './auth-provider';
 import { getTeamMembers, getUserTeams } from '@/lib/team-service';
 import { Team } from '@/types';
 import SimplePageLoader from '@/components/page-loader';
+import { useUser } from '@clerk/nextjs';
 
 type TeamContextType = {
   teams: Team[];
@@ -17,14 +17,14 @@ type TeamContextType = {
 const TeamContext = createContext<TeamContextType | undefined>(undefined);
 
 export function TeamProvider({ children }: { children: React.ReactNode }) {
-  const { user } = useAuth();
+  const { user, isLoaded, isSignedIn } = useUser();
   const [teams, setTeams] = useState<Team[]>([]);
   const [currentTeam, setCurrentTeam] = useState<Team | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [userRole, setUserRole] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!user) {
+    if (!user || !isSignedIn) {
       setTeams([]);
       setCurrentTeam(null);
       setIsLoading(false);
@@ -34,7 +34,7 @@ export function TeamProvider({ children }: { children: React.ReactNode }) {
     const loadTeams = async () => {
       setIsLoading(true);
       try {
-        const userTeams = await getUserTeams(user.$id);
+        const userTeams = await getUserTeams(user.id);
         setTeams(userTeams);
         
         // Get stored team or use first available
@@ -57,15 +57,15 @@ export function TeamProvider({ children }: { children: React.ReactNode }) {
       }
     };
 
-    loadTeams();
-  }, [user]);
+    if (isLoaded) loadTeams();
+  }, [user, isSignedIn, isLoaded]);
 
   const loadUserRole = async (teamId: string) => {
     if (!user) return;
     
     try {
       const members = await getTeamMembers(teamId);
-      const userMember = members.find(member => member.userId === user.$id);
+      const userMember = members.find(member => member.userId === user.id);
       setUserRole(userMember?.role || null);
     } catch (error) {
       console.error('Error loading user role:', error);

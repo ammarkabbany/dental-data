@@ -15,57 +15,20 @@ import { Badge } from "@/components/ui/badge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import Logo from '@/components/logo';
 import { useAuth } from '@/providers/auth-provider';
+import { SignInButton, SignUpButton, useUser } from '@clerk/nextjs';
+import Header from '@/components/layout/Header';
 
 export default function Homepage() {
-  const { user, isAuthenticated, logOut } = useAuth();
+  const { isAuthenticated, logOut } = useAuth();
+  const {user} = useUser();
   return (
     <div className="flex flex-col min-h-screen w-full mx-auto">
-      <header className="border-b sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center justify-between mx-auto px-4 md:px-6">
-          <div className="flex items-center gap-x-8">
-            <div className='flex items-center gap-2'>
-              <Logo src='/old-fav.ico' className='size-16' />
-              <span className="text-xl font-bold">DentaFlow</span>
-            </div>
-            <nav className="hidden md:flex items-center gap-6">
-              <Link href="#features" className="text-sm font-medium hover:text-primary transition-colors">Features</Link>
-              <Link href="#pricing" className="text-sm font-medium hover:text-primary transition-colors">Pricing</Link>
-            </nav>
-          </div>
-
-
-          <div className="flex items-center gap-4">
-            {isAuthenticated ? (
-              <>
-                <Button onClick={logOut} variant={"secondary"} size={"sm"}>
-                  Sign out
-                </Button>
-                <div className="relative">
-
-                  {/* sign out button */}
-                  <button className="h-9 w-9 rounded-full bg-primary/20 text-primary flex items-center justify-center">
-                    {/* Replace with your user's avatar image if available */}
-                    <Image src={user?.avatar || "?placeholder"} fill className="h-9 w-9 rounded-full object-cover" alt="User Avatar" />
-                  </button>
-                </div>
-              </>
-            ) : (
-              <>
-                <Button variant="ghost" size="sm" asChild>
-                  <Link href={'/auth/login'}>
-                    Log in
-                  </Link>
-                </Button>
-                <Button size="sm" asChild>
-                  <Link href={'/auth/register'}>
-                    Get Started
-                  </Link>
-                </Button>
-              </>
-            )}
-          </div>
-        </div>
-      </header>
+      <Header>
+        <nav className="hidden md:flex items-center gap-6">
+          <Link href="#features" className="text-sm font-medium hover:text-primary transition-colors">Features</Link>
+          <Link href="#pricing" className="text-sm font-medium hover:text-primary transition-colors">Pricing</Link>
+        </nav>
+      </Header>
 
       <main className="flex-1 w-full">
         {/* Hero Section */}

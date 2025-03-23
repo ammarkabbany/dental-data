@@ -11,6 +11,7 @@ import { Separator } from "../ui/separator";
 import { usePermission } from "@/hooks/use-permissions";
 import { useTeam } from "@/providers/team-provider";
 import { useEffect, useRef, useState } from "react";
+import { TeamSwitcher } from "../team-switcher";
 
 interface MenuProps {
   isOpen: boolean | undefined;
@@ -31,9 +32,11 @@ export function Menu({ isOpen }: MenuProps) {
   const sidebarRef = useRef<HTMLDivElement>(null)
 
   return (
-    <ScrollArea ref={sidebarRef} className="[&>div>div[style]]:!block overflow-y-auto">
-      <div className="space-y-1 px-3">
-        <h3 className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-gray-400">Dashboard</h3>
+    <ScrollArea ref={sidebarRef} className="[&>div>div[style]]:!block relative">
+      <div className="space-y-1">
+        <TeamSwitcher />
+        <Separator className="my-2" />
+        <h3 className="px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Dashboard</h3>
         <NavItem
           icon={LayoutDashboard}
           label="Overview"
@@ -42,9 +45,9 @@ export function Menu({ isOpen }: MenuProps) {
         />
         <NavItem comingSoon icon={BarChart3} label="Analytics" />
 
-        <Separator className="my-3 bg-gray-800" />
+        {/* <Separator className="my-3" /> */}
 
-        <h3 className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-gray-400">Lab Management</h3>
+        {/* <h3 className="px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Lab Management</h3> */}
         <NavItem
           icon={FileText}
           label="Cases"
@@ -58,9 +61,9 @@ export function Menu({ isOpen }: MenuProps) {
         // onClick={() => setActiveTab("doctors")}
         />
 
-        <Separator className="my-3 bg-gray-800" />
+        {/* <Separator className="my-3" /> */}
 
-        <h3 className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-gray-400">Utilities</h3>
+        {/* <h3 className="px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Utilities</h3> */}
         <NavItem
           icon={Layers}
           label="Templates"
@@ -68,9 +71,10 @@ export function Menu({ isOpen }: MenuProps) {
           onClick={() => navigate('/dashboard/templates')}
         />
 
-        {permission.canViewDue() && <><Separator className="my-3 bg-gray-800" />
+        {permission.canViewDue() && <>
+        {/* <Separator className="my-3" /> */}
 
-          <h3 className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-gray-400">Reports</h3>
+          {/* <h3 className="px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Reports</h3> */}
           <NavItem
             icon={PieChart}
             label="Reports"
@@ -78,7 +82,8 @@ export function Menu({ isOpen }: MenuProps) {
           />
           <NavItem disabled icon={BarChart3} label="Financial" /></>}
 
-        <Separator className="my-3 bg-gray-800" />
+        {/* <Separator className="my-3" /> */}
+        <h3 className="px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">other</h3>
 
         <NavItem
           icon={Settings}
@@ -119,27 +124,27 @@ function NavItem({
       aria-disabled={disabled || comingSoon}
       title={comingSoon ? "Coming Soon" : undefined}
       className={cn(
-        "group flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200",
+        "group group/menu-button h-9 flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200",
         disabled || comingSoon
           ? "cursor-not-allowed opacity-50 text-muted-foreground"
           : active
-            ? "bg-blue-600 text-white shadow-lg shadow-blue-900/20"
+            ? "bg-gradient-to-r from-primary/20 to-primary/5"
             : variant === "danger"
               ? "text-red-400 hover:bg-gray-800"
-              : "text-gray-400 hover:bg-gray-800 hover:text-white"
+              : "text-muted-foreground hover:bg-sidebar-accent hover:text-white"
       )}
     >
       <div className="flex items-center gap-3">
         <Icon
           className={cn(
-            "h-4 w-4",
+            "size-5",
             disabled || comingSoon
-              ? "text-gray-600"
+              ? "text-muted-foreground/75"
               : active
                 ? "text-white"
                 : variant === "danger"
                   ? "text-red-400"
-                  : "text-gray-500 group-hover:text-gray-300"
+                  : "text-muted-foreground/75 group-hover:text-gray-300"
           )}
         />
         <span>{label}</span>

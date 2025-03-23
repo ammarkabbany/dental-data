@@ -128,14 +128,22 @@ export function CasesDataTable({ data = [] }: DataTableProps) {
     <div className="w-full">
       <CasesDataTableUtils table={table} />
       <div className="space-y-4">
-        <ScrollArea id="table-scroll-area" className="h-[580px] overflow-auto border rounded-md">
-          <Table className="w-max min-w-full">
-            <TableHeader className="sticky top-0 bg-accent">
+        <ScrollArea 
+          id="table-scroll-area" 
+          className="h-[580px] overflow-auto"
+          type="scroll"
+        >
+          <Table className="table-fixed border-separate border-spacing-0 [&_tr:not(:last-child)_td]:border-b">
+            <TableHeader className="sticky top-0 bg-accent !rounded-full">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
                     return (
-                      <TableHead className="first:w-[40px]" key={header.id}>
+                      <TableHead
+                      key={header.id}
+                      style={{ width: `${header.getSize()}px` }}
+                      className="relative h-9 select-none bg-sidebar border-y border-border first:border-l first:rounded-l-lg last:border-r last:rounded-r-lg"
+                    >
                         {header.isPlaceholder
                           ? null
                           : flexRender(
@@ -148,13 +156,14 @@ export function CasesDataTable({ data = [] }: DataTableProps) {
                 </TableRow>
               ))}
             </TableHeader>
+            <tbody aria-hidden="true" className="table-row h-1"></tbody>
             <TableBody className="">
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
-                    className={"transition-colors"}
+                    className="[&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell

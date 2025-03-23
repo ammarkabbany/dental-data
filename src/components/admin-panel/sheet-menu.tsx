@@ -20,7 +20,7 @@ export function SheetMenu() {
           <MenuIcon size={20} />
         </Button>
       </SheetTrigger>
-      <SheetContent className="sm:w-72 px-3 h-full flex flex-col overflow-y-auto border-r border-[#1f1f3a] bg-dental-bg-card" side="left">
+      <SheetContent className="sm:w-72 px-3 h-full flex flex-col overflow-y-auto border border-sidebar-border bg-sidebar" side="left">
         <SheetHeader>
           <Button
             className="flex justify-center items-center pb-2 pt-1"
@@ -49,11 +49,6 @@ export function SheetMenu() {
           </Button>
         </SheetHeader>
         <Menu isOpen />
-        <div className="h-14 w-full" />
-        <div className="absolute left-0 bottom-2 px-2 z-10 w-full h-10">
-          {/* <h3 className="px-3 text-xs font-semibold uppercase tracking-wider text-gray-400">Team</h3> */}
-          <TeamSwitcher />
-        </div>
       </SheetContent>
     </Sheet>
   );

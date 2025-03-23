@@ -4,7 +4,6 @@ import { avatars } from "@/lib/appwrite/client";
 import { createAdminClient } from "@/lib/appwrite/appwrite"
 import { AUTH_COOKIE, DATABASE_ID, TEAM_MEMBERS_COLLECTION_ID } from "@/lib/constants";
 import { cookies } from "next/headers";
-import { getTeamMembers } from "@/lib/team-service";
 import { TeamMember } from "@/types";
 import { Query } from "node-appwrite";
 
@@ -13,7 +12,7 @@ export const getUserInfo = async (userId: string) => {
   try {
     const {users} = await createAdminClient();
     const user = await users.get(userId);
-    const avatar = avatars.getInitials(user.name);
+    const avatar = user.prefs.avatar
     return {
       id: user.$id,
       name: user.name,
@@ -34,6 +33,55 @@ export const getUserJWT = async (userId: string) => {
     return null;
   }
 }
+
+interface CreateUserProps {
+  userId?: string;
+  name?: string | null;
+  email?: string;
+  avatar?: string;
+}
+
+export async function CreateUser({
+  userId,
+  name,
+  email,
+  avatar
+}: CreateUserProps) {
+  if (!userId) {
+    throw new Error("User Id must be provided")
+  }
+  const { users } = await createAdminClient();
+
+  try {
+    const user = await users.get(userId);
+    if (user) {
+      if (name && user.name !== name) {
+        await users.updateName(userId, name);
+      }
+      const token = await users.createToken(userId);
+      return token;
+    }
+  } catch (error) {
+    console.log(error)
+  }
+
+  await users.create(
+    userId,
+    email,
+    undefined,
+    undefined,
+    name ?? ""
+  )
+  await users.updateEmailVerification(userId, true)
+  await users.updatePrefs(
+    userId,
+    { avatar }
+  )
+
+  const token = await users.createToken(userId);
+  return token;
+}
+
 
 export const getSessionCookie = async () => {
   const cookieStore = await cookies();

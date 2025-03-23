@@ -16,7 +16,7 @@ export function Sidebar() {
   return (
     <aside
       className={cn(
-        "fixed top-0 left-0 z-20 w-64 h-screen -translate-x-full border-r border-[#1f1f3a] bg-dental-bg-card lg:translate-x-0 transition-[width] ease-in-out duration-300",
+        "fixed top-0 left-0 z-20 w-64 h-screen -translate-x-full border border-sidebar-border bg-sidebar lg:translate-x-0 transition-[width] ease-in-out duration-300",
         // !getOpenState() ? "w-[90px]" : "w-64",
         settings.disabled && "hidden"
       )}
@@ -25,7 +25,7 @@ export function Sidebar() {
       <div
         onMouseEnter={() => setIsHover(true)}
         onMouseLeave={() => setIsHover(false)}
-        className="relative h-[92%] flex flex-col px-3 py-3 gap-y-8 sidebar-container"
+        className="relative h-full flex flex-col px-3 py-3 gap-y-8"
       >
         <Button
           className={cn(
@@ -35,7 +35,7 @@ export function Sidebar() {
           variant="link"
           asChild
         >
-          <Link href="/dashboard" className="flex items-center">
+          <Link href="/dashboard" className="flex items-center justify-start">
             {/* <Image
               src={"/old-fav.ico"}
               width={86}
@@ -58,11 +58,10 @@ export function Sidebar() {
         </Button>
         <Menu isOpen={getOpenState()} />
       </div>
-      <div className="h-10 w-full" />
-      <div className="absolute left-0 bottom-2 px-2 z-10 w-full h-10">
-        {/* <h3 className="px-3 text-xs font-semibold uppercase tracking-wider text-gray-400">Team</h3> */}
-        <TeamSwitcher />
-      </div>
+      {/* <div className="h-10 w-full" />
+      <div className="absolute left-0 bottom-0 px-2 z-10 w-full h-10">
+        
+      </div> */}
     </aside>
   );
 }

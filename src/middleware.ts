@@ -1,33 +1,38 @@
-// import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 
-import { NextRequest, NextResponse } from "next/server";
-import { AUTH_COOKIE, NEXT_URL } from "./lib/constants";
+const isProtectedRoute = createRouteMatcher(['/dashboard(.*)', '/team(.*)', '/account(.*)'])
 
-const ProtectedRoutes = ['/dashboard']
+export default clerkMiddleware(async (auth, req) => {
+  if (isProtectedRoute(req)) await auth.protect()
+})
+// import { AUTH_COOKIE, NEXT_URL } from "./lib/constants";
+// import { createSessionClient } from "./lib/appwrite/appwrite";
 
-export async function middleware(req: NextRequest) {
-  // Use Next.js's built-in cookies helper (available in middleware)
-  const cookieStore = req.cookies;
+// const ProtectedRoutes = ['/dashboard']
 
-  const pathname = req.nextUrl.pathname;
+// export async function middleware(req: NextRequest) {
+//   // Use Next.js's built-in cookies helper (available in middleware)
+//   const cookieStore = req.cookies;
 
-  const isProtected = ProtectedRoutes.some((prefix) =>
-    pathname.startsWith(prefix)
-  );
+//   const pathname = req.nextUrl.pathname;
 
-  if (pathname.startsWith('/auth') && cookieStore.has(AUTH_COOKIE)) {
-    return NextResponse.redirect(`${NEXT_URL}/`)
-  }
+//   const isProtected = ProtectedRoutes.some((prefix) =>
+//     pathname.startsWith(prefix)
+//   );
 
-  if (!cookieStore.has(AUTH_COOKIE) && isProtected) {
-    return NextResponse.redirect(`${NEXT_URL}/auth/login?redirect=${encodeURIComponent(pathname)}`)
-  }
+//   if (pathname.startsWith('/auth') && cookieStore.has(AUTH_COOKIE)) {
+//     return NextResponse.redirect(`${NEXT_URL}/`)
+//   }
 
-  const session = cookieStore.get(AUTH_COOKIE)?.value
-  if (!session && isProtected) return NextResponse.redirect(`${NEXT_URL}/auth/login?redirect=${encodeURIComponent(pathname)}`)
+//   if (!cookieStore.has(AUTH_COOKIE) && isProtected) {
+//     return NextResponse.redirect(`${NEXT_URL}/auth/login?redirect=${encodeURIComponent(pathname)}`)
+//   }
 
-  return NextResponse.next();
-}
+//   const session = cookieStore.get(AUTH_COOKIE)?.value
+//   if (!session && isProtected) return NextResponse.redirect(`${NEXT_URL}/auth/login?redirect=${encodeURIComponent(pathname)}`)
+
+//   return NextResponse.next();
+// }
 
 export const config = {
   matcher: [

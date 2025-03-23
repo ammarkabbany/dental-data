@@ -7,6 +7,7 @@ import { AuthProvider } from "@/providers/auth-provider";
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from "@vercel/analytics/next"
 import { Toaster } from "@/components/ui/sonner";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const geist = Geist({
   variable: "--font-geist",
@@ -37,7 +38,7 @@ export default function RootLayout({
       className={`${geist.variable} antialiased`}
     >
       <body>
-        {/* <ClerkProvider> */}
+        <ClerkProvider>
           <QueryProvider>
             <AuthProvider>
               <ThemeProvider
@@ -53,7 +54,7 @@ export default function RootLayout({
               </ThemeProvider>
             </AuthProvider>
           </QueryProvider>
-        {/* </ClerkProvider> */}
+        </ClerkProvider>
       </body>
     </html>
   );

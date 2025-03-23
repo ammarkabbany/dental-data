@@ -17,10 +17,12 @@ import { useTeam } from "@/providers/team-provider";
 import { TemplateUpdateModal } from "./update-template-modal";
 import { DialogTrigger } from "../ui/dialog";
 import { DeleteTemplateModal } from "./delete-template-modal";
+import { useTemplatesStore } from "@/store/templates-store";
 export const TemplateCard = ({ template }: { template: Template }) => {
   const router = useRouter();
   const { getMaterialById } = useMaterialsStore();
   const { getDoctorById } = useDoctorsStore();
+  const {toggleFavorite, favoriteTemplates} = useTemplatesStore();
   const {userRole} = useTeam();
 
   return (
@@ -30,15 +32,15 @@ export const TemplateCard = ({ template }: { template: Template }) => {
     >
       {/* Favorite Button (Star) */}
       <button
-        // onClick={() => handleToggleFavorite(template)}
+        onClick={() => toggleFavorite(template)}
         // disabled={favoriteLoading}
         className="absolute right-5 top-7 text-gray-400 hover:text-yellow-500"
       >
-        {/* {favoriteTemplates.includes(template.$id) ? ( */}
-        {/* <Star className="h-5 w-5 fill-yellow-500 stroke-yellow-500" /> */}
-        {/* ) : ( */}
+        {favoriteTemplates.includes(template.$id) ? (
+        <Star className="h-5 w-5 fill-yellow-500 stroke-yellow-500" />
+        ) : (
         <Star className="h-5 w-5 stroke-gray-400 hover:stroke-yellow-500 transition-all duration-150" />
-        {/* )} */}
+        )}
       </button>
 
       <CardHeader>
