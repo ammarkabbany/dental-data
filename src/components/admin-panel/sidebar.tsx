@@ -5,9 +5,6 @@ import { useSidebar } from "@/hooks/use-sidebar";
 import { useStore } from "@/hooks/use-store";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { Separator } from "@/components/ui/separator";
-import { TeamSwitcher } from "@/components/team-switcher";
-import { Users2 } from "lucide-react";
 import Logo from "../logo";
 
 export function Sidebar() {

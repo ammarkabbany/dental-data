@@ -37,7 +37,7 @@ export const TemplateCard = ({ template }: { template: Template }) => {
   return (
     <Card
       key={template.$id}
-      className="relative transition-shadow hover:shadow-lg"
+      className="relative transition-shadow hover:shadow-lg from-sidebar/60 to-sidebar bg-gradient-to-br"
     >
       {/* Favorite Button (Star) */}
       <button

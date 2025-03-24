@@ -8,7 +8,7 @@ import { usePermission } from "@/hooks/use-permissions";
 
 export const RecentCaseRow = ({ caseItem }: { caseItem: Partial<Case> }) => {
   const { data: user } = useGetUserInfo(caseItem.userId || "");
-  const { userRole } = useTeam();
+  const { userRole, appwriteTeam } = useTeam();
   const canViewDue = usePermission(userRole).canViewDue()
   const { getDoctorById } = useDoctorsStore();
   return (
@@ -27,7 +27,7 @@ export const RecentCaseRow = ({ caseItem }: { caseItem: Partial<Case> }) => {
         {user?.name}
       </td>
       {canViewDue && <td className="py-4 whitespace-nowrap">
-        {formatCurrency(caseItem.due || 0, "EGP")}
+        {formatCurrency(caseItem.due || 0, appwriteTeam?.prefs.currency)}
       </td>}
       <td className="px-6 py-3 whitespace-nowrap">
         <span

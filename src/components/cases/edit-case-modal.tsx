@@ -543,7 +543,7 @@ export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
                       </FormItem>
                     )}
                   />
-                  <div className="flex items-center justify-between gap-4 mt-4">
+                  <div className="flex items-center justify-end gap-4 mt-4">
                 <Button
                   variant="secondary"
                   type="button"

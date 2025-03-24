@@ -64,8 +64,8 @@ export const getColumns = (): ColumnDef<Case>[] => [
     },
     cell: ({ row }) => {
       const date = new Date(row.getValue("date"));
-
-      return <div className="flex items-center gap-2"><Calendar className="size-4" /> {date.toLocaleDateString("en-GB")}</div>;
+      // <Calendar className="size-4" />
+      return <div className="flex items-center gap-2">{date.toLocaleDateString("en-GB")}</div>;
     },
     size: 120,
   },
@@ -103,7 +103,7 @@ export const getColumns = (): ColumnDef<Case>[] => [
       const isRecent = createdAt >= fiveMinutesAgo;
       const doctor: string = row.getValue('doctor')
       return <div className="capitalize flex items-center gap-2">
-        <DoctorIcon h={5} w={5} className="dark:fill-white dark:stroke-white" />
+        {/* <DoctorIcon h={5} w={5} className="dark:fill-white dark:stroke-white" /> */}
         {doctor}
         {isRecent && <Badge className="ml-1" variant="info">New</Badge>}
       </div>;
@@ -123,9 +123,10 @@ export const getColumns = (): ColumnDef<Case>[] => [
     accessorKey: "patient",
     header: "Patient",
     cell: ({ row }) => {
+      // <BookUser className="size-4.5" />
       const patient: string = row.getValue("patient") || "";
       const patientName = patient.length > 20 ? patient.substring(0, 20) + "..." : patient
-      return <div className="capitalize flex items-center gap-2"><BookUser className="size-4.5" />{patientName}</div>;
+      return <div className="capitalize flex items-center gap-2">{patientName}</div>;
     },
     size: 200,
   },
@@ -184,8 +185,9 @@ export const getColumns = (): ColumnDef<Case>[] => [
     },
     header: "Material",
     cell: ({ row }) => {
+      // <CubeIcon className="size-4" />
       const material: string = row.getValue('material');
-      return <div className="capitalize flex items-center gap-2"><CubeIcon className="size-4" />{material}</div>;
+      return <div className="capitalize flex items-center gap-2">{material}</div>;
     },
     size: 130,
     maxSize: 150
@@ -193,7 +195,8 @@ export const getColumns = (): ColumnDef<Case>[] => [
   {
     accessorKey: "shade",
     header: "Shade",
-    cell: ({ row }) => <div className="flex items-center gap-2"><Palette className="size-4" /><Badge variant={"secondary"}>{row.getValue("shade")}</Badge></div>,
+    // <Palette className="size-4" />
+    cell: ({ row }) => <div className="flex items-center gap-2"><Badge variant={"secondary"}>{row.getValue("shade")}</Badge></div>,
     size: 90,
   },
   // {
@@ -227,7 +230,7 @@ export const getColumns = (): ColumnDef<Case>[] => [
       return(
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-            <div className="flex justify-end">
+            <div className="flex">
             <Button
               size="icon"
               variant="ghost"

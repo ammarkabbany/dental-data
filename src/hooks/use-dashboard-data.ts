@@ -79,7 +79,7 @@ export function useDashboardData() {
       //     Query.select(["$id"]),
       //   ]
       // );
-      // const monthDifference = thisMonthCases.total - lastMonthCases.total;
+      // const monthDifference = ((thisMonthCases.total - lastMonthCases.total) / thisMonthCases.total) * 100;
       const cases = await databases.listDocuments<Case>(
         DATABASE_ID,
         CASES_COLLECTION_ID,
@@ -112,7 +112,6 @@ export function useDashboardData() {
 
       return {
         casesCount: cases.total,
-        // caseDifference: monthDifference,
         recentCases: cases.documents,
         doctorsCount: doctorsCount.total,
         materialsCount: materialsCount.total,

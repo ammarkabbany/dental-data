@@ -47,7 +47,7 @@ export function StatsCard({ title, value, change, icon, href }: StatsCardProps) 
             <span className={cn("font-medium", trendColor)}>
               {isPositive ? "↗" : "↘"} {change?.value}
             </span>{" "}
-            vs last week
+            vs last month
           </div>}
         </div>
       </div>

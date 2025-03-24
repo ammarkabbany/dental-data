@@ -21,6 +21,7 @@ import { Modals, useModalStore } from "@/store/modal-store";
 import { usePermission } from "@/hooks/use-permissions";
 import { useUser } from "@clerk/nextjs";
 import { StatsCardProps, StatsGrid } from "@/components/stats-grid";
+import { formatNumbers } from "@/lib/format-utils";
 
 export default function DashboardPage() {
   const { openModal } = useModalStore();
@@ -50,10 +51,10 @@ export default function DashboardPage() {
   const stats: StatsCardProps[] = [
     {
       title: "Cases",
-      value: data?.casesCount.toString() ?? "0",
+      value: formatNumbers(data?.casesCount ?? 0),
       // change: {
-      //   value: "+12%",
-      //   trend: "up",
+      //   value: data?.caseDifference ? (data.caseDifference).toFixed(0).concat('%') : "0",
+      //   trend: data?.caseDifference ? data.caseDifference > 1 ? "up" : "down" : "up",
       // },
       // href: "/dashboard/cases",
       icon: (
@@ -62,7 +63,7 @@ export default function DashboardPage() {
     },
     {
       title: "Doctors",
-      value: data?.doctorsCount.toString() ?? "0",
+      value: formatNumbers(data?.doctorsCount?? 0),
       // change: {
       //   value: "+42%",
       //   trend: "up",
@@ -73,7 +74,7 @@ export default function DashboardPage() {
     },
     {
       title: "Materials",
-      value: data?.materialsCount.toString() ?? "0",
+      value: formatNumbers(data?.materialsCount?? 0),
       // change: {
       //   value: "0%",
       //   trend: "down",

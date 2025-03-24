@@ -11,6 +11,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { TeamSwitcher } from "../team-switcher";
+import Logo from "../logo";
 
 export function SheetMenu() {
   return (
@@ -23,28 +24,15 @@ export function SheetMenu() {
       <SheetContent className="sm:w-72 px-3 h-full flex flex-col overflow-y-auto border border-sidebar-border bg-sidebar" side="left">
         <SheetHeader>
           <Button
-            className="flex justify-center items-center pb-2 pt-1"
-            variant="link"
+            className="flex justify-start items-center pb-2 pt-1"
+            variant="ghost"
             asChild
           >
             <SheetTitle asChild>
-              <Link href="/dashboard" className="flex items-center gap-2">
-                {/* <Image
-                  src={"/ward-logo.png"}
-                  width={56}
-                  height={56}
-                  alt="logo"
-                  // layout="static"
-                  className="size-[56px] object-cover"
-                /> */}
-                <h1
-                  className={
-                    "font-bold text-2xl whitespace-nowrap dark:text-[#e3bad1] transition-[transform,opacity,display] ease-in-out duration-300"
-                  }
-                >
-                  DentaFlow
-                </h1>
-              </Link>
+            <Link href={"/"} className="flex items-center select-none">
+              <Logo src="/old-fav.ico" className="size-16 mt-1" />
+              <span className="text-xl font-bold">DentaFlow</span>
+            </Link>
             </SheetTitle>
           </Button>
         </SheetHeader>

@@ -9,6 +9,7 @@ import { useRealtimeUpdates } from "@/hooks/use-realtime-updates";
 import { CASES_COLLECTION_ID } from "@/lib/constants";
 import { useTeam } from "@/providers/team-provider";
 import { redirect, RedirectType } from "next/navigation";
+import RouteChangeLoader from "@/components/route-change-loader";
 // import { CASES_COLLECTION_ID } from "@/lib/constants";
 // import { useRealtimeUpdates } from "@/hooks/use-realtime-updates";
 // import { Case } from "@/types";
@@ -71,6 +72,7 @@ export default function DashboardLayout({
       <MaterialCreateModal />
       {/*  */}
       {/* Content */}
+      {isLoading && <RouteChangeLoader />}
       {children}
     </AdminPanelLayout>
   );
