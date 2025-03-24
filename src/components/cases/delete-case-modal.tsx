@@ -7,6 +7,7 @@ import { useState } from "react";
 import { Case } from "@/types";
 import { DialogClose, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { useDeleteCase } from "@/features/cases/hooks/use-delete-case";
+import { useTeam } from "@/providers/team-provider";
 
 interface DeleteCaseModalModal {
   cases: Case[];
@@ -15,11 +16,15 @@ interface DeleteCaseModalModal {
 export function DeleteCaseModal({ cases, component }: DeleteCaseModalModal) {
   const [open, setOpen] = useState(false);
   // const {team, updateTeam} = useTeamStore();
+  const {currentTeam} = useTeam();
 
   const {mutate, isPending} = useDeleteCase();
  
   const handleDelete = async () => {
-    mutate({casesIds: cases.map(c => c.$id)});
+    if (!currentTeam) {
+      return;
+    }
+    mutate({casesIds: cases.map(c => c.$id), teamId: currentTeam.$id});
     setOpen(false);
     // const [response] = await Promise.all([
     //   // deleteCase(_case.$id),

@@ -86,7 +86,28 @@ async function createTeam(name: string, userId: string) {
   return team;
 }
 
+async function updateTeam(teamId: string, updates: Partial<Team>) {
+  const { databases } = await createAdminClient();
+  const team = await databases.updateDocument<Team>(
+    DATABASE_ID,
+    TEAMS_COLLECTION_ID,
+    teamId,
+    updates
+  );
+  return team;
+}
+
+async function getTeamById(teamId: string, queries: string[] = []): Promise<Team> {
+  const { databases } = await createAdminClient();
+  const team = await databases.getDocument<Team>(DATABASE_ID, TEAMS_COLLECTION_ID, teamId, queries);
+  return team;
+}
+
 export {
   getUserTeams,
   getTeamMembership,
+  addTeamMember,
+  createTeam,
+  updateTeam,
+  getTeamById,
 }

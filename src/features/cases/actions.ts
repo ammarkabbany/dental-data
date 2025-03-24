@@ -14,6 +14,7 @@ import {
   Role,
 } from "node-appwrite";
 import { GetDoctorById, UpdateDoctor } from "../doctors/actions";
+import { getTeamById, updateTeam } from "../team/teamService";
 
 export const CreateCase = async (
   teamId: Case["teamId"],
@@ -40,12 +41,29 @@ export const CreateCase = async (
     ]
   );
   // update doctor
-  const doctor = await GetDoctorById(document.doctorId);
+  const doctor = await GetDoctorById(document.doctorId,
+    [Query.select([
+      '$id',
+      'due',
+      'totalCases',
+    ])]
+  );
   if (doctor) {
     const due = document.due;
     await UpdateDoctor(doctor.$id, {
       due: Math.max(0, doctor.due + due),
       totalCases: Math.max(0, doctor.totalCases + 1),
+    })
+  }
+  // update team
+  const team = await getTeamById(document.teamId, [
+    Query.select([
+      'casesUsed',
+    ])
+  ]);
+  if (team) {
+    await updateTeam(document.teamId, {
+      casesUsed: Math.max(0, (team.casesUsed || 0) + 1),
     })
   }
 
@@ -97,6 +115,7 @@ export const UpdateCase = async (
 
 export const DeleteCase = async (
   ids: Case["$id"][],
+  teamId: Case["teamId"]
 ) => {
   const { functions, databases } = await createAdminClient();
 
@@ -138,6 +157,19 @@ export const DeleteCase = async (
           await UpdateDoctor(doctorId, doctorData);
         }
       }
+
+      // Update team
+      const team = await getTeamById(teamId, [
+        Query.select([
+          'casesUsed',
+        ])
+      ]);
+      if (team) {
+        await updateTeam(teamId, {
+          casesUsed: Math.max(0, (team.casesUsed || 0) - ids.length),
+        })
+      }
+      
 
   // return await functions.createExecution(
   //   process.env.NEXT_DOCUMENT_UPDATE_FUNCTION_ID!,

@@ -62,13 +62,14 @@ export const GetDoctors = async (): Promise<Doctor[]> => {
   return doctors.documents;
 };
 
-export const GetDoctorById = async (id: string): Promise<Doctor> => {
+export const GetDoctorById = async (id: string, queries: string[] = []): Promise<Doctor> => {
   const { databases } = await createAdminClient();
 
   const doctor = await databases.getDocument<Doctor>(
     DATABASE_ID,
     DOCTORS_COLLECTION_ID,
-    id
+    id,
+    queries
   );
 
   return doctor;
