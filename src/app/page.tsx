@@ -2,7 +2,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   Check, ChevronRight, Package, BarChart3, Users,
   Clock, Shield, Database, ArrowRight
@@ -12,21 +12,24 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import Logo from '@/components/logo';
 import { useAuth } from '@/providers/auth-provider';
-import { SignInButton, SignUpButton, useUser } from '@clerk/nextjs';
 import Header from '@/components/layout/Header';
 
 export default function Homepage() {
   const { isAuthenticated, logOut } = useAuth();
-  const {user} = useUser();
+  const handleClickScroll = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
   return (
     <div className="flex flex-col min-h-screen w-full mx-auto">
       <Header>
         <nav className="hidden md:flex items-center gap-6">
-          <Link href="#features" className="text-sm font-medium hover:text-primary transition-colors">Features</Link>
-          <Link href="#pricing" className="text-sm font-medium hover:text-primary transition-colors">Pricing</Link>
+          <div onClick={() => handleClickScroll('features')} className="text-sm cursor-pointer font-medium hover:text-primary transition-colors">Features</div>
+          <div onClick={() => handleClickScroll('pricing')} className="text-sm cursor-pointer font-medium hover:text-primary transition-colors">Pricing</div>
         </nav>
       </Header>
 
@@ -665,8 +668,8 @@ export default function Homepage() {
             <div className="space-y-4">
               <h4 className="text-sm font-semibold">Product</h4>
               <ul className="space-y-2 text-sm">
-                <li><Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">Features</Link></li>
-                <li><Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">Pricing</Link></li>
+                <li onClick={() => handleClickScroll('features')} className="text-muted-foreground cursor-pointer hover:text-foreground transition-colors">Features</li>
+                <li onClick={() => handleClickScroll('pricing')} className="text-muted-foreground cursor-pointer hover:text-foreground transition-colors">Pricing</li>
                 <li><Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">Case Studies</Link></li>
               </ul>
             </div>

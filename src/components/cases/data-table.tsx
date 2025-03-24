@@ -28,8 +28,6 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Case } from "@/types";
 import { DataTablePagination } from "../data-table-pagination";
 import CasesDataTableUtils from "./data-table-utils";
-import { useDoctorsStore } from "@/store/doctors-store";
-import { useMaterialsStore } from "@/store/material-store";
 
 interface DataTableProps {
   data: Case[];
@@ -47,10 +45,17 @@ export function CasesDataTable({ data = [] }: DataTableProps) {
     });
   const [rowSelection, setRowSelection] = React.useState({});
 
-  const doctorsStore = useDoctorsStore();
-  const materialsStore = useMaterialsStore();
+  // const {data: doctors} = useGetDoctors();
+  // const {data: materials} = useGetMaterials();
 
-  const columns = getColumns({doctorsStore, materialsStore});
+  // const getMaterialById = (id: string) => {
+  //   return materials?.find((material) => material.$id === id);
+  // };
+  // const getDoctorById = (id: string) => {
+  //   return doctors?.find((doctor) => doctor.$id === id);
+  // };
+
+  const columns = getColumns();
 
   const table = useReactTable({
     data,

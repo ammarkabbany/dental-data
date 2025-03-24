@@ -3,17 +3,14 @@ import { ArrowUpDown, BookUser, Calendar, MoreHorizontal, Palette } from "lucide
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
-import { Case, Tooth, ToothCollection } from "@/types";
+import { Case, Doctor, Material, Tooth, ToothCollection } from "@/types";
 import { DoctorIcon } from "../icons/doctor";
 import { CubeIcon } from "@radix-ui/react-icons";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { EditCaseModal } from "./edit-case-modal";
-import { useModalStore } from "@/store/modal-store";
-import { IDoctorsStore, useDoctorsStore } from "@/store/doctors-store";
-import { IMaterialsStore, useMaterialsStore } from "@/store/material-store";
 import { Button } from "../ui/button";
 
-export const getColumns = ({doctorsStore, materialsStore}: {doctorsStore: IDoctorsStore, materialsStore: IMaterialsStore}): ColumnDef<Case>[] => [
+export const getColumns = (): ColumnDef<Case>[] => [
   {
     id: "select",
     size: 30,
@@ -95,7 +92,7 @@ export const getColumns = ({doctorsStore, materialsStore}: {doctorsStore: IDocto
     //   );
     // },
     accessorFn: (row) => {
-      const doctor = doctorsStore.getDoctorById(row.doctorId);
+      const doctor = row.doctor;
       const doctorName = doctor?.name || "Unknown"
       return doctorName.length > 20 ? doctorName.substring(0, 20) + "..." : doctorName;
     },
@@ -181,7 +178,7 @@ export const getColumns = ({doctorsStore, materialsStore}: {doctorsStore: IDocto
   {
     accessorKey: "material",
     accessorFn: (row) => {
-      const material = materialsStore.getMaterialById(row.materialId);
+      const material = row.material;
       const materialName = material?.name || "Unknown"
       return materialName.length > 20 ? materialName.substring(0, 20) + "..." : materialName;
     },

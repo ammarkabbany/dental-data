@@ -4,6 +4,7 @@ import { CasesDataTable } from "@/components/cases/data-table";
 import { Button } from "@/components/ui/button";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import { useGetCases } from "@/features/cases/hooks/use-get-cases";
+import { useGetMaterialById } from "@/features/materials/hooks/use-get-material-by-id";
 import { usePermission } from "@/hooks/use-permissions";
 import { useTeam } from "@/providers/team-provider";
 import { Add01Icon } from "@hugeicons/core-free-icons";
@@ -11,7 +12,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import Link from "next/link";
 
 export default function CasesPage() {
-  const { currentTeam, userRole, isLoading: isTeamLoading } = useTeam();
+  const { userRole, isLoading: isTeamLoading } = useTeam();
 
   const canCreate = usePermission(userRole).checkPermission('cases', 'create');
 
@@ -35,7 +36,7 @@ export default function CasesPage() {
   //         <Link href="/teams/create">
   //           Create a team
   //         </Link>
-  //       </Button>
+//       </Button>
   //     </div>
   //   </ContentLayout>
   // );

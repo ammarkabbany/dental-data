@@ -9,7 +9,7 @@ import { useTeam } from "@/providers/team-provider";
 import { Users2 } from "lucide-react";
 
 export default function TeamPage() {
-  const {appwriteTeam, userRole} = useTeam();
+  const {appwriteTeam, userRole, isLoading} = useTeam();
   const canUpdate = usePermission(userRole).checkPermission('team', 'update');
 
   // useEffect(() => {
@@ -25,7 +25,13 @@ export default function TeamPage() {
   return (
     <main>
       <Header />
-      <div className="p-8 max-w-6xl mx-auto">
+      {!appwriteTeam && !isLoading ? (<>
+        <div className="flex justify-center items-center mt-24">
+          <h1 className="text-4xl text-destructive-foreground">
+            Team not found
+          </h1>
+        </div>
+      </>) : (<div className="p-8 max-w-6xl mx-auto">
         <Tabs
           defaultValue="general"
           orientation="vertical"
@@ -123,7 +129,7 @@ export default function TeamPage() {
             </TabsContent>
           </div>
         </Tabs>
-      </div>
+      </div>)}
     </main>
   );
 }

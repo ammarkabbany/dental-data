@@ -7,7 +7,8 @@ import DataFetcher from "@/components/data-fetcher";
 import { Case } from "@/types";
 import { useRealtimeUpdates } from "@/hooks/use-realtime-updates";
 import { CASES_COLLECTION_ID } from "@/lib/constants";
-import { TeamProvider } from "@/providers/team-provider";
+import { useTeam } from "@/providers/team-provider";
+import { redirect, RedirectType } from "next/navigation";
 // import { CASES_COLLECTION_ID } from "@/lib/constants";
 // import { useRealtimeUpdates } from "@/hooks/use-realtime-updates";
 // import { Case } from "@/types";
@@ -21,7 +22,10 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { isLoading } = DataFetcher();
+  const {currentTeam, isLoading} = useTeam();
+  if (!isLoading && !currentTeam) redirect('/team', RedirectType.replace)
+
+  const { } = DataFetcher();
 
   const queryClient = useQueryClient();
 

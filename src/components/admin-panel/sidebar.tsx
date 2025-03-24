@@ -8,6 +8,7 @@ import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
 import { TeamSwitcher } from "@/components/team-switcher";
 import { Users2 } from "lucide-react";
+import Logo from "../logo";
 
 export function Sidebar() {
   const sidebar = useStore(useSidebar, (x) => x);
@@ -29,13 +30,13 @@ export function Sidebar() {
       >
         <Button
           className={cn(
-            "transition-transform ease-in-out duration-300 mb-1",
+            "transition-transform ease-in-out duration-300 mb-1 justify-start",
             !getOpenState() ? "translate-x-1" : "translate-x-0"
           )}
-          variant="link"
+          variant="ghost"
           asChild
         >
-          <Link href="/dashboard" className="flex items-center justify-start">
+          {/* <Link href="/dashboard" className="flex items-center justify-start">
             {/* <Image
               src={"/old-fav.ico"}
               width={86}
@@ -43,7 +44,7 @@ export function Sidebar() {
               alt="logo"
               // layout="static"
               className="size-[86px] object-cover"
-            /> */}
+            />
             <h1
               className={cn(
                 "font-bold text-2xl whitespace-nowrap dark:text-[#e3bad1] transition-[transform,opacity,display] ease-in-out duration-300",
@@ -54,6 +55,10 @@ export function Sidebar() {
             >
               DentaFlow
             </h1>
+          </Link> */}
+          <Link href={"/"} className="flex items-center select-none">
+            <Logo src="/old-fav.ico" className="size-16 mt-1" />
+            <span className="text-xl font-bold">DentaFlow</span>
           </Link>
         </Button>
         <Menu isOpen={getOpenState()} />

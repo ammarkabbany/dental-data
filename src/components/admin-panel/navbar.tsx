@@ -1,4 +1,3 @@
-import { ModeToggle } from "@/components/mode-toggle";
 import { UserNav } from "@/components/admin-panel/user-nav";
 import { SheetMenu } from "@/components/admin-panel/sheet-menu";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -18,9 +17,9 @@ export function Navbar({ title }: NavbarProps) {
         </div>
         <div className="flex flex-1 items-center justify-end gap-x-4">
           {/* <ModeToggle /> */}
-          <div>
+          {/* <div>
             <HugeiconsIcon className="size-5" icon={Notification03Icon} />
-          </div>
+          </div> */}
           <UserNav />
         </div>
       </div>

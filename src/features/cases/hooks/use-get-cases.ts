@@ -3,8 +3,12 @@ import { databases } from "@/lib/appwrite/client";
 import { CASES_COLLECTION_ID, DATABASE_ID } from "@/lib/constants";
 import { Query } from "appwrite";
 import { Case } from "@/types";
+import { useDoctorsStore } from "@/store/doctors-store";
+import { useMaterialsStore } from "@/store/material-store";
 
 export const useGetCases = () => {
+  const {getDoctorById} = useDoctorsStore();
+  const {getMaterialById} = useMaterialsStore();
   return useQuery({
     queryKey: ['cases'],
     queryFn: async () => {
@@ -33,7 +37,13 @@ export const useGetCases = () => {
           ]
         );
       
-        return cases.documents;
+        const finalCases = 
+          cases.documents.map(doc => {
+            const material = getMaterialById(doc.materialId);
+            const doctor = getDoctorById(doc.doctorId);
+            return {...doc, material, doctor }
+          })
+        return finalCases;
     },
     // refetchInterval: 60000, // refetch every minute
   })

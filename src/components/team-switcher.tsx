@@ -8,14 +8,10 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { useTeam } from "@/providers/team-provider";
-import { UserAvatar } from "./user-avatar";
-import { avatars } from "@/lib/appwrite/client";
-import { ChevronsUpDown, ExpandIcon, PlusIcon, Users2 } from "lucide-react";
-import Image from "next/image";
+import { useTeam } from "@/providers/team-provider"
+import { ChevronsUpDown, PlusIcon, Users2 } from "lucide-react";
 
 export function TeamSwitcher() {
   const { currentTeam: team } = useTeam();
@@ -58,29 +54,25 @@ export function TeamSwitcher() {
         <DropdownMenuLabel className="uppercase text-muted-foreground/60 text-xs">
           Teams
         </DropdownMenuLabel>
-        {/* {teams.map((team, index) => (
+          {team && (
               <DropdownMenuItem
-                key={team.name}
+                key={team.$id}
                 // onClick={() => setActiveTeam(team)}
                 className="gap-2 p-2"
               >
                 <div className="flex size-6 items-center justify-center rounded-md overflow-hidden">
-                  <Image
-                    src={"?placeholder"}
-                    width={36}
-                    height={36}
-                    alt={team.name}
-                  />
+                  {team && (
+                    <Users2 className="size-5" />
+                  )}
                 </div>
                 {team.name}
-                <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
               </DropdownMenuItem>
-            ))} */}
-        <DropdownMenuSeparator />
+            )}
+        {/* <DropdownMenuSeparator />
         <DropdownMenuItem className="gap-2 p-2">
           <PlusIcon className="opacity-60" size={16} aria-hidden="true" />
           <div className="font-medium">Add team</div>
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
       </DropdownMenuContent>
     </DropdownMenu>
   );
