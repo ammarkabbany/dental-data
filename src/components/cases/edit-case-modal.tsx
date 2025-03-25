@@ -27,6 +27,8 @@ import { useUpdateCase } from "@/features/cases/hooks/use-update-case";
 import { usePermission } from "@/hooks/use-permissions";
 import { useDoctorsStore } from "@/store/doctors-store";
 import { useMaterialsStore } from "@/store/material-store";
+import { useGetDoctors } from "@/features/doctors/hooks/use-get-doctors";
+import { useGetMaterials } from "@/features/materials/hooks/use-get-materials";
 
 export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
   const { currentTeam, userRole } = useTeam();
@@ -38,8 +40,8 @@ export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
     form.reset();
   };
 
-  const { doctors } = useDoctorsStore();
-  const { materials } = useMaterialsStore();
+  const { data: doctors } = useGetDoctors();
+  const { data: materials } = useGetMaterials();
   const getMatrialById = (id: string) => {
     return materials?.find((material) => material.$id === id);
   };
@@ -67,6 +69,47 @@ export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
   >();
 
   const { mutate, isPending, error } = useUpdateCase();
+
+  const handleMaterialSelection = (currentValue: string) => {
+    const docMaterial = materials?.find((mat) => mat.$id === currentValue);
+    const teethQuantity = teethData.length;
+
+    // Update the form values
+    if (docMaterial) {
+      // Update the due amount based on selected teeth quantity and material price
+      form.setValue("due", teethQuantity * docMaterial.price);
+      form.setValue("materialId", docMaterial.$id);
+
+      // Update teeth data in the form
+      const currentTeethData = form.getValues().teethData;
+
+      // Update material for all teeth in each quadrant
+      const updateQuadrant = (teeth: Tooth[] = []) => {
+        return teeth.map((t) => ({
+          ...t,
+          materialId: docMaterial.$id,
+        }));
+      };
+
+      form.setValue("teethData", {
+        upper: {
+          left: updateQuadrant(currentTeethData?.upper?.left),
+          right: updateQuadrant(currentTeethData?.upper?.right),
+        },
+        lower: {
+          left: updateQuadrant(currentTeethData?.lower?.left),
+          right: updateQuadrant(currentTeethData?.lower?.right),
+        },
+      });
+
+      // Update local teeth data state
+      const newTeethData = teethData.map((tooth) => ({
+        label: tooth.label,
+        materialId: docMaterial.$id,
+      }));
+      setTeethData(newTeethData);
+    }
+  };
 
   const handleMultiDue = (operation: string, material: string) => {
     const qMaterial = materials?.find((mat) => mat.$id === material);
@@ -453,7 +496,7 @@ export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
                               variant={"secondary"}
                               values={materials || []}
                               value={field.value}
-                              action={field.onChange}
+                              action={handleMaterialSelection}
                               previewValue={`${
                                 getMatrialById(field.value)?.name
                               } ${getMatrialById(field.value)?.price}`}
@@ -544,25 +587,25 @@ export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
                     )}
                   />
                   <div className="flex items-center justify-end gap-4 mt-4">
-                <Button
-                  variant="secondary"
-                  type="button"
-                  size={"lg"}
-                  className={`${!onCancel && "invisible"}`}
-                  onClick={onCancel}
-                  disabled={isPending}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  size={"lg"}
-                  variant="default"
-                  disabled={isPending}
-                >
-                  Save Changes
-                </Button>
-              </div>
+                    <Button
+                      variant="secondary"
+                      type="button"
+                      size={"lg"}
+                      className={`${!onCancel && "invisible"}`}
+                      onClick={onCancel}
+                      disabled={isPending}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="submit"
+                      size={"lg"}
+                      variant="default"
+                      disabled={isPending}
+                    >
+                      Save Changes
+                    </Button>
+                  </div>
                 </div>
                 <div className="mt-4">
                   <TeethFormData
@@ -575,7 +618,6 @@ export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
                 </div>
               </div>
               {/* <Separator className="mt-2" /> */}
-              
             </form>
             {error && (
               <div className="text-red-500 text-xs mt-4">{error.message}</div>

@@ -10,14 +10,14 @@ export const RecentCaseRow = ({ caseItem }: { caseItem: Partial<Case> }) => {
   const { data: user } = useGetUserInfo(caseItem.userId || "");
   const { userRole, appwriteTeam } = useTeam();
   const canViewDue = usePermission(userRole).canViewDue()
-  const { getDoctorById } = useDoctorsStore();
+  // const { getDoctorById } = useDoctorsStore();
   return (
     <tr key={caseItem.$id} className="hover:bg-current/5">
       <td className="px-6 py-3 whitespace-nowrap">
         <div className="font-medium">{caseItem.patient}</div>
       </td>
       <td className="px-6 py-3 whitespace-nowrap">
-        {getDoctorById(caseItem.doctorId || "")?.name}
+        {caseItem.doctor?.name || ""}
       </td>
       {/* <td className="px-6 py-4 whitespace-nowrap text-gray-500">
                     {new Date(caseItem.dueDate).toLocaleDateString()}

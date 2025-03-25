@@ -3,8 +3,8 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useUser } from '@clerk/nextjs'; // Assuming you're using Clerk
 import { Team } from '@/types'; // Adjust the import based on your structure
 import { useAuth } from './auth-provider';
-import { getAppwriteTeam } from '@/features/team/queries';
-import { Models } from 'appwrite';
+import { getAppwriteMembership, getAppwriteTeam } from '@/features/team/queries';
+import { Models, Query } from 'appwrite';
 import { getUserRole } from '@/features/auth/actions';
 import { databases } from '@/lib/appwrite/client';
 import { DATABASE_ID, TEAMS_COLLECTION_ID } from '@/lib/constants';
@@ -49,12 +49,24 @@ export const TeamProvider: React.FC<{ children: React.ReactNode }> = ({ children
           const teamDoc = await databases.getDocument<Team>(
             DATABASE_ID,
             TEAMS_COLLECTION_ID,
-            team.$id
+            team.$id,
+            [
+              Query.select([
+                '$id',
+                'name',
+                'planId',
+                'casesUsed',
+                'maxCases',
+                'planExpiresAt'
+              ])
+            ]
           )
-          const role = await getUserRole(team.$id, user.id);
+          // const role = await getUserRole(team.$id, user.id);
+          const membership = await getAppwriteMembership(team.$id, user.id);
+          const role = membership?.roles[0];
           setAppwriteTeam(team);
           setCurrentTeam(teamDoc);
-          setUserRole(role);
+          setUserRole(role || null);
         }
       })
       setLoading(false);

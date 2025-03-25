@@ -5,7 +5,7 @@ import {
   DOCTORS_COLLECTION_ID,
   MATERIALS_COLLECTION_ID,
 } from "@/lib/constants";
-import { Case } from "@/types";
+import { Case, Doctor } from "@/types";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Query } from "appwrite";
 import {
@@ -94,7 +94,22 @@ async function getDashboardData() {
     ]
   );
 
-  const doctorsCount = await databases.listDocuments(
+  const doctorIds = cases.documents.map(c => c.doctorId);
+
+  const doctors = await databases.listDocuments<Doctor>(
+    DATABASE_ID,
+    DOCTORS_COLLECTION_ID,
+    [Query.equal("$id", doctorIds), Query.limit(5), Query.select(["$id", "name"])]
+  )
+
+  cases.documents.forEach(c => {
+    const doctor = doctors.documents.find(d => d.$id === c.doctorId);
+    if (doctor) {
+      c.doctor = doctor;
+    }
+  })
+
+  const doctorsCount = await databases.listDocuments<Doctor>(
     DATABASE_ID,
     DOCTORS_COLLECTION_ID,
     [Query.limit(1), Query.select(["$id"])]

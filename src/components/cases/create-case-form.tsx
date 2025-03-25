@@ -62,6 +62,47 @@ export const CreateCaseForm = () => {
     router.back();
   };
 
+  const handleMaterialSelection = (currentValue: string) => {
+    const docMaterial = materials?.find((mat) => mat.$id === currentValue);
+    const teethQuantity = teethData.length;
+
+    // Update the form values
+    if (docMaterial) {
+      // Update the due amount based on selected teeth quantity and material price
+      form.setValue("due", teethQuantity * docMaterial.price);
+      form.setValue("materialId", docMaterial.$id);
+
+      // Update teeth data in the form
+      const currentTeethData = form.getValues().teethData;
+
+      // Update material for all teeth in each quadrant
+      const updateQuadrant = (teeth: Tooth[] = []) => {
+        return teeth.map((t) => ({
+          ...t,
+          materialId: docMaterial.$id,
+        }));
+      };
+
+      form.setValue("teethData", {
+        upper: {
+          left: updateQuadrant(currentTeethData?.upper?.left),
+          right: updateQuadrant(currentTeethData?.upper?.right),
+        },
+        lower: {
+          left: updateQuadrant(currentTeethData?.lower?.left),
+          right: updateQuadrant(currentTeethData?.lower?.right),
+        },
+      });
+
+      // Update local teeth data state
+      const newTeethData = teethData.map((tooth) => ({
+        label: tooth.label,
+        materialId: docMaterial.$id,
+      }));
+      setTeethData(newTeethData);
+    }
+  };
+
   const handleMultiDue = (operation: string, material: string) => {
     const qMaterial = materials?.find((mat) => mat.$id === material);
     // handle due
@@ -443,7 +484,7 @@ export const CreateCaseForm = () => {
                             variant={"secondary"}
                             values={materials || []}
                             value={field.value}
-                            action={field.onChange}
+                            action={handleMaterialSelection}
                             previewValue={`${getMatrialById(field.value)?.name} ${
                               getMatrialById(field.value)?.price
                             }`}

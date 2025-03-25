@@ -47,7 +47,6 @@ export function useAuthSyncEffect() {
 
   return {
     isLoading: !isLoaded || (isSignedIn && userId === null),
-    isAuthenticated: (isSignedIn && userId !== null) || false
+    isAuthenticated: (isSignedIn && user !== null) || false
   }
-  
 } 
