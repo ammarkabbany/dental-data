@@ -77,16 +77,16 @@ export const TemplateCard = ({ template }: { template: Template }) => {
       <CardFooter className="flex justify-between">
         <Button
           onClick={() => applyTemplate(template)}
-          variant="secondary"
+          variant="default"
           size="sm"
-          className="items-center text-xs"
+          className="items-center text-sm"
         >
           <Check className="h-4 w-4" /> Apply
         </Button>
         <div className="flex gap-1">
           {usePermission(userRole).checkPermission('templates', 'update') && <TemplateUpdateModal trigger={
             <DialogTrigger asChild>
-            <Button variant="ghost" size="icon">
+            <Button variant="secondary" size="icon">
               <Pencil className="h-4 w-4" />
             </Button>
           </DialogTrigger>

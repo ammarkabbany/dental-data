@@ -28,6 +28,8 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Case } from "@/types";
 import { DataTablePagination } from "../data-table-pagination";
 import CasesDataTableUtils from "./data-table-utils";
+import { useGetDoctors } from "@/features/doctors/hooks/use-get-doctors";
+import { useGetMaterials } from "@/features/materials/hooks/use-get-materials";
 
 interface DataTableProps {
   data: Case[];
@@ -45,17 +47,17 @@ export function CasesDataTable({ data = [] }: DataTableProps) {
     });
   const [rowSelection, setRowSelection] = React.useState({});
 
-  // const {data: doctors} = useGetDoctors();
-  // const {data: materials} = useGetMaterials();
+  const {data: doctors} = useGetDoctors();
+  const {data: materials} = useGetMaterials();
 
-  // const getMaterialById = (id: string) => {
-  //   return materials?.find((material) => material.$id === id);
-  // };
-  // const getDoctorById = (id: string) => {
-  //   return doctors?.find((doctor) => doctor.$id === id);
-  // };
+  const getMaterialById = (id: string) => {
+    return materials?.find((material) => material.$id === id);
+  };
+  const getDoctorById = (id: string) => {
+    return doctors?.find((doctor) => doctor.$id === id);
+  };
 
-  const columns = getColumns();
+  const columns = getColumns({getDoctorById, getMaterialById});
 
   const table = useReactTable({
     data,

@@ -77,3 +77,8 @@ export function usePermission(userRole: TeamMember['role'] | null) {
   
   return { checkPermission, canViewDue };
 }
+
+export interface PermissionCheckType {
+  checkPermission: (resource: Resource, action: Action) => boolean;
+  canViewDue: () => boolean;
+}

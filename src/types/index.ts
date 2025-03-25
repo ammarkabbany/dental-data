@@ -122,3 +122,8 @@ export type Template = Models.Document & {
   teamId: string;
 }
 
+export type Payment = Models.Document & {
+  date: string;
+  doctorId: string;
+  amount: number;
+}

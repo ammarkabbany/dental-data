@@ -13,7 +13,7 @@ import {
   Query,
   Role,
 } from "node-appwrite";
-import { GetDoctorById, UpdateDoctor } from "../doctors/actions";
+import { GetDoctorById, UpdateDoctor, UpdateDoctorDue } from "../doctors/actions";
 import { getTeamById, updateTeam } from "../team/teamService";
 
 export const CreateCase = async (
@@ -102,12 +102,7 @@ export const UpdateCase = async (
     result = newDue - oldDue;
   }
   if (doctorId) {
-    const doctor = await GetDoctorById(doctorId);
-    if (doctor) {
-      await UpdateDoctor(doctor.$id, {
-        due: Math.max(0, doctor.due + result),
-      });
-    }
+    await UpdateDoctorDue(doctorId, result);
   }
 
   return updatedDocument;

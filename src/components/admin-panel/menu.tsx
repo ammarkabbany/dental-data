@@ -57,8 +57,8 @@ export function Menu({ isOpen }: MenuProps) {
         <NavItem
           icon={Users}
           label="Doctors"
-        // active={activeTab === "doctors"}
-        // onClick={() => setActiveTab("doctors")}
+          active={isActive('doctors')}
+          onClick={() => navigate('/dashboard/doctors')}
         />
 
         {/* <Separator className="my-3" /> */}

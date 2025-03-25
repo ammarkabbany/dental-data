@@ -1,6 +1,5 @@
 "use client";
 import AdminPanelLayout from "@/components/admin-panel/admin-panel-layout";
-import { DoctorCreateModal } from "@/components/doctors/create-doctor-modal";
 import { MaterialCreateModal } from "@/components/materials/create-material-modal";
 import { useQueryClient } from "@tanstack/react-query";
 import DataFetcher from "@/components/data-fetcher";
@@ -26,7 +25,7 @@ export default function DashboardLayout({
   const {currentTeam, isLoading} = useTeam();
   if (!isLoading && !currentTeam) redirect('/team', RedirectType.replace)
 
-  const { } = DataFetcher();
+  DataFetcher();
 
   const queryClient = useQueryClient();
 
@@ -68,7 +67,6 @@ export default function DashboardLayout({
     <AdminPanelLayout>
       {/* Modals */}
       {/*  */}
-      <DoctorCreateModal />
       <MaterialCreateModal />
       {/*  */}
       {/* Content */}

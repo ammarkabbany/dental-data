@@ -50,6 +50,22 @@ export const UpdateDoctor = async (
   return updatedDocument;
 };
 
+export const UpdateDoctorDue = async (
+  id: Doctor["$id"],
+  due: number
+) => {
+  const doctor = await GetDoctorById(id, [
+    Query.select([
+      'due',
+    ]),
+  ]);
+  const payload = {
+    due: Math.max(0, doctor.due + due),
+  };
+  const updatedDoctor = await UpdateDoctor(id, payload);
+  return updatedDoctor;
+}
+
 export const GetDoctors = async (): Promise<Doctor[]> => {
   const { databases } = await createSessionClient();
 

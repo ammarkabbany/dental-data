@@ -18,8 +18,9 @@ type DatePickerProps = {
   setDate: any;
   mode?: DayPickerProps['mode'];
   id?: string;
+  customFormat?: string;
   className?: string;
-  customComponent?: React.JSX.Element;
+  children?: React.ReactNode;
 };
 
 export function DatePicker({
@@ -27,16 +28,17 @@ export function DatePicker({
   setDate,
   mode = "single",
   id = "custom-date-picker",
+  customFormat = "y/M/d",
   className,
-  customComponent,
+  children,
 }: DatePickerProps) {
   const dateView = date ? (
     mode === "single" ? (
-      format(date, "y/M/d")
+      format(date, customFormat)
     ) : (
       <div className="flex sm:flex-row gap-1">
-        <span>{date.from && format(date.from, "y/M/d")}</span>
-        <span>{date.to && format(date.to, "y/M/d")}</span>
+        <span>{date.from && format(date.from, customFormat)}</span>
+        <span>{date.to && format(date.to, customFormat)}</span>
       </div>
     )
   ) : (
@@ -48,7 +50,7 @@ export function DatePicker({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        {customComponent ?? (
+        {children ?? (
           <Button
             id={id}
             variant={"secondary"}

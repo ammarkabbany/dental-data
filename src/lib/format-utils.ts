@@ -11,10 +11,12 @@ export const formatDates = (value: string | Date) => {
 export const formatCurrency = (
   value: string | number,
   currency: string | undefined,
+  decimals: number = 2
 ) => {
   const formattedValue = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: currency || "USD",
+    minimumFractionDigits: decimals,
   }).format(Number(value));
   return formattedValue || 0;
 };
