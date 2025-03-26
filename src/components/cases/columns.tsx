@@ -110,15 +110,12 @@ export const getColumns = ({getDoctorById, getMaterialById}: {
       </div>;
     },
     size: 180,
-    
-    // filterFn: (row, _, filterValue) => {
-    //   const {data: doctor, isLoading} = useGetDoctorById(row.original.doctorId)
-    //   if (isLoading) return true;
-    //   return filterValue
-    //     // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    //     ? doctor?.name.toLowerCase().includes(filterValue.toLowerCase()) ? true : false
-    //     : true;
-    // }, // Apply the filter function here
+    filterFn: (row, _, filterValue) => {
+      const doctor: string = row.getValue('doctor')
+      return filterValue
+        ? doctor.toLowerCase() === filterValue.toLowerCase()
+        : true;
+    }, // Apply the filter function here
   },
   {
     accessorKey: "patient",

@@ -57,6 +57,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const handleLogout = async () => {
     await account.deleteSession("current");
+    // temporarily remove all local storage items
+    window.localStorage.removeItem('favoriteTemplates')
+    window.localStorage.removeItem('recentTemplates')
     await signOut();
   };
 

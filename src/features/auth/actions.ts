@@ -54,7 +54,10 @@ export async function CreateUser({
     const user = await users.get(userId);
     if (user) {
       if (name && user.name !== name) {
-        await users.updateName(userId, name);
+        users.updateName(userId, name);
+      }
+      if (avatar && user.prefs.avatar !== avatar) {
+        users.updatePrefs(userId, { avatar });
       }
       const token = await users.createToken(userId);
       return token;
@@ -64,11 +67,10 @@ export async function CreateUser({
   }
 
   await users.create(userId, email, undefined, undefined, name ?? "");
-  await users.updateEmailVerification(userId, true);
-  await users.updatePrefs(userId, { avatar });
+  users.updateEmailVerification(userId, true);
+  users.updatePrefs(userId, { avatar });
 
   const token = await users.createToken(userId);
-  console.log(token, token)
   return token;
 }
 
