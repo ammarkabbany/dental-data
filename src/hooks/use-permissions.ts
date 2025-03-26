@@ -1,6 +1,6 @@
 import { TeamMember } from '@/types';
 
-type Resource = 
+export type Resource = 
 'cases' | 
 'doctors' |
 'materials' |
@@ -11,7 +11,7 @@ type Resource =
 'members' |
 'export';
 
-type Action = 'create' | 'read' | 'update' | 'delete' | 'has';
+export type Action = 'create' | 'read' | 'update' | 'delete' | 'has';
 
 // Define permission matrix based on roles
 const permissionMatrix: Record<string, Record<Resource, Action[]>> = {

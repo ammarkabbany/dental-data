@@ -14,6 +14,8 @@
 /coverage
 mock_data_template.json
 generate_mock_cases.py
+appwrite.json
+/functions
 
 # next.js
 /.next/

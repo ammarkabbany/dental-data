@@ -59,7 +59,7 @@ export const DoctorCreateModal = () => {
       <Card className="w-full h-full border-none shadow-none">
         <CardHeader className="flex px-7">
           <CardTitle className="text-xl font-bold">
-            Update doctor details
+            Create new doctor
           </CardTitle>
         </CardHeader>
         <div className="px-7">

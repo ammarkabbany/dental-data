@@ -77,7 +77,7 @@ const PrintableTable = React.forwardRef<HTMLDivElement, PrintableTableProps>(
                 const material = materials?.find(
                   (m) => m.$id === caseItem.materialId,
                 )?.name;
-                const caseData = caseItem.teethData ? JSON.parse(String(caseItem.teethData)) as ToothCollection : undefined;
+                const caseData = caseItem.data ? JSON.parse(String(caseItem.data)) as ToothCollection : undefined;
                 const lowerLeft = loadTeethData(
                   caseData?.lower?.left,
                 ).reverse();
@@ -126,7 +126,7 @@ const PrintableTable = React.forwardRef<HTMLDivElement, PrintableTableProps>(
             <div className="font-bold">
               {cases?.reduce(
                 (totalUnits, caseItem) =>
-                  totalUnits + (calculateUnits(JSON.parse(String(caseItem.teethData))) || 0),
+                  totalUnits + (calculateUnits(JSON.parse(String(caseItem.data))) || 0),
                 0,
               )}
             </div>

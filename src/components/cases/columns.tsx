@@ -132,12 +132,12 @@ export const getColumns = ({getDoctorById, getMaterialById}: {
     size: 200,
   },
   {
-    accessorKey: "teethData",
+    accessorKey: "data",
     header: () => {
       return <p className="ml-[65px] capitalize text-sm">Data</p>;
     },
     cell: ({ row }) => {
-      const caseData: ToothCollection = JSON.parse(row.getValue("teethData")) || undefined;
+      const caseData: ToothCollection = JSON.parse(row.getValue("data")) || undefined;
       const loadTeethData = (array: Tooth[] | undefined) => {
         if (!array) return [];
         if (array.length === 0) return [];

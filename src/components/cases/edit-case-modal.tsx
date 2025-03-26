@@ -47,7 +47,7 @@ export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
     return doctors?.find((doctor) => doctor.$id === id);
   };
 
-  const caseData: ToothCollection = JSON.parse(String(selectedCase?.teethData));
+  const caseData: ToothCollection = JSON.parse(String(selectedCase?.data));
 
   const [teethData, setTeethData] = useState<Tooth[]>(
     caseData?.upper?.left
@@ -79,7 +79,7 @@ export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
       form.setValue("materialId", docMaterial.$id);
 
       // Update teeth data in the form
-      const currentTeethData = form.getValues().teethData;
+      const currentTeethData = form.getValues().data;
 
       // Update material for all teeth in each quadrant
       const updateQuadrant = (teeth: Tooth[] = []) => {
@@ -89,7 +89,7 @@ export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
         }));
       };
 
-      form.setValue("teethData", {
+      form.setValue("data", {
         upper: {
           left: updateQuadrant(currentTeethData?.upper?.left),
           right: updateQuadrant(currentTeethData?.upper?.right),
@@ -270,21 +270,21 @@ export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
     if (
       region &&
       secondRegion &&
-      form.getValues().teethData?.[region]?.[secondRegion]
+      form.getValues().data?.[region]?.[secondRegion]
     ) {
-      const teeth = form.getValues().teethData?.[region]?.[secondRegion];
+      const teeth = form.getValues().data?.[region]?.[secondRegion];
 
       // Check if the tooth is already selected
       const isToothSelected = (teeth ?? []).some(
         (tooth: Tooth) => tooth.label === label
       );
 
-      const data = form.getValues().teethData;
+      const data = form.getValues().data;
 
       if (isToothSelected) {
         // If already selected, remove the tooth
         form.setValue(
-          `teethData.${region}.${secondRegion}`,
+          `data.${region}.${secondRegion}`,
           teeth.filter((tooth: Tooth) => tooth.label !== label)
         );
 
@@ -294,7 +294,7 @@ export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
         );
       } else {
         // If not already selected, add the tooth
-        form.setValue(`teethData.${region}.${secondRegion}`, [
+        form.setValue(`data.${region}.${secondRegion}`, [
           ...data[region][secondRegion],
           { label, materialId: form.getValues()?.materialId },
         ]);
@@ -331,9 +331,9 @@ export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
         (mat) => mat.$id === tooth.materialId
       );
       handleDueSpecific(toothMaterial ?? newValue.material, newValue.material);
-      const data = form.getValues().teethData;
+      const data = form.getValues().data;
       form.setValue(
-        "teethData.upper.left",
+        "data.upper.left",
         data?.upper?.left?.map((t) =>
           t.label === newValue.label
             ? { ...t, material: newValue.material.$id }
@@ -341,7 +341,7 @@ export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
         )
       );
       form.setValue(
-        "teethData.upper.right",
+        "data.upper.right",
         data?.upper?.right?.map((t) =>
           t.label === newValue.label
             ? { ...t, material: newValue.material.$id }
@@ -349,7 +349,7 @@ export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
         )
       );
       form.setValue(
-        "teethData.lower.left",
+        "data.lower.left",
         data?.lower?.left?.map((t) =>
           t.label === newValue.label
             ? { ...t, material: newValue.material.$id }
@@ -357,7 +357,7 @@ export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
         )
       );
       form.setValue(
-        "teethData.lower.right",
+        "data.lower.right",
         data?.lower?.right?.map((t) =>
           t.label === newValue.label
             ? { ...t, material: newValue.material.$id }
@@ -380,7 +380,7 @@ export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
         : undefined,
       doctorId: selectedCase?.doctorId,
       materialId: selectedCase?.materialId,
-      teethData: caseData,
+      data: caseData,
       shade: selectedCase?.shade,
       due: selectedCase?.due,
       invoice: selectedCase?.invoiceStatus,

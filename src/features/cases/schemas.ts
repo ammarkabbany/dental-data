@@ -11,7 +11,7 @@ export const createCaseSchema = z.object({
   date: z.string(),
   doctorId: z.string().min(1, "Required"),
   materialId: z.string().min(1, "Required"),
-  teethData: z.custom<ToothCollection>(),
+  data: z.custom<ToothCollection>(),
   shade: z.string().optional(),
   due: z.number().min(0, "Due can't be negative"),
   invoice: z.boolean().optional(),

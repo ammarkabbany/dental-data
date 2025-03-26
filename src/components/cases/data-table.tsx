@@ -86,7 +86,7 @@ export function CasesDataTable({ data = [] }: DataTableProps) {
         "doctor",
         "date",
         "patient",
-        "teethData",
+        "data",
         "material",
         "shade",
         "note",

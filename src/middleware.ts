@@ -15,22 +15,22 @@ export default clerkMiddleware(async (auth, req) => {
     return redirectToSignIn()
   }
   
-  if (isTeamProtectedRoute(req) && userId) {
-    const {databases} = await createAdminClient();
-    const memberships = await databases.listDocuments<TeamMember>(
-      DATABASE_ID,
-      TEAM_MEMBERS_COLLECTION_ID,
-      [
-        Query.equal('userId', userId),
-        Query.select(['$id'])
-      ]
-    )
-    if (memberships.documents.length === 0) {
-      return NextResponse.redirect(`${NEXT_URL}/create-team?redirect=${encodeURIComponent(req.url)}`)
-    } else {
-      return NextResponse.next()
-    }
-  }
+  // if (isTeamProtectedRoute(req) && userId) {
+  //   const {databases} = await createAdminClient();
+  //   const memberships = await databases.listDocuments<TeamMember>(
+  //     DATABASE_ID,
+  //     TEAM_MEMBERS_COLLECTION_ID,
+  //     [
+  //       Query.equal('userId', userId),
+  //       Query.select(['$id'])
+  //     ]
+  //   )
+  //   if (memberships.documents.length === 0) {
+  //     return NextResponse.redirect(`${NEXT_URL}/create-team?redirect=${encodeURIComponent(req.url)}`)
+  //   } else {
+  //     return NextResponse.next()
+  //   }
+  // }
 })
 // import { AUTH_COOKIE, NEXT_URL } from "./lib/constants";
 // import { createSessionClient } from "./lib/appwrite/appwrite";

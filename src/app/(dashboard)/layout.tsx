@@ -1,6 +1,5 @@
 "use client";
 import AdminPanelLayout from "@/components/admin-panel/admin-panel-layout";
-import { MaterialCreateModal } from "@/components/materials/create-material-modal";
 import { useQueryClient } from "@tanstack/react-query";
 import DataFetcher from "@/components/data-fetcher";
 import { Case, Doctor } from "@/types";
@@ -82,10 +81,6 @@ export default function DashboardLayout({
 
   return (
     <AdminPanelLayout>
-      {/* Modals */}
-      {/*  */}
-      <MaterialCreateModal />
-      {/*  */}
       {/* Content */}
       {isLoading && <RouteChangeLoader />}
       {children}

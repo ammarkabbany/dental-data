@@ -71,7 +71,7 @@ export type Case = Models.Document & {
   date: string;
   doctorId: string;
   materialId: string;
-  teethData: ToothCollection;
+  data: ToothCollection;
   shade: string;
   due: number;
   invoice?: boolean;

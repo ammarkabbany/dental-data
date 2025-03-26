@@ -73,7 +73,7 @@ export const CreateCaseForm = () => {
       form.setValue("materialId", docMaterial.$id);
 
       // Update teeth data in the form
-      const currentTeethData = form.getValues().teethData;
+      const currentTeethData = form.getValues().data;
 
       // Update material for all teeth in each quadrant
       const updateQuadrant = (teeth: Tooth[] = []) => {
@@ -83,7 +83,7 @@ export const CreateCaseForm = () => {
         }));
       };
 
-      form.setValue("teethData", {
+      form.setValue("data", {
         upper: {
           left: updateQuadrant(currentTeethData?.upper?.left),
           right: updateQuadrant(currentTeethData?.upper?.right),
@@ -264,21 +264,21 @@ export const CreateCaseForm = () => {
     if (
       region &&
       secondRegion &&
-      form.getValues().teethData?.[region]?.[secondRegion]
+      form.getValues().data?.[region]?.[secondRegion]
     ) {
-      const teeth = form.getValues().teethData?.[region]?.[secondRegion];
+      const teeth = form.getValues().data?.[region]?.[secondRegion];
 
       // Check if the tooth is already selected
       const isToothSelected = (teeth ?? []).some(
         (tooth: Tooth) => tooth.label === label
       );
 
-      const data = form.getValues().teethData;
+      const data = form.getValues().data;
 
       if (isToothSelected) {
         // If already selected, remove the tooth
         form.setValue(
-          `teethData.${region}.${secondRegion}`,
+          `data.${region}.${secondRegion}`,
           teeth.filter((tooth: Tooth) => tooth.label !== label)
         );
 
@@ -288,7 +288,7 @@ export const CreateCaseForm = () => {
         );
       } else {
         // If not already selected, add the tooth
-        form.setValue(`teethData.${region}.${secondRegion}`, [
+        form.setValue(`data.${region}.${secondRegion}`, [
           ...data[region][secondRegion],
           { label, materialId: form.getValues()?.materialId },
         ]);
@@ -325,9 +325,9 @@ export const CreateCaseForm = () => {
         (mat) => mat.$id === tooth.materialId
       );
       handleDueSpecific(toothMaterial ?? newValue.material, newValue.material);
-      const data = form.getValues().teethData;
+      const data = form.getValues().data;
       form.setValue(
-        "teethData.upper.left",
+        "data.upper.left",
         data?.upper?.left?.map((t) =>
           t.label === newValue.label
             ? { ...t, material: newValue.material.$id }
@@ -335,7 +335,7 @@ export const CreateCaseForm = () => {
         )
       );
       form.setValue(
-        "teethData.upper.right",
+        "data.upper.right",
         data?.upper?.right?.map((t) =>
           t.label === newValue.label
             ? { ...t, material: newValue.material.$id }
@@ -343,7 +343,7 @@ export const CreateCaseForm = () => {
         )
       );
       form.setValue(
-        "teethData.lower.left",
+        "data.lower.left",
         data?.lower?.left?.map((t) =>
           t.label === newValue.label
             ? { ...t, material: newValue.material.$id }
@@ -351,7 +351,7 @@ export const CreateCaseForm = () => {
         )
       );
       form.setValue(
-        "teethData.lower.right",
+        "data.lower.right",
         data?.lower?.right?.map((t) =>
           t.label === newValue.label
             ? { ...t, material: newValue.material.$id }
@@ -372,7 +372,7 @@ export const CreateCaseForm = () => {
       date: new Date().toLocaleDateString("en-CA"),
       doctorId: templateParams.doctorId || "",
       materialId: templateParams.materialId || "",
-      teethData: {
+      data: {
         upper: {
           left: [],
           right: [],
@@ -405,7 +405,7 @@ export const CreateCaseForm = () => {
           form.resetField('due')
           form.resetField('invoice')
           form.resetField('note')
-          form.resetField('teethData')
+          form.resetField('data')
           setTeethData([]);
           setLastCheckedTooth(undefined)
           setCheckedTeeth([])

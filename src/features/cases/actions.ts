@@ -31,7 +31,7 @@ export const CreateCase = async (
       teamId,
       userId,
       ...data,
-      teethData: JSON.stringify(data.teethData),
+      data: JSON.stringify(data.data),
     },
     [
       Permission.read(Role.team(teamId)),
@@ -85,7 +85,7 @@ export const UpdateCase = async (
     {
       ...data,
       teamId,
-      teethData: JSON.stringify(data.teethData),
+      data: JSON.stringify(data.data),
     }
   );
 
@@ -197,7 +197,7 @@ export const GetCases = async (): Promise<Case[]> => {
         "shade",
         "note",
         "invoice",
-        "teethData",
+        "data",
         "teamId",
         "userId",
       ]),
