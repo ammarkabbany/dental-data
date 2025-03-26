@@ -66,7 +66,7 @@ export function useAuthSyncEffect() {
           const appwrite = await CreateUser({
             userId: user?.id,
             email: user?.primaryEmailAddress?.emailAddress,
-            name: user?.username ?? user?.fullName,
+            name: user?.fullName || user?.username,
             avatar: user?.imageUrl
           });
           
