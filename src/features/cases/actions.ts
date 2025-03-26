@@ -31,6 +31,8 @@ export const CreateCase = async (
       teamId,
       userId,
       ...data,
+      patient: data.patient || "-",
+      shade: data.shade || "-",
       data: JSON.stringify(data.data),
     },
     [
@@ -84,6 +86,8 @@ export const UpdateCase = async (
     id,
     {
       ...data,
+      patient: data.patient || "-",
+      shade: data.shade || "-",
       teamId,
       data: JSON.stringify(data.data),
     }
