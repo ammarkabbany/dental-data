@@ -9,44 +9,91 @@ export function useAuthSyncEffect() {
   const { user } = useUser();
 
   const [userId, setUserId] = useState<string | null>(null);
+  const [Loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<Error | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(null);
+
+  // const refreshToken = async () => {
+  //   try {
+  //     const response = await fetch(`/api/auth/jwt`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({ userId, sessionId }),
+  //     });
+  
+  //     const data = await response.json();
+  
+  //     if (!response.ok) {
+  //       throw new Error(data.error || 'Failed to get JWT');
+  //     }
+      
+  //     // console.log("token refreshed", data)
+  //   } catch (error) {
+  //     console.error('Token refresh error:', error);
+  //   }
+  // };
+  // // Add token refresh logic
+  // useEffect(() => {
+  //   if (!userId || !sessionId) return;
+
+  //   // Initial token refresh
+  //   refreshToken();
+
+  //   // Refresh token every 45 seconds (before 60-second expiration)
+  //   const refreshInterval = setInterval(refreshToken, 45 * 1000);
+
+  //   return () => clearInterval(refreshInterval);
+  // }, [userId, sessionId]);
 
   useEffect(() => {
-    // check if clerk user is signed in
     if (!isSignedIn || !user) {
+      setLoading(false);
       return;
     }
   
     async function syncUser() {
+      setLoading(true);
       try {
-        // check if there is a appwrite session available
         const appwriteSession = await account.getSession('current');
-        setUserId(appwriteSession.userId)
-        // return if session was available
+        setUserId(appwriteSession.userId);
+        setSessionId(appwriteSession.$id);
+        setLoading(false);
         return;
-      } catch (error) {
-        console.log('session was not available')
+      } catch (error) {        
+        try {
+          const appwrite = await CreateUser({
+            userId: user?.id,
+            email: user?.primaryEmailAddress?.emailAddress,
+            name: user?.username ?? user?.fullName,
+            avatar: user?.imageUrl
+          });
+          
+          const session = await account.createSession(appwrite.userId, appwrite.secret);
+          setUserId(session.userId);
+          setSessionId(session.$id);
+          // setUserId(user?.id)
+        } catch (createError) {
+          setError(createError as Error);
+          console.error('User creation error:', createError);
+        }
+      } finally {
+        setLoading(false);
       }
-      // create a new user in appwrite if not available
-      // or get a token if user already exists
-      const appwrite = await CreateUser({
-        userId: user?.id,
-        email: user?.primaryEmailAddress?.emailAddress,
-        name: user?.username ?? user?.fullName,
-        avatar: user?.imageUrl
-      })
-      // create a new appwrite session if not available
-      const session = await account.createSession(appwrite.userId, appwrite.secret)
-      setUserId(session.userId);
     }
     void syncUser();
 
     return () => {
       setUserId(null);
+      setSessionId(null);
+      setError(null);
     }
-  }, [isSignedIn, user])
+  }, [isSignedIn, user]);
 
   return {
-    isLoading: !isLoaded || (isSignedIn && userId === null),
-    isAuthenticated: (isSignedIn && user !== null) || false
+    isLoading: !isLoaded || Loading,
+    isAuthenticated: (isSignedIn && userId !== null) || false,
+    error
   }
-} 
+}

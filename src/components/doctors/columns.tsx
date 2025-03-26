@@ -2,7 +2,7 @@ import { type ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Doctor } from "@/types";
 import { formatCurrency, formatNumbers } from "@/lib/format-utils";
-import { Edit, EyeIcon } from "lucide-react";
+import { Edit } from "lucide-react";
 import { Button } from "../ui/button";
 import { PermissionCheckType } from "@/hooks/use-permissions";
 import {
@@ -13,9 +13,11 @@ import {
 } from "../ui/tooltip";
 import { CreditCard } from "lucide-react"; // Add this import
 import { PaymentDialog } from "./payment-dialog";
+import { Models } from "appwrite";
 
 export const getColumns = (
   permissions: PermissionCheckType,
+  prefs: Models.Preferences
 ): ColumnDef<Doctor>[] => [
   // {
   //   id: "select",
@@ -84,7 +86,7 @@ export const getColumns = (
       while (idString.length < 4) {
         idString = "0" + idString;
       }
-      return <div className="capitalize">{row.original.$id}</div>;
+      return <div className="capitalize">DR-{idString}</div>;
     },
     size: 100,
   },
@@ -161,7 +163,7 @@ export const getColumns = (
         </Badge>
       );
     },
-    size: 50
+    size: 50,
   },
   {
     accessorKey: "due",
@@ -170,7 +172,7 @@ export const getColumns = (
       const cases = parseInt(row.getValue("due"));
 
       // Format the amount as a dollar amount
-      const formatted = formatCurrency(cases, undefined, 0);
+      const formatted = formatCurrency(cases, prefs.currency, 0);
 
       return <div>{formatted}</div>;
     },
@@ -186,8 +188,8 @@ export const getColumns = (
             {permissions.checkPermission("financials", "has") && (
               <>
                 <Tooltip delayDuration={100}>
-                  <TooltipTrigger asChild>
-                    <PaymentDialog doctor={row.original}>
+                  <PaymentDialog doctor={row.original}>
+                    <TooltipTrigger asChild>
                       <Button
                         size={"icon"}
                         className="rounded-full"
@@ -195,8 +197,8 @@ export const getColumns = (
                       >
                         <CreditCard className="h-4 w-4" />
                       </Button>
-                    </PaymentDialog>
-                  </TooltipTrigger>
+                    </TooltipTrigger>
+                  </PaymentDialog>
                   <TooltipContent side="top">Add Payment</TooltipContent>
                 </Tooltip>
                 {/* <Tooltip delayDuration={100}>

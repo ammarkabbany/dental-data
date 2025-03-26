@@ -54,12 +54,12 @@ export function Menu({ isOpen }: MenuProps) {
           active={isActive('cases')}
           onClick={() => navigate('/dashboard/cases')}
         />
-        <NavItem
+        {permission.checkPermission('doctors', 'create') && <NavItem
           icon={Users}
           label="Doctors"
           active={isActive('doctors')}
           onClick={() => navigate('/dashboard/doctors')}
-        />
+        />}
 
         {/* <Separator className="my-3" /> */}
 
@@ -83,14 +83,12 @@ export function Menu({ isOpen }: MenuProps) {
           <NavItem disabled icon={BarChart3} label="Financial" /></>}
 
         {/* <Separator className="my-3" /> */}
-        <h3 className="px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">other</h3>
+        {/* <h3 className="px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">other</h3>
 
         <NavItem
           icon={Settings}
           label="Settings"
-        // active={activeTab === "settings"}
-        // onClick={() => setActiveTab("settings")}
-        />
+        /> */}
       </div>
     </ScrollArea>
   );

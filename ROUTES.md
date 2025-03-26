@@ -28,6 +28,11 @@
       - Contains related content
     - `/dashboard/cases/new`
       - **Description:** Create new cases
+  - `/dashboard/doctors`
+    - **Description:** Doctors management page
+    - **Features:**
+      - Displays doctors data table
+      - Contains related content
   - `/dashboard/templates`
     - **Description:** Templates management page
     - **Features:**

@@ -29,7 +29,7 @@ export default function Homepage() {
       <Header>
         <nav className="hidden md:flex items-center gap-6">
           <div onClick={() => handleClickScroll('features')} className="text-sm cursor-pointer font-medium hover:text-primary transition-colors">Features</div>
-          <div onClick={() => handleClickScroll('pricing')} className="text-sm cursor-pointer font-medium hover:text-primary transition-colors">Pricing</div>
+          {/* <div onClick={() => handleClickScroll('pricing')} className="text-sm cursor-pointer font-medium hover:text-primary transition-colors">Pricing</div> */}
         </nav>
       </Header>
 
@@ -91,14 +91,14 @@ export default function Homepage() {
                   className="relative w-full aspect-video overflow-hidden rounded-xl border bg-gradient-to-b from-background/10 to-background/50 p-1 shadow-xl"
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-purple-500/20 opacity-80" />
-                  <Image
+                  {/* <Image
                     src="https://picsum.photos/600/400"
                     alt="Dashboard Preview"
                     width={600}
                     height={400}
                     className="rounded-lg object-cover border shadow-md"
                     unoptimized
-                  />
+                  /> */}
 
                   <div className="absolute bottom-4 right-4">
                     <Badge variant="secondary" className="backdrop-blur-md bg-background/70">
@@ -292,7 +292,7 @@ export default function Homepage() {
                   Workflow
                 </Badge>
                 <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-                  How DentaFlow Works
+                  How Dental Data Works
                 </h2>
                 <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed dark:text-gray-400">
                   Our intuitive platform makes managing your dental lab simple and efficient
@@ -340,7 +340,7 @@ export default function Homepage() {
         </section>
 
         {/* Pricing Section */}
-        <section id="pricing" className="py-20 md:py-28 w-full">
+        {/* <section id="pricing" className="py-20 md:py-28 w-full">
           <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
@@ -546,7 +546,7 @@ export default function Homepage() {
               </Tabs>
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* FAQ Section */}
         {/* <section id="faq" className="py-20 md:py-28 w-full">
@@ -572,8 +572,8 @@ export default function Homepage() {
                     answer: "We've designed our migration process to be as smooth as possible. Our team will work with you to import your existing data, and we provide comprehensive training to ensure your team is comfortable with the new system. Most labs are up and running within a few days."
                   },
                   {
-                    question: "Can DentaFlow integrate with our accounting software?",
-                    answer: "Yes, DentaFlow integrates with popular accounting software including QuickBooks, Xero, and Sage. We also offer an API for custom integrations with other systems you may be using."
+                    question: "Can Dental Data integrate with our accounting software?",
+                    answer: "Yes, Dental Data integrates with popular accounting software including QuickBooks, Xero, and Sage. We also offer an API for custom integrations with other systems you may be using."
                   },
                   {
                     question: "Is my data secure?",
@@ -585,11 +585,11 @@ export default function Homepage() {
                   },
                   {
                     question: "Can I customize the system to match our workflow?",
-                    answer: "Yes, DentaFlow is highly customizable. You can configure case workflows, create custom fields, set up automation rules, and design reports that match your specific needs. Enterprise customers also receive custom development services."
+                    answer: "Yes, Dental Data is highly customizable. You can configure case workflows, create custom fields, set up automation rules, and design reports that match your specific needs. Enterprise customers also receive custom development services."
                   },
                   {
                     question: "Do you offer a free trial?",
-                    answer: "Yes, we offer a 14-day free trial with no credit card required. You'll get full access to all features so you can thoroughly evaluate if DentaFlow is right for your lab."
+                    answer: "Yes, we offer a 14-day free trial with no credit card required. You'll get full access to all features so you can thoroughly evaluate if Dental Data is right for your lab."
                   }
                 ].map((faq, index) => (
                   <AccordionItem key={index} value={`item-${index}`} className="overflow-hidden">
@@ -624,7 +624,7 @@ export default function Homepage() {
                   Ready to transform your dental lab?
                 </h2>
                 <p className="max-w-[700px] md:text-xl/relaxed mx-auto">
-                  Join hundreds of dental labs already using DentaFlow to streamline their operations
+                  Join hundreds of dental labs already using Dental Data to streamline their operations
                 </p>
               </div>
               {!isAuthenticated ? (
@@ -659,7 +659,7 @@ export default function Homepage() {
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <Logo src='/old-fav.ico' className='size-16' />
-                <span className="text-xl font-bold">DentaFlow</span>
+                <span className="text-xl font-bold">Dental Data</span>
               </div>
               <p className="text-sm text-muted-foreground">
                 Comprehensive dental lab management software designed by lab professionals, for lab professionals.
@@ -669,7 +669,7 @@ export default function Homepage() {
               <h4 className="text-sm font-semibold">Product</h4>
               <ul className="space-y-2 text-sm">
                 <li onClick={() => handleClickScroll('features')} className="text-muted-foreground cursor-pointer hover:text-foreground transition-colors">Features</li>
-                <li onClick={() => handleClickScroll('pricing')} className="text-muted-foreground cursor-pointer hover:text-foreground transition-colors">Pricing</li>
+                {/* <li onClick={() => handleClickScroll('pricing')} className="text-muted-foreground cursor-pointer hover:text-foreground transition-colors">Pricing</li> */}
                 <li><Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">Case Studies</Link></li>
               </ul>
             </div>
@@ -693,7 +693,7 @@ export default function Homepage() {
           </div>
           <div className="mt-8 border-t pt-8 flex flex-col sm:flex-row justify-between items-center">
             <p className="text-sm text-muted-foreground">
-              © 2025 DentaFlow. All rights reserved.
+              © 2025 Dental Data. All rights reserved.
             </p>
             <div className="flex items-center gap-4 mt-4 sm:mt-0">
               <Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">

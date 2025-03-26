@@ -52,7 +52,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const {isAuthenticated, isLoading} = useAuthSyncEffect();
+  const {isAuthenticated, isLoading, error} = useAuthSyncEffect();
   const {signOut} = useClerkAuth();
 
   const handleLogout = async () => {

@@ -9,24 +9,18 @@ import {
 } from "@hugeicons/core-free-icons";
 import { useDashboardData } from "@/hooks/use-dashboard-data";
 import { useTeam } from "@/providers/team-provider";
-import { CubeIcon, FileTextIcon, PlusCircledIcon } from "@radix-ui/react-icons";
-import StatsCard from "@/components/stats-card";
+import { CubeIcon, FileTextIcon } from "@radix-ui/react-icons";
 import RecentCases from "@/components/recent-cases";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
-import { Sparkles } from "lucide-react";
-import { QuickActionButton } from "@/components/quick-action-button";
-import { useRouter } from "next/navigation";
-import { Modals, useModalStore } from "@/store/modal-store";
+import { Sparkles, Users } from "lucide-react";
 import { usePermission } from "@/hooks/use-permissions";
 import { useUser } from "@clerk/nextjs";
 import { StatsCardProps, StatsGrid } from "@/components/stats-grid";
 import { formatNumbers } from "@/lib/format-utils";
 
 export default function DashboardPage() {
-  const { openModal } = useModalStore();
-  const router = useRouter();
-  const { userRole } = useTeam();
+  const { userRole, appwriteTeam } = useTeam();
   const { user } = useUser();
   const { data, isLoading } = useDashboardData();
   const permission = usePermission(userRole)
@@ -84,22 +78,13 @@ export default function DashboardPage() {
       ),
     },
     {
-      title: "Referrals",
-      value: "3,497",
+      title: "Team",
+      value: formatNumbers(appwriteTeam?.total ?? 0),
       // change: {
       //   value: "-17%",
       //   trend: "down",
       // },
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width={21}
-          height={21}
-          fill="currentColor"
-        >
-          <path d="m14.142.147 6.347 6.346a.5.5 0 0 1-.277.848l-1.474.23-5.656-5.657.212-1.485a.5.5 0 0 1 .848-.282ZM2.141 19.257c3.722-3.33 7.995-4.327 12.643-5.52l.446-4.017-4.297-4.298-4.018.447c-1.192 4.648-2.189 8.92-5.52 12.643L0 17.117c2.828-3.3 3.89-6.953 5.303-13.081l6.364-.708 5.657 5.657-.707 6.364c-6.128 1.415-9.782 2.475-13.081 5.304L2.14 19.258Zm5.284-6.029a2 2 0 1 1 2.828-2.828 2 2 0 0 1-2.828 2.828Z" />
-        </svg>
-      ),
+      icon: <Users />,
     },
   ]
 

@@ -2,7 +2,6 @@ import { Case } from "@/types";
 import { UserAvatar } from "./user-avatar";
 import { formatCurrency } from "@/lib/format-utils";
 import { useGetUserInfo } from "@/features/auth/hooks/use-get-userinfo";
-import { useDoctorsStore } from "@/store/doctors-store";
 import { useTeam } from "@/providers/team-provider";
 import { usePermission } from "@/hooks/use-permissions";
 
@@ -10,7 +9,6 @@ export const RecentCaseRow = ({ caseItem }: { caseItem: Partial<Case> }) => {
   const { data: user } = useGetUserInfo(caseItem.userId || "");
   const { userRole, appwriteTeam } = useTeam();
   const canViewDue = usePermission(userRole).canViewDue()
-  // const { getDoctorById } = useDoctorsStore();
   return (
     <tr key={caseItem.$id} className="hover:bg-current/5">
       <td className="px-6 py-3 whitespace-nowrap">

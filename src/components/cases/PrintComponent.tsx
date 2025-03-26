@@ -10,12 +10,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useModalStore } from "@/store/modal-store";
-import { useAuth } from "@/providers/auth-provider";
 import { calculateUnits } from "@/lib/case-utils";
 import { formatCurrency } from "@/lib/format-utils";
 import { Separator } from "@/components/ui/separator";
-import { useMaterialsStore } from "@/store/material-store";
-import { useDoctorsStore } from "@/store/doctors-store";
+import { useGetMaterials } from "@/features/materials/hooks/use-get-materials";
+import { useGetDoctors } from "@/features/doctors/hooks/use-get-doctors";
 // import { formatCurrency } from "~/lib/utils";
 
 // Define prop types for PrintableTable
@@ -161,8 +160,8 @@ const PrintComponent = ({selectedCases, options = defaultOptions}: PrintComponen
   const componentRef = useRef<HTMLDivElement>(null);
   const [showComponent, setShowComponent] = useState(false);
   const { isModalOpen, closeModal } = useModalStore();
-  const {materials} = useMaterialsStore();
-  const {doctors} = useDoctorsStore();
+  const {data: materials} = useGetMaterials();
+  const {data: doctors} = useGetDoctors();
 
   React.useEffect(() => {
     if (isModalOpen('print')) {
@@ -201,8 +200,8 @@ const PrintComponent = ({selectedCases, options = defaultOptions}: PrintComponen
           <PrintableTable
             ref={componentRef}
             cases={selectedCases}
-            doctors={doctors}
-            materials={materials}
+            doctors={doctors || []}
+            materials={materials || []}
             options={options}
           />
         </div>

@@ -31,6 +31,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogTrigger } from "../ui/dialog";
+import { useTeam } from "@/providers/team-provider";
 
 interface PaymentDialogProps {
   doctor: Doctor;
@@ -42,6 +43,7 @@ export function PaymentDialog({
   children
 }: PaymentDialogProps) {
   const { mutate, isPending, error } = useCreatePayment();
+  const {appwriteTeam} = useTeam();
 
   const [open, setOpen] = useState(false);
 
@@ -102,7 +104,7 @@ export function PaymentDialog({
         <CardHeader className="flex px-7">
           <CardTitle className="text-xl font-bold">Add Payment</CardTitle>
           <CardDescription>
-            Current due amount: {formatCurrency(doctor.due, undefined, 0)}
+            Current due amount: {formatCurrency(doctor.due, appwriteTeam?.prefs.currency, 0)}
           </CardDescription>
         </CardHeader>
         <CardContent className="p-7">

@@ -26,6 +26,7 @@ export const DoctorCreateModal = () => {
   const {mutate, isPending, error} = useCreateDoctor();
 
   const onCancel = () => {
+    form.reset();
     closeModal(Modals.CREATE_DOCTOR_MODAL);
   };
 
@@ -44,6 +45,7 @@ export const DoctorCreateModal = () => {
     }
     mutate({data: values, teamId: currentTeam.$id}, {
       onSuccess: () => {
+        form.reset();
         closeModal(Modals.CREATE_DOCTOR_MODAL);
       }
     })

@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { type Table } from "@tanstack/react-table";
-import { Doctor, Material, type Case } from "@/types";
+import { type Case } from "@/types";
 // import { DatePicker } from "../date-picker";
 import * as React from "react";
 // import { CustomComboBox } from "../custom-combobox";
@@ -23,21 +23,17 @@ import { DeleteCaseModal } from "./delete-case-modal";
 import { Badge } from "../ui/badge";
 import { usePermission } from "@/hooks/use-permissions";
 import { useTeam } from "@/providers/team-provider";
-import { useDoctorsStore } from "@/store/doctors-store";
+import { useGetDoctors } from "@/features/doctors/hooks/use-get-doctors";
 
-export default function CasesDataTableUtils({
-  table,
-}: {
-  table: Table<Case>;
-}) {
+export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
   const [exportOptions, setExportOptions] = React.useState<{
     [key: string]: boolean;
   }>({
     showClient: true,
     showShade: true,
   });
-  const {userRole} = useTeam();
-  const {doctors} = useDoctorsStore();
+  const { userRole } = useTeam();
+  const { data: doctors } = useGetDoctors();
   const currentDoctorFilterValue = table
     .getColumn("doctor")
     ?.getFilterValue() as string;
@@ -54,14 +50,13 @@ export default function CasesDataTableUtils({
     table.resetColumnFilters();
   };
 
-  const filtersCount = Object.values(table.getAllColumns()).filter((column) => column.getIsFiltered()).length;
+  const filtersCount = Object.values(table.getAllColumns()).filter((column) =>
+    column.getIsFiltered()
+  ).length;
 
   return (
     <>
-      <PrintComponent
-        selectedCases={selectedCases}
-        options={exportOptions}
-      />
+      <PrintComponent selectedCases={selectedCases} options={exportOptions} />
       <div className="flex flex-wrap items-center gap-2 py-4">
         <div className="flex gap-2">
           <Button
@@ -74,7 +69,9 @@ export default function CasesDataTableUtils({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="gap-2 transition">
-                Columns <Badge>{table.getVisibleFlatColumns().length-2}</Badge> <ChevronDown className="size-4" />
+                Columns{" "}
+                <Badge>{table.getVisibleFlatColumns().length - 2}</Badge>{" "}
+                <ChevronDown className="size-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -98,7 +95,10 @@ export default function CasesDataTableUtils({
         </div>
 
         {/*  */}
-        <CasesFiltersPopover indicator={filtersCount} clearFilters={clearFilters}>
+        <CasesFiltersPopover
+          indicator={filtersCount}
+          clearFilters={clearFilters}
+        >
           <div className="grid gap-2">
             <Label>Patient</Label>
             <Input
@@ -150,23 +150,38 @@ export default function CasesDataTableUtils({
               }}
               variant="secondary"
               className="flex-1"
-              values={doctors}
+              values={doctors || []}
             />
           </div>
         </CasesFiltersPopover>
         <div className="ml-auto flex flex-wrap gap-2">
-          {usePermission(userRole).checkPermission('cases', 'delete') &&
-            table.getSelectedRowModel().rows.length > 0 &&
-            <DeleteCaseModal cases={selectedCases} component={<Button variant={"destructive"}>
-              Delete Selected ({Math.min(table.getSelectedRowModel().rows.length, 100)})
-            </Button>} />
-          }
-
-          {usePermission(userRole).checkPermission('export', 'has') &&
-          <CasesExportDialog
-            exportOptions={exportOptions}
-            setExportOptions={setExportOptions}
-          />}
+          {/* <Select>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="date">Date</SelectItem>
+              <SelectItem value="$createdAt">Created at</SelectItem>
+            </SelectContent>
+          </Select> */}
+          {usePermission(userRole).checkPermission("cases", "delete") &&
+            table.getSelectedRowModel().rows.length > 0 && (
+              <DeleteCaseModal
+                cases={selectedCases}
+                component={
+                  <Button variant={"destructive"}>
+                    Delete Selected (
+                    {Math.min(table.getSelectedRowModel().rows.length, 100)})
+                  </Button>
+                }
+              />
+            )}
+          {usePermission(userRole).checkPermission("export", "has") && (
+            <CasesExportDialog
+              exportOptions={exportOptions}
+              setExportOptions={setExportOptions}
+            />
+          )}
         </div>
       </div>
     </>

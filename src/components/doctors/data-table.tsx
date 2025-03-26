@@ -45,12 +45,12 @@ export function DoctorsDataTable({ data = [] }: DataTableProps) {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
-  const {userRole} = useTeam();
+  const {userRole, appwriteTeam} = useTeam();
 
   const permissions = usePermission(userRole);
   // Add these states
 
-  const columns = getColumns(permissions);
+  const columns = getColumns(permissions, appwriteTeam?.prefs || {});
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({
       due: permissions.canViewDue(),
@@ -165,7 +165,7 @@ export function DoctorsDataTable({ data = [] }: DataTableProps) {
       <div className="space-y-4">
         <ScrollArea 
           id="table-scroll-area"
-          className="h-[460px] overflow-auto"
+          className="h-[590px] overflow-auto"
           type="scroll"
         >
           <Table className="table-fixed border-separate border-spacing-0 [&_tr:not(:last-child)_td]:border-b">
@@ -216,7 +216,7 @@ export function DoctorsDataTable({ data = [] }: DataTableProps) {
               ) : (
                 <TableRow>
                   <TableCell
-                    colSpan={columns.length}
+                    colSpan={table.getVisibleFlatColumns().length}
                     className="h-36 text-center text-lg"
                   >
                     No results.

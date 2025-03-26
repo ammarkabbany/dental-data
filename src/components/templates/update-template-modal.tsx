@@ -17,16 +17,22 @@ import { Button } from "../ui/button";
 import { useTeam } from "@/providers/team-provider";
 import { createTemplateSchema } from "@/features/templates/schemas";
 import { CustomComboBox } from "../custom-combobox";
-import { useMaterialsStore } from "@/store/material-store";
-import { useDoctorsStore } from "@/store/doctors-store";
 import { useUpdateTemplate } from "@/features/templates/hooks/use-update-template";
 import { Template } from "@/types";
 import { useState } from "react";
+import { useGetDoctors } from "@/features/doctors/hooks/use-get-doctors";
+import { useGetMaterials } from "@/features/materials/hooks/use-get-materials";
 
 export const TemplateUpdateModal = ({template, trigger}: {template: Template, trigger: React.ReactNode}) => {
   const { currentTeam } = useTeam();
-  const { materials, getMaterialById } = useMaterialsStore();
-  const { doctors, getDoctorById } = useDoctorsStore();
+  const { data: doctors } = useGetDoctors();
+  const { data: materials } = useGetMaterials();
+  const getMaterialById = (id: string) => {
+    return materials?.find((material) => material.$id === id);
+  };
+  const getDoctorById = (id: string) => {
+    return doctors?.find((doctor) => doctor.$id === id);
+  };
 
   const { mutate, isPending, error } = useUpdateTemplate();
 

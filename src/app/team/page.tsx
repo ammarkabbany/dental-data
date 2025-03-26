@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePermission } from "@/hooks/use-permissions";
 import { useTeam } from "@/providers/team-provider";
 import { Users2 } from "lucide-react";
+import PlanBillingPage from "./billing-tab";
 
 export default function TeamPage() {
   const {appwriteTeam, userRole, isLoading} = useTeam();
@@ -31,7 +32,7 @@ export default function TeamPage() {
             Team not found
           </h1>
         </div>
-      </>) : (<div className="p-8 max-w-6xl mx-auto">
+      </>) : (<div className="p-8">
         <Tabs
           defaultValue="general"
           orientation="vertical"
@@ -49,7 +50,7 @@ export default function TeamPage() {
               value="security"
               className="hover:bg-accent hover:text-foreground data-[state=active]:after:bg-accent data-[state=active]:hover:bg-accent relative w-full justify-start after:absolute after:inset-y-0 after:start-0 after:-ms-1 after:w-0.5 data-[state=active]:bg-transparent data-[state=active]:shadow-none"
             >
-              Security
+              Billing
             </TabsTrigger>
             <TabsTrigger
               value="notifications"
@@ -115,17 +116,22 @@ export default function TeamPage() {
             </TabsContent>
             <TabsContent value="security">
               <div className="space-y-1 py-4">
-                <h3 className="text-xl font-medium">Security</h3>
+                <h3 className="text-xl font-medium">Billing</h3>
                 <p className="text-muted-foreground text-xs">
-                  Manage your team&apos;s security settings
+                  Manage your team&apos;s billing settings
                 </p>
               </div>
               <div className="border-t border-dashed" />
+              <PlanBillingPage />
             </TabsContent>
             <TabsContent value="notifications">
-              <p className="text-muted-foreground px-4 py-3 text-xs">
-                Content for Tab 3
-              </p>
+              <div className="space-y-1 py-4">
+                <h3 className="text-xl font-medium">Notifications</h3>
+                <p className="text-muted-foreground text-xs">
+                  Manage your team&apos;s notifications settings
+                </p>
+              </div>
+              <div className="border-t border-dashed" />
             </TabsContent>
           </div>
         </Tabs>

@@ -43,7 +43,7 @@ export const CreateCaseForm = () => {
   const { data: materials } = useGetMaterials();
   const { addRecentTemplate, applyTemplate: storeCurrentTemplate, currentTemplate } =
     useTemplatesStore();
-  const getMatrialById = (id: string) => {
+  const getMaterialById = (id: string) => {
     return materials?.find((material) => material.$id === id);
   };
   const getDoctorById = (id: string) => {
@@ -485,8 +485,8 @@ export const CreateCaseForm = () => {
                             values={materials || []}
                             value={field.value}
                             action={handleMaterialSelection}
-                            previewValue={`${getMatrialById(field.value)?.name} ${
-                              getMatrialById(field.value)?.price
+                            previewValue={`${getMaterialById(field.value)?.name} ${
+                              getMaterialById(field.value)?.price
                             }`}
                           />
                         </FormControl>

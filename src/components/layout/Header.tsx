@@ -13,7 +13,7 @@ export default function Header({ children }: { children?: React.ReactNode }) {
         <div className="flex items-center gap-x-8">
           <Link href={"/"} className="flex items-center gap-2 select-none">
             <Logo src="/old-fav.ico" className="size-16 mt-1" />
-            <span className="text-xl font-bold">DentaFlow</span>
+            <span className="text-xl font-bold">Dental Data</span>
           </Link>
           {children}
         </div>

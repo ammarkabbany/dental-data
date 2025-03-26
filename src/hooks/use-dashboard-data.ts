@@ -96,6 +96,7 @@ async function getDashboardData() {
 
   const doctorIds = cases.documents.map(c => c.doctorId);
 
+  if (doctorIds) {
   const doctors = await databases.listDocuments<Doctor>(
     DATABASE_ID,
     DOCTORS_COLLECTION_ID,
@@ -107,7 +108,7 @@ async function getDashboardData() {
     if (doctor) {
       c.doctor = doctor;
     }
-  })
+  })}
 
   const doctorsCount = await databases.listDocuments<Doctor>(
     DATABASE_ID,

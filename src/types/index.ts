@@ -127,3 +127,11 @@ export type Payment = Models.Document & {
   doctorId: string;
   amount: number;
 }
+
+export type BillingPlan = Models.Document & {
+  name: string;
+  description: string;
+  price: number;
+  maxCases: number;
+  maxTeamMembers: number;
+}

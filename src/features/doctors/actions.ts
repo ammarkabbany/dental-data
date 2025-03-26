@@ -4,8 +4,10 @@ import {
   createAdminClient,
   createSessionClient,
 } from "@/lib/appwrite/appwrite";
-import { DATABASE_ID, DOCTORS_COLLECTION_ID } from "@/lib/constants";
+import { AUTH_COOKIE, DATABASE_ID, DOCTORS_COLLECTION_ID } from "@/lib/constants";
+import { generateShortUniqueId } from "@/lib/utils";
 import { Doctor } from "@/types";
+import { cookies } from "next/headers";
 import { ID, Permission, Query, Role } from "node-appwrite";
 
 export const CreateDoctor = async (
@@ -66,13 +68,16 @@ export const UpdateDoctorDue = async (
   return updatedDoctor;
 }
 
-export const GetDoctors = async (): Promise<Doctor[]> => {
+export const GetDoctors = async (queries: string[] = [Query.limit(9999)]): Promise<Doctor[]> => {
+  const c = await cookies();
+  const jwt = c.get(AUTH_COOKIE);
   const { databases } = await createSessionClient();
-
+  databases.client.setJWT(jwt?.value || "");
+  
   const doctors = await databases.listDocuments<Doctor>(
     DATABASE_ID,
     DOCTORS_COLLECTION_ID,
-    [Query.limit(9999)]
+    queries
   );
 
   return doctors.documents;

@@ -197,7 +197,7 @@ export function CasesDataTable({ data = [] }: DataTableProps) {
               ) : (
                 <TableRow>
                   <TableCell
-                    colSpan={columns.length}
+                    colSpan={table.getVisibleFlatColumns().length}
                     className="h-36 text-center text-lg"
                   >
                     No results.

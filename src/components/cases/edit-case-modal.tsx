@@ -10,7 +10,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Separator } from "../ui/separator";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -25,8 +25,6 @@ import { ResponsiveModalWithTrigger } from "../responsive-modal";
 import { DialogTrigger } from "../ui/dialog";
 import { useUpdateCase } from "@/features/cases/hooks/use-update-case";
 import { usePermission } from "@/hooks/use-permissions";
-import { useDoctorsStore } from "@/store/doctors-store";
-import { useMaterialsStore } from "@/store/material-store";
 import { useGetDoctors } from "@/features/doctors/hooks/use-get-doctors";
 import { useGetMaterials } from "@/features/materials/hooks/use-get-materials";
 
@@ -435,6 +433,9 @@ export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
           <CardTitle className="text-xl font-bold">
             Update case details
           </CardTitle>
+          <CardDescription className="text-sm">
+            Edit case details for {selectedCase.patient} (ID: {selectedCase.$id}).
+          </CardDescription>
           <div className="mt-2">
             <Separator />
           </div>

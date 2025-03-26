@@ -55,7 +55,7 @@ export function Sidebar() {
           </Link> */}
           <Link href={"/"} className="flex items-center select-none">
             <Logo src="/old-fav.ico" className="size-16 mt-1" />
-            <span className="text-xl font-bold">DentaFlow</span>
+            <span className="text-xl font-bold">Dental Data</span>
           </Link>
         </Button>
         <Menu isOpen={getOpenState()} />
