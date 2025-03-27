@@ -4,13 +4,13 @@ import { TemplateCreateModal } from "@/components/templates/create-template-moda
 import { TemplateCard } from "@/components/templates/template-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useGetTemplates } from "@/features/templates/hooks/use-get-templates";
 import { Modals, useModalStore } from "@/store/modal-store";
-import { useTemplatesStore } from "@/store/templates-store";
 import { PlusIcon } from "@radix-ui/react-icons";
 import * as React from "react";
 
 export default function TemplatesPage() {
-  const {templates} = useTemplatesStore();
+  const {data: templates} = useGetTemplates();
   const [searchTerm, setSearchTerm] = React.useState('');
   const {openModal} = useModalStore();
   return (

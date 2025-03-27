@@ -1,9 +1,8 @@
 import { usePrefetchCases } from "@/features/cases/hooks/use-get-cases";
 import { usePrefetchDoctors } from "@/features/doctors/hooks/use-get-doctors";
 import { usePrefetchMaterials } from "@/features/materials/hooks/use-get-materials";
-import { useGetTemplates } from "@/features/templates/hooks/use-get-templates";
+import { usePrefetchTemplates } from "@/features/templates/hooks/use-get-templates";
 import { usePrefetchDashboardData } from "@/hooks/use-dashboard-data";
-import { useAuth } from "@/providers/auth-provider";
 import { useTeam } from "@/providers/team-provider";
 import { useTemplatesStore } from "@/store/templates-store";
 import { useEffect } from "react";
@@ -14,9 +13,7 @@ export default function DataFetcher() {
   const prefetchDoctors = usePrefetchDoctors();
   const prefetchMaterials = usePrefetchMaterials();
   const prefetchCases = usePrefetchCases();
-  // const { data: materials, isLoading: isMaterialsLoading } = useGetMaterials();
-  const { data: templates, isLoading: isTemplatesLoading } = useGetTemplates();
-  const { setTemplates } = useTemplatesStore();
+  const prefetchTemplates = usePrefetchTemplates();
 
   useEffect(() => {
     // if (!isDoctorsLoading && doctors) {
@@ -26,12 +23,7 @@ export default function DataFetcher() {
     prefetchDoctors();
     prefetchMaterials();
     prefetchCases();
-    // if (!isMaterialsLoading && materials) {
-    //   setMaterials(materials);
-    // }
-    if (!isTemplatesLoading && templates) {
-      setTemplates(templates);
-    }
+    prefetchTemplates();
   }, [
     // isDoctorsLoading,
     // doctors,
@@ -41,8 +33,6 @@ export default function DataFetcher() {
     // setMaterials,
     isLoading,
     currentTeam,
-    isTemplatesLoading,
-    setTemplates,
   ]);
 
   return <></>

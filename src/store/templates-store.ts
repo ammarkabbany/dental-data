@@ -20,7 +20,6 @@ interface ITemplatesStore {
 export const useTemplatesStore = create<ITemplatesStore>((set, get) => {
   const subscribeToRealtime = () => {
     return client.subscribe(`databases.${DATABASE_ID}.collections.case_templates.documents`, (data) => {
-
       if (data.events.includes("databases.*.collections.*.documents.*.update")) {
         const response = data.payload as Template
         set((state) => {
@@ -80,11 +79,6 @@ export const useTemplatesStore = create<ITemplatesStore>((set, get) => {
       }
     });
   };
-  
-  // Only subscribe when in a browser environment
-  if (typeof window !== 'undefined') {
-    subscribeToRealtime(); // Call it when store initializes
-  }
 
   const storedRecents =
     typeof window !== "undefined"

@@ -3,10 +3,11 @@ import AdminPanelLayout from "@/components/admin-panel/admin-panel-layout";
 import { useQueryClient } from "@tanstack/react-query";
 import { Case, Doctor } from "@/types";
 import { useRealtimeUpdates } from "@/hooks/use-realtime-updates";
-import { CASES_COLLECTION_ID, DOCTORS_COLLECTION_ID, MATERIALS_COLLECTION_ID } from "@/lib/constants";
+import { CASES_COLLECTION_ID, DOCTORS_COLLECTION_ID, MATERIALS_COLLECTION_ID, TEMPLATES_COLLECTION_ID } from "@/lib/constants";
 import { useTeam } from "@/providers/team-provider";
 import RouteChangeLoader from "@/components/route-change-loader";
 import DataFetcher from "@/components/data-fetcher";
+import { useTemplatesStore } from "@/store/templates-store";
 
 export default function DashboardLayout({
   children,
@@ -68,6 +69,9 @@ export default function DashboardLayout({
   })
   useRealtimeUpdates(MATERIALS_COLLECTION_ID, () => {
     queryClient.invalidateQueries({ queryKey: ["materials"] });
+  })
+  useRealtimeUpdates(TEMPLATES_COLLECTION_ID, () => {
+    queryClient.invalidateQueries({ queryKey: ["templates"] });
   })
 
   return (

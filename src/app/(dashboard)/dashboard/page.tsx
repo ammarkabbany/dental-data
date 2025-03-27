@@ -36,7 +36,6 @@ import { cn } from "@/lib/utils";
 import { Modals, useModalStore } from "@/store/modal-store";
 import { MaterialCreateModal } from "@/components/materials/create-material-modal";
 import { DoctorCreateModal } from "@/components/doctors/create-doctor-modal";
-import { useEffect } from "react";
 
 export default function DashboardPage() {
   const { userRole, appwriteTeam, isLoading: isTeamLoading } = useTeam();
@@ -45,8 +44,7 @@ export default function DashboardPage() {
   const { checkPermission } = usePermission(userRole);
   const {openModal} = useModalStore();
 
-  const sidebar = useStore(useSidebar, (x) => x);
-  if (!sidebar) return null;
+  // const sidebar = useStore(useSidebar, (x) => x);
 
   const containerVariants = {
     hidden: {},
