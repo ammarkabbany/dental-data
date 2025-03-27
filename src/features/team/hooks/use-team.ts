@@ -36,7 +36,11 @@ export const useTeamData = () => {
         }
       }
     },
-    retry: 2
+    retry: 2,
+    staleTime: 1000 * 60 * 30, // Data stays fresh for 30 minutes
+    gcTime: 1000 * 60 * 60, // Cache persists for 1 hour
+    refetchOnWindowFocus: false, // Prevent refetch on tab focus
+    refetchOnMount: false, // Prevent refetch on component mount
   })
 
   return query;

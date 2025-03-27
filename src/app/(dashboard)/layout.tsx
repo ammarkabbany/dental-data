@@ -1,13 +1,12 @@
 "use client";
 import AdminPanelLayout from "@/components/admin-panel/admin-panel-layout";
 import { useQueryClient } from "@tanstack/react-query";
-import DataFetcher from "@/components/data-fetcher";
 import { Case, Doctor } from "@/types";
 import { useRealtimeUpdates } from "@/hooks/use-realtime-updates";
 import { CASES_COLLECTION_ID, DOCTORS_COLLECTION_ID, MATERIALS_COLLECTION_ID } from "@/lib/constants";
 import { useTeam } from "@/providers/team-provider";
-import { redirect, RedirectType } from "next/navigation";
 import RouteChangeLoader from "@/components/route-change-loader";
+import DataFetcher from "@/components/data-fetcher";
 
 export default function DashboardLayout({
   children,
@@ -15,9 +14,8 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const {currentTeam, isLoading} = useTeam();
-  if (!isLoading && !currentTeam) redirect('/', RedirectType.replace)
-
-  DataFetcher();
+  
+  // DataFetcher();
 
   const queryClient = useQueryClient();
 
@@ -75,6 +73,7 @@ export default function DashboardLayout({
   return (
     <AdminPanelLayout>
       {/* Content */}
+      <DataFetcher />
       {isLoading && <RouteChangeLoader />}
       {children}
     </AdminPanelLayout>

@@ -41,4 +41,6 @@ export default function DataFetcher() {
     isTemplatesLoading,
     setTemplates,
   ]);
+
+  return <></>
 }
