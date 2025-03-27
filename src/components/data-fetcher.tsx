@@ -4,11 +4,12 @@ import { usePrefetchMaterials } from "@/features/materials/hooks/use-get-materia
 import { useGetTemplates } from "@/features/templates/hooks/use-get-templates";
 import { usePrefetchDashboardData } from "@/hooks/use-dashboard-data";
 import { useAuth } from "@/providers/auth-provider";
+import { useTeam } from "@/providers/team-provider";
 import { useTemplatesStore } from "@/store/templates-store";
 import { useEffect } from "react";
 
 export default function DataFetcher() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const {isLoading, currentTeam} = useTeam();
   const prefetchDashboardData = usePrefetchDashboardData();
   const prefetchDoctors = usePrefetchDoctors();
   const prefetchMaterials = usePrefetchMaterials();
@@ -38,6 +39,8 @@ export default function DataFetcher() {
     // materials,
     // isMaterialsLoading,
     // setMaterials,
+    isLoading,
+    currentTeam,
     isTemplatesLoading,
     setTemplates,
   ]);

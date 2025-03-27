@@ -39,15 +39,11 @@ import { DoctorCreateModal } from "@/components/doctors/create-doctor-modal";
 import { useEffect } from "react";
 
 export default function DashboardPage() {
-  const { userRole, appwriteTeam, isLoading: isTeamLoading, currentTeam } = useTeam();
+  const { userRole, appwriteTeam, isLoading: isTeamLoading } = useTeam();
   const { user } = useUser();
-  const { data, isLoading, refetch } = useDashboardData();
+  const { data, isLoading } = useDashboardData();
   const { checkPermission } = usePermission(userRole);
   const {openModal} = useModalStore();
-
-  useEffect(() => {
-    if (!isTeamLoading && currentTeam) refetch();
-  }, [isTeamLoading, currentTeam])
 
   const sidebar = useStore(useSidebar, (x) => x);
   if (!sidebar) return null;
