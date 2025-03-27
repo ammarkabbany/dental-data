@@ -1,9 +1,20 @@
 import { Button } from "@/components/ui/button";
+import { useGetTemplates } from "@/features/templates/hooks/use-get-templates";
 import { useTemplatesStore } from "@/store/templates-store";
+import { useEffect } from "react";
 // import { CaseTemplate, useCaseTemplateStore } from "~/store/CaseTemplateStore";
 
 export default function TemplatesSidebar({ applyTemplate }: { applyTemplate: (template: any | undefined) => void }) {
-  const { favoriteTemplates, recentTemplates, getTemplateById } = useTemplatesStore();
+  const { favoriteTemplates, recentTemplates, getTemplateById, setTemplates, applyTemplate: tsApply } = useTemplatesStore();
+
+  const {data, isLoading} = useGetTemplates();
+
+  useEffect(() => {
+    tsApply(undefined)
+    if (!isLoading && data) {
+      setTemplates(data);
+    }
+  }, [isLoading, data])
 
   // useEffect(() => {
   //   const templateId = searchParams.get("templateId");

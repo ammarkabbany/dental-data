@@ -38,14 +38,13 @@ import { MaterialCreateModal } from "@/components/materials/create-material-moda
 import { DoctorCreateModal } from "@/components/doctors/create-doctor-modal";
 
 export default function DashboardPage() {
-  const { userRole, appwriteTeam } = useTeam();
+  const { userRole, appwriteTeam, isLoading: isTeamLoading } = useTeam();
   const { user } = useUser();
   const { data, isLoading } = useDashboardData();
   const { checkPermission } = usePermission(userRole);
   const {openModal} = useModalStore();
 
-  const sidebar = useStore(useSidebar, (x) => x);
-  if (!sidebar) return null;
+  // const sidebar = useStore(useSidebar, (x) => x);
 
   const containerVariants = {
     hidden: {},
@@ -167,7 +166,7 @@ export default function DashboardPage() {
         </div>
 
         <div className="">
-          {isLoading ? (
+          {isLoading || isTeamLoading ? (
             <motion.div
               className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4"
               initial="hidden"
