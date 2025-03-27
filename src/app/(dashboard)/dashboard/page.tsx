@@ -36,13 +36,18 @@ import { cn } from "@/lib/utils";
 import { Modals, useModalStore } from "@/store/modal-store";
 import { MaterialCreateModal } from "@/components/materials/create-material-modal";
 import { DoctorCreateModal } from "@/components/doctors/create-doctor-modal";
+import { useEffect } from "react";
 
 export default function DashboardPage() {
-  const { userRole, appwriteTeam } = useTeam();
+  const { userRole, appwriteTeam, isLoading: isTeamLoading, currentTeam } = useTeam();
   const { user } = useUser();
-  const { data, isLoading } = useDashboardData();
+  const { data, isLoading, refetch } = useDashboardData();
   const { checkPermission } = usePermission(userRole);
   const {openModal} = useModalStore();
+
+  useEffect(() => {
+    if (!isTeamLoading && currentTeam) refetch();
+  }, [isTeamLoading, currentTeam])
 
   const sidebar = useStore(useSidebar, (x) => x);
   if (!sidebar) return null;
@@ -167,7 +172,7 @@ export default function DashboardPage() {
         </div>
 
         <div className="">
-          {isLoading ? (
+          {isLoading || isTeamLoading ? (
             <motion.div
               className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4"
               initial="hidden"
