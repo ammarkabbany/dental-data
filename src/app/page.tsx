@@ -1,34 +1,74 @@
-"use client"
-import React from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { motion } from 'framer-motion';
+"use client";
+import React from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { motion } from "framer-motion";
 import {
-  Check, ChevronRight, Package, BarChart3, Users,
-  Clock, Shield, Database, ArrowRight
-} from 'lucide-react';
+  Check,
+  ChevronRight,
+  Package,
+  BarChart3,
+  Users,
+  Clock,
+  Shield,
+  Database,
+  ArrowRight,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import Logo from '@/components/logo';
-import { useAuth } from '@/providers/auth-provider';
-import Header from '@/components/layout/Header';
+import Logo from "@/components/logo";
+import { useAuth } from "@/providers/auth-provider";
+import Header from "@/components/layout/Header";
+import {
+  GoogleOneTap,
+  RedirectToSignIn,
+  SignedIn,
+  SignedOut,
+  SignIn,
+  SignInButton,
+} from "@clerk/nextjs";
+import { dark } from "@clerk/themes";
+import { NEXT_URL } from "@/lib/constants";
+import TeamCreationModal from "@/components/team/create-team-modal";
+import { useTeam } from "@/providers/team-provider";
+import { useSearchParams } from "next/navigation";
+import { useTeamData } from "@/features/team/hooks/use-team";
 
 export default function Homepage() {
-  const { isAuthenticated, logOut } = useAuth();
+  const { isAuthenticated, isLoading: isUserLoading } = useAuth();
+  const { currentTeam, isLoading } = useTeam();
+
+  const sft = useSearchParams().get("sft");
+
   const handleClickScroll = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
     }
   };
+
   return (
+    <>
+    <GoogleOneTap appearance={{baseTheme: dark}} />
     <div className="flex flex-col min-h-screen w-full mx-auto">
       <Header>
         <nav className="hidden md:flex items-center gap-6">
-          <div onClick={() => handleClickScroll('features')} className="text-sm cursor-pointer font-medium hover:text-primary transition-colors">Features</div>
+          <div
+            onClick={() => handleClickScroll("features")}
+            className="text-sm cursor-pointer font-medium hover:text-primary transition-colors"
+          >
+            Features
+          </div>
           {/* <div onClick={() => handleClickScroll('pricing')} className="text-sm cursor-pointer font-medium hover:text-primary transition-colors">Pricing</div> */}
         </nav>
       </Header>
@@ -47,32 +87,52 @@ export default function Homepage() {
                     Streamline Your Dental Lab Management
                   </h1>
                   <p className="max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400">
-                    The comprehensive platform that helps dental labs manage cases,
-                    doctors, materials, and inventory with precision and ease.
+                    The comprehensive platform that helps dental labs manage
+                    cases, doctors, materials, and inventory with precision and
+                    ease.
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                  {isAuthenticated ? (
-                    <>
+                  <SignedIn>
+                    {isLoading ? (
+                      <></>
+                    ) : currentTeam ? (
                       <Button size="lg" asChild>
-                        <Link href={'/dashboard'}>
-                          Go to Dashboard
-                        </Link>
+                        <Link href={"/dashboard"}>Go to Dashboard</Link>
                       </Button>
-                    </>
-                  ) : (
-                    <>
+                    ) : (
+                      <TeamCreationModal open={!!sft}>
+                        <Button size="lg" className="gap-1.5 group">
+                          Start Free Trial
+                          <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                        </Button>
+                      </TeamCreationModal>
+                    )}
+                  </SignedIn>
+                  <SignedOut>
+                    {sft && !isUserLoading && !isAuthenticated && (
+                      <RedirectToSignIn
+                        signInForceRedirectUrl={`${NEXT_URL}?sft=true`}
+                        signUpForceRedirectUrl={`${NEXT_URL}?sft=true`}
+                      />
+                    )}
+                    <SignInButton
+                      mode="modal"
+                      appearance={{ baseTheme: dark }}
+                      forceRedirectUrl={`${NEXT_URL}?sft=true`}
+                      withSignUp
+                    >
                       <Button size="lg" className="gap-1.5 group">
                         Start Free Trial
                         <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                       </Button>
-                      <Button size="lg" variant="outline">
-                        Book a Demo
-                      </Button>
-                    </>
-                  )}
+                    </SignInButton>
+                    <Button size="lg" variant="outline">
+                      Book a Demo
+                    </Button>
+                  </SignedOut>
                 </div>
-                {!isAuthenticated && (<div className="flex items-center gap-4 text-sm">
+                <div className="flex items-center gap-4 text-sm">
                   <div className="flex items-center gap-1">
                     <Check className="h-4 w-4 text-primary" />
                     <span>No credit card required</span>
@@ -81,7 +141,7 @@ export default function Homepage() {
                     <Check className="h-4 w-4 text-primary" />
                     <span>14-day free trial</span>
                   </div>
-                </div>)}
+                </div>
               </div>
               <div className="flex items-center justify-center">
                 <motion.div
@@ -101,7 +161,10 @@ export default function Homepage() {
                   /> */}
 
                   <div className="absolute bottom-4 right-4">
-                    <Badge variant="secondary" className="backdrop-blur-md bg-background/70">
+                    <Badge
+                      variant="secondary"
+                      className="backdrop-blur-md bg-background/70"
+                    >
                       Live Preview
                     </Badge>
                   </div>
@@ -139,7 +202,7 @@ export default function Homepage() {
                           d="M3 15a4 4 0 0 1 4-4h10a4 4 0 1 1 0 8H7a4 4 0 0 1-4-4z"
                         />
                       </svg>
-                    )
+                    ),
                   },
                   {
                     name: "Data Security",
@@ -158,7 +221,7 @@ export default function Homepage() {
                           d="M12 11c1.104 0 2-.896 2-2V6c0-1.104-.896-2-2-2s-2 .896-2 2v3c0 1.104.896 2 2 2zm0 4v3m0-7h.01"
                         />
                       </svg>
-                    )
+                    ),
                   },
                   {
                     name: "Customizable",
@@ -177,7 +240,7 @@ export default function Homepage() {
                           d="M4 6h16M4 12h16M4 18h7"
                         />
                       </svg>
-                    )
+                    ),
                   },
                   {
                     name: "24/7 Support",
@@ -196,10 +259,13 @@ export default function Homepage() {
                           d="M12 8c-2.21 0-4 1.79-4 4 0 .617.154 1.197.424 1.714L10 16h4l1.576-2.286A3.982 3.982 0 0 0 16 12c0-2.21-1.79-4-4-4z"
                         />
                       </svg>
-                    )
-                  }
+                    ),
+                  },
                 ].map((item) => (
-                  <div key={item.name} className="flex flex-col items-center justify-center">
+                  <div
+                    key={item.name}
+                    className="flex flex-col items-center justify-center"
+                  >
                     {item.icon}
                     <span className="mt-2 font-semibold">{item.name}</span>
                   </div>
@@ -208,7 +274,6 @@ export default function Homepage() {
             </div>
           </div>
         </section>
-
 
         {/* Features Section */}
         <section id="features" className="py-20 md:py-28 w-full">
@@ -222,8 +287,9 @@ export default function Homepage() {
                   Everything you need to manage your dental lab
                 </h2>
                 <p className="max-w-[900px] mx-auto text-gray-500 md:text-xl/relaxed dark:text-gray-400">
-                  Our platform combines powerful features with an intuitive interface to help you
-                  streamline operations and focus on what matters most.
+                  Our platform combines powerful features with an intuitive
+                  interface to help you streamline operations and focus on what
+                  matters most.
                 </p>
               </div>
             </div>
@@ -232,32 +298,38 @@ export default function Homepage() {
                 {
                   icon: <Users className="h-10 w-10 text-primary" />,
                   title: "Doctor Management",
-                  description: "Keep track of all your doctors and their preferences, ensuring personalized service every time."
+                  description:
+                    "Keep track of all your doctors and their preferences, ensuring personalized service every time.",
                 },
                 {
                   icon: <Database className="h-10 w-10 text-primary" />,
                   title: "Case Tracking",
-                  description: "Monitor each case from receipt to delivery with detailed status updates and notifications."
+                  description:
+                    "Monitor each case from receipt to delivery with detailed status updates and notifications.",
                 },
                 {
                   icon: <Package className="h-10 w-10 text-primary" />,
                   title: "Inventory Control",
-                  description: "Maintain optimal stock levels with automated alerts and reordering based on your usage patterns."
+                  description:
+                    "Maintain optimal stock levels with automated alerts and reordering based on your usage patterns.",
                 },
                 {
                   icon: <BarChart3 className="h-10 w-10 text-primary" />,
                   title: "Analytics Dashboard",
-                  description: "Gain insights with comprehensive reporting on productivity, revenue, and business growth."
+                  description:
+                    "Gain insights with comprehensive reporting on productivity, revenue, and business growth.",
                 },
                 {
                   icon: <Clock className="h-10 w-10 text-primary" />,
                   title: "Real-time Updates",
-                  description: "Access the latest information across all devices with our cloud-based synchronization."
+                  description:
+                    "Access the latest information across all devices with our cloud-based synchronization.",
                 },
                 {
                   icon: <Shield className="h-10 w-10 text-primary" />,
                   title: "Secure Data Storage",
-                  description: "Rest easy knowing your sensitive data is protected with enterprise-grade security protocols."
+                  description:
+                    "Rest easy knowing your sensitive data is protected with enterprise-grade security protocols.",
                 },
               ].map((feature, index) => (
                 <motion.div
@@ -274,7 +346,9 @@ export default function Homepage() {
                       <CardTitle>{feature.title}</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-muted-foreground">{feature.description}</p>
+                      <p className="text-muted-foreground">
+                        {feature.description}
+                      </p>
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -295,7 +369,8 @@ export default function Homepage() {
                   How Dental Data Works
                 </h2>
                 <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed dark:text-gray-400">
-                  Our intuitive platform makes managing your dental lab simple and efficient
+                  Our intuitive platform makes managing your dental lab simple
+                  and efficient
                 </p>
               </div>
             </div>
@@ -304,18 +379,21 @@ export default function Homepage() {
                 {
                   step: "01",
                   title: "Register cases",
-                  description: "Quickly log new cases with our streamlined intake form designed specifically for dental labs."
+                  description:
+                    "Quickly log new cases with our streamlined intake form designed specifically for dental labs.",
                 },
                 {
                   step: "02",
                   title: "Track progress",
-                  description: "Monitor every step of production with real-time updates and automated notifications."
+                  description:
+                    "Monitor every step of production with real-time updates and automated notifications.",
                 },
                 {
                   step: "03",
                   title: "Deliver with confidence",
-                  description: "Complete quality checks, generate delivery notes, and manage billing all in one place."
-                }
+                  description:
+                    "Complete quality checks, generate delivery notes, and manage billing all in one place.",
+                },
               ].map((item, index) => (
                 <motion.div
                   key={index}
@@ -332,7 +410,9 @@ export default function Homepage() {
                     <div className="absolute top-6 left-[calc(50%+34px)] w-[calc(100%-36px)] border-t border-dashed border-muted-foreground/30 hidden md:block" />
                   )}
                   <h3 className="text-xl font-bold">{item.title}</h3>
-                  <p className="mt-2 text-muted-foreground">{item.description}</p>
+                  <p className="mt-2 text-muted-foreground">
+                    {item.description}
+                  </p>
                 </motion.div>
               ))}
             </div>
@@ -624,30 +704,59 @@ export default function Homepage() {
                   Ready to transform your dental lab?
                 </h2>
                 <p className="max-w-[700px] md:text-xl/relaxed mx-auto">
-                  Join hundreds of dental labs already using Dental Data to streamline their operations
+                  Join hundreds of dental labs already using Dental Data to
+                  streamline their operations
                 </p>
               </div>
-              {!isAuthenticated ? (
-                <>
-                  <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                    <Button size="lg" variant="secondary" className="gap-1.5 group">
+              <div className="flex flex-col gap-2 min-[400px]:flex-row">
+                <SignedIn>
+                  {isLoading ? (
+                    <></>
+                  ) : currentTeam ? (
+                    <Button variant={"secondary"} size="lg" asChild>
+                      <Link href={"/dashboard"}>Go to Dashboard</Link>
+                    </Button>
+                  ) : (
+                    <TeamCreationModal open={false}>
+                      <Button
+                        size="lg"
+                        variant="secondary"
+                        className="gap-1.5 group"
+                      >
+                        Start Your Free Trial
+                        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      </Button>
+                    </TeamCreationModal>
+                  )}
+                </SignedIn>
+                <SignedOut>
+                  <SignInButton
+                    mode="modal"
+                    appearance={{ baseTheme: dark }}
+                    forceRedirectUrl={`${NEXT_URL}?sft=true`}
+                    withSignUp
+                  >
+                    <Button
+                      size="lg"
+                      variant="secondary"
+                      className="gap-1.5 group"
+                    >
                       Start Your Free Trial
                       <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                     </Button>
-                    <Button size="lg" variant="outline" className="bg-primary-foreground/10 hover:bg-primary-foreground/20 border-primary-foreground/20">
-                      Schedule a Demo
-                    </Button>
-                  </div>
-                  <p className="text-sm text-primary-foreground/80">
-                    No credit card required. 14-day free trial.
-                  </p>
-                </>
-              ) : (
-                <Button size="lg" variant="secondary" className="gap-1.5 group" asChild>
-                  <Link href={'/dashboard'}>
-                    Go to Dashboard</Link>
-                </Button>
-              )}
+                  </SignInButton>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="bg-primary-foreground/10 hover:bg-primary-foreground/20 border-primary-foreground/20"
+                  >
+                    Schedule a Demo
+                  </Button>
+                </SignedOut>
+              </div>
+              <p className="text-sm text-primary-foreground/80">
+                No credit card required. 14-day free trial.
+              </p>
             </div>
           </div>
         </section>
@@ -658,36 +767,98 @@ export default function Homepage() {
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <Logo src='/old-fav.ico' className='size-16' />
+                <Logo src="/old-fav.ico" className="size-16" />
                 <span className="text-xl font-bold">Dental Data</span>
               </div>
               <p className="text-sm text-muted-foreground">
-                Comprehensive dental lab management software designed by lab professionals, for lab professionals.
+                Comprehensive dental lab management software designed by lab
+                professionals, for lab professionals.
               </p>
             </div>
             <div className="space-y-4">
               <h4 className="text-sm font-semibold">Product</h4>
               <ul className="space-y-2 text-sm">
-                <li onClick={() => handleClickScroll('features')} className="text-muted-foreground cursor-pointer hover:text-foreground transition-colors">Features</li>
+                <li
+                  onClick={() => handleClickScroll("features")}
+                  className="text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
+                >
+                  Features
+                </li>
                 {/* <li onClick={() => handleClickScroll('pricing')} className="text-muted-foreground cursor-pointer hover:text-foreground transition-colors">Pricing</li> */}
-                <li><Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">Case Studies</Link></li>
+                <li>
+                  <Link
+                    href="#"
+                    className="text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Case Studies
+                  </Link>
+                </li>
               </ul>
             </div>
             <div className="space-y-4">
               <h4 className="text-sm font-semibold">Company</h4>
               <ul className="space-y-2 text-sm">
-                <li><Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">About Us</Link></li>
-                <li><Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">Blog</Link></li>
-                <li><Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">Careers</Link></li>
-                <li><Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">Contact</Link></li>
+                <li>
+                  <Link
+                    href="#"
+                    className="text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    About Us
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#"
+                    className="text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Blog
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#"
+                    className="text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Careers
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#"
+                    className="text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Contact
+                  </Link>
+                </li>
               </ul>
             </div>
             <div className="space-y-4">
               <h4 className="text-sm font-semibold">Legal</h4>
               <ul className="space-y-2 text-sm">
-                <li><Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">Privacy Policy</Link></li>
-                <li><Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">Terms of Service</Link></li>
-                <li><Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">Cookie Policy</Link></li>
+                <li>
+                  <Link
+                    href="#"
+                    className="text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#"
+                    className="text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Terms of Service
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#"
+                    className="text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Cookie Policy
+                  </Link>
+                </li>
               </ul>
             </div>
           </div>
@@ -696,20 +867,62 @@ export default function Homepage() {
               © 2025 Dental Data. All rights reserved.
             </p>
             <div className="flex items-center gap-4 mt-4 sm:mt-0">
-              <Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+              <Link
+                href="#"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-5 w-5"
+                >
                   <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
                 </svg>
                 <span className="sr-only">Facebook</span>
               </Link>
-              <Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+              <Link
+                href="#"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-5 w-5"
+                >
                   <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
                 </svg>
                 <span className="sr-only">Twitter</span>
               </Link>
-              <Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+              <Link
+                href="#"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-5 w-5"
+                >
                   <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
                   <rect x="2" y="9" width="4" height="12"></rect>
                   <circle cx="4" cy="4" r="2"></circle>
@@ -721,5 +934,6 @@ export default function Homepage() {
         </div>
       </footer>
     </div>
+    </>
   );
 }

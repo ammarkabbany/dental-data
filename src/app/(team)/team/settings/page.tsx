@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePermission } from "@/hooks/use-permissions";
 import { useTeam } from "@/providers/team-provider";
 import { Users2 } from "lucide-react";
-import PlanBillingPage from "./billing-tab";
+import PlanBillingPage from "../billing-tab";
 
 export default function TeamPage() {
   const {appwriteTeam, userRole, isLoading} = useTeam();
@@ -32,7 +32,7 @@ export default function TeamPage() {
             Team not found
           </h1>
         </div>
-      </>) : (<div className="p-8">
+      </>) : (<div className="pt-8 pb-8 px-4 sm:px-8">
         <Tabs
           defaultValue="general"
           orientation="vertical"

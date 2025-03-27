@@ -56,9 +56,7 @@ export async function CreateUser({
       if (name && user.name !== name) {
         await users.updateName(userId, name);
       }
-      if (avatar && user.prefs.avatar !== avatar) {
-        await users.updatePrefs(userId, { avatar });
-      }
+      await users.updatePrefs(userId, { avatar });
       const token = await users.createToken(userId);
       return token;
     }

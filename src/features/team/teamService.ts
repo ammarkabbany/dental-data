@@ -2,7 +2,7 @@
 import { createAdminClient } from "@/lib/appwrite/appwrite";
 import { DATABASE_ID, TEAM_MEMBERS_COLLECTION_ID, TEAMS_COLLECTION_ID } from "@/lib/constants";
 import { Team, TeamMember } from "@/types";
-import { ID, Query } from "node-appwrite";
+import { ID, Permission, Query, Role } from "node-appwrite";
 
 
 // getById: async (id: string): Promise<Team | undefined> => {
@@ -62,26 +62,25 @@ async function addTeamMember(teamId: string, userId: string, role: string) {
 
 async function createTeam(name: string, userId: string) {
   const { databases } = await createAdminClient();
-  const initialTeam = await databases.createDocument<Team>(
+  const id = ID.unique();
+  const team = await databases.createDocument<Team>(
     DATABASE_ID,
     TEAMS_COLLECTION_ID,
-    ID.unique(),
+    id,
     {
       name,
-      userId,
-    }
+      ownerId: userId,
+      maxCases: 500,
+      planExpiresAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+    },
+    [
+      Permission.read(Role.team(id)),
+      Permission.write(Role.team(id, 'owner')),
+    ]
   );
 
   // Add creator as team owner
-  const member = await addTeamMember(initialTeam.$id, userId, "owner");
-  const team = await databases.updateDocument<Team>(
-    DATABASE_ID,
-    TEAMS_COLLECTION_ID,
-    initialTeam.$id,
-    {
-      members: [member],
-    }
-  );
+  await addTeamMember(team.$id, userId, "owner");
 
   return team;
 }

@@ -1,12 +1,12 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
-import { AUTH_COOKIE, DATABASE_ID, NEXT_URL, TEAM_MEMBERS_COLLECTION_ID } from './lib/constants'
+import { DATABASE_ID, NEXT_URL, TEAM_MEMBERS_COLLECTION_ID } from './lib/constants'
 import { NextResponse } from 'next/server'
 import { createAdminClient } from './lib/appwrite/appwrite'
 import { Query } from 'node-appwrite'
 import { TeamMember } from './types'
 
 const isProtectedRoute = createRouteMatcher(['/dashboard(.*)', '/team(.*)', '/account(.*)'])
-const isTeamProtectedRoute = createRouteMatcher(['/dashboard(.*)', '/team(.*)'])
+const isTeamProtectedRoute = createRouteMatcher(['/dashboard(.*)', '/team', '/team/settings'])
 
 export default clerkMiddleware(async (auth, req) => {
   const { userId, redirectToSignIn } = await auth()
@@ -26,7 +26,7 @@ export default clerkMiddleware(async (auth, req) => {
   //     ]
   //   )
   //   if (memberships.documents.length === 0) {
-  //     return NextResponse.redirect(`${NEXT_URL}/create-team?redirect=${encodeURIComponent(req.url)}`)
+  //     return NextResponse.redirect(`${NEXT_URL}/team/create?redirect=${encodeURIComponent(req.nextUrl.pathname)}`)
   //   } else {
   //     return NextResponse.next()
   //   }

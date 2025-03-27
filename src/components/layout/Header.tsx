@@ -1,7 +1,7 @@
 import Logo from "../logo";
 import { useAuth } from "@/providers/auth-provider";
 import { Button } from "../ui/button";
-import { SignInButton, SignUpButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut, SignInButton, SignUpButton } from "@clerk/nextjs";
 import { UserNav } from "../admin-panel/user-nav";
 import Link from "next/link";
 
@@ -20,7 +20,7 @@ export default function Header({ children }: { children?: React.ReactNode }) {
 
         <div className="flex items-center gap-4">
           {isAuthenticated ? (
-            <>
+            <SignedIn>
               <UserNav />
               {/* <Button onClick={logOut} variant={"secondary"} size={"sm"}>
                   Sign out
@@ -31,16 +31,16 @@ export default function Header({ children }: { children?: React.ReactNode }) {
                     <Image src={user?.imageUrl ?? ""} fill className="h-9 w-9 rounded-full object-cover" alt="User Avatar" />
                   </button>
                 </div> */}
-            </>
+            </SignedIn>
           ) : (
-            <>
+            <SignedOut>
               <Button variant="ghost" className="transition" size="sm" asChild>
                 <SignInButton />
               </Button>
               <Button className="transition" size="sm" asChild>
                 <SignUpButton>Get Started</SignUpButton>
               </Button>
-            </>
+            </SignedOut>
           )}
         </div>
       </div>

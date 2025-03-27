@@ -8,7 +8,7 @@ import { useTemplatesStore } from "@/store/templates-store";
 import { useEffect } from "react";
 
 export default function DataFetcher() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
   const prefetchDashboardData = usePrefetchDashboardData();
   const prefetchDoctors = usePrefetchDoctors();
   const prefetchMaterials = usePrefetchMaterials();
@@ -21,17 +21,15 @@ export default function DataFetcher() {
     // if (!isDoctorsLoading && doctors) {
     //   setDoctors(doctors);
     // }
-    if (isAuthenticated) {
-      prefetchDashboardData();
-      prefetchDoctors();
-      prefetchMaterials();
-      prefetchCases();
-      // if (!isMaterialsLoading && materials) {
-      //   setMaterials(materials);
-      // }
-      if (!isTemplatesLoading && templates) {
-        setTemplates(templates);
-      }
+    prefetchDashboardData();
+    prefetchDoctors();
+    prefetchMaterials();
+    prefetchCases();
+    // if (!isMaterialsLoading && materials) {
+    //   setMaterials(materials);
+    // }
+    if (!isTemplatesLoading && templates) {
+      setTemplates(templates);
     }
   }, [
     // isDoctorsLoading,
@@ -40,7 +38,6 @@ export default function DataFetcher() {
     // materials,
     // isMaterialsLoading,
     // setMaterials,
-    isAuthenticated,
     isTemplatesLoading,
     setTemplates,
   ]);

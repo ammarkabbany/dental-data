@@ -15,7 +15,9 @@ export const getBillingPlan = async (planId: string) => {
       '$id',
       'name',
       'description',
-      'price'
+      'price',
+      'maxTeamMembers',
+      'maxCases'
     ])]
   );
   return plan;

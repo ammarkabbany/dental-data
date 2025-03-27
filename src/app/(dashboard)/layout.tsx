@@ -8,13 +8,6 @@ import { CASES_COLLECTION_ID, DOCTORS_COLLECTION_ID, MATERIALS_COLLECTION_ID } f
 import { useTeam } from "@/providers/team-provider";
 import { redirect, RedirectType } from "next/navigation";
 import RouteChangeLoader from "@/components/route-change-loader";
-// import { CASES_COLLECTION_ID } from "@/lib/constants";
-// import { useRealtimeUpdates } from "@/hooks/use-realtime-updates";
-// import { Case } from "@/types";
-// import { useAuth } from "@/providers/auth-provider";
-// import { toast } from "sonner";
-// import { useTeam } from "@/providers/team-provider";
-// import SimplePageLoader from "@/components/page-loader";
 
 export default function DashboardLayout({
   children,
@@ -22,7 +15,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const {currentTeam, isLoading} = useTeam();
-  if (!isLoading && !currentTeam) redirect('/team', RedirectType.replace)
+  if (!isLoading && !currentTeam) redirect('/', RedirectType.replace)
 
   DataFetcher();
 

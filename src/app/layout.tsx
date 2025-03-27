@@ -23,7 +23,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "DentaFlow | Dental Lab Management",
+  title: "Dental Data | Dental Lab Management",
   description: "Comprehensive management system for dental labs",
 };
 

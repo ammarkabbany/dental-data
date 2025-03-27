@@ -2,15 +2,18 @@ import { useQuery } from "@tanstack/react-query";
 import { account, databases } from "@/lib/appwrite/client";
 import { DATABASE_ID, TEAMS_COLLECTION_ID } from "@/lib/constants";
 import { Team } from "@/types";
-import { getAppwriteTeam } from "../queries";
-import { getUserRole } from "@/features/auth/actions";
+import { getAppwriteMembership, getAppwriteTeam } from "../queries";
 
 export const useTeamData = () => {
   const query = useQuery({
     queryKey: ["team"],
     queryFn: async () => {
       const appwriteTeam = await getAppwriteTeam();
-      if (!appwriteTeam) return;
+      if (!appwriteTeam) return {
+        appwriteTeam: null,
+        team: null,
+        role: null
+      };
       try {
         const user = await account.get();
         const team = await databases.getDocument<Team>(
@@ -18,7 +21,8 @@ export const useTeamData = () => {
           TEAMS_COLLECTION_ID,
           appwriteTeam.$id
         )
-        const role = await getUserRole(appwriteTeam.$id, user.$id);
+        const membership = await getAppwriteMembership(team.$id, user.$id);
+        const role = membership?.roles[0];
         return {
           appwriteTeam,
           team,
@@ -32,7 +36,6 @@ export const useTeamData = () => {
         }
       }
     },
-    // refetchInterval: 60000, // refetch every minute
     retry: 2
   })
 
