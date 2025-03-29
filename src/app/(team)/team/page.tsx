@@ -14,17 +14,26 @@ import Header from "@/components/layout/Header";
 import { useCurrentTeam } from "@/features/team/hooks/use-current-team";
 import { useAppwriteTeam } from "@/features/team/hooks/use-appwrite-team";
 import TeamNotFound from "@/components/team-not-found";
+import { useAuth } from "@/providers/auth-provider";
+import { useEffect } from "react";
 
 export default function TeamPage() {
+  const { isLoading: isUserLoading, isAuthenticated, handleLogin } = useAuth();
   const {data: currentTeam, isLoading} = useCurrentTeam();
   const {data: appwriteTeam} = useAppwriteTeam();
+
+  useEffect(() => {
+    if (!isUserLoading && !isAuthenticated) {
+      handleLogin('/team')
+    }
+  }, [isUserLoading, isAuthenticated])
 
   const {
     data: plan,
     isLoading: isPlanLoading
   } = useGetBillingPlan();
 
-  if (isLoading || isPlanLoading) {
+  if (isUserLoading || (isLoading || isPlanLoading)) {
     return (
       <main>
         <Header />
@@ -33,6 +42,12 @@ export default function TeamPage() {
         </div>
       </main>
     );
+  }
+
+  if (!isAuthenticated) {
+    return <main>
+      <Header />
+    </main>
   }
 
   if (!currentTeam || !plan) {

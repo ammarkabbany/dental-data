@@ -24,7 +24,6 @@ import { Material, Template, Tooth } from "@/types";
 import { useRouter } from "next/navigation";
 import TemplatesSidebar from "./templates-sidebar";
 import { usePermission } from "@/hooks/use-permissions";
-import { useUser } from "@clerk/nextjs";
 import { useTemplateParams } from "@/features/templates/hooks/use-template-params";
 import { useTemplatesStore } from "@/store/templates-store";
 import { useGetMembership } from "@/features/team/hooks/use-get-membership";
@@ -32,7 +31,6 @@ import { useGetMembership } from "@/features/team/hooks/use-get-membership";
 export const CreateCaseForm = () => {
   const {data: membership} = useGetMembership();
   const canViewDue = usePermission(membership?.roles[0] || null).canViewDue();
-  const { user } = useUser();
   const router = useRouter();
 
   const templateParams = useTemplateParams();
@@ -392,7 +390,7 @@ export const CreateCaseForm = () => {
       return;
     }
     mutate(
-      { data: values, teamId: membership.teamId, userId: user!.id },
+      { data: values, teamId: membership.teamId, userId: membership.userId },
       {
         onSuccess: () => {
           if (templateParams.templateId) {

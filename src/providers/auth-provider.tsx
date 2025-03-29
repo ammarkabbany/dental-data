@@ -9,6 +9,7 @@ import { getCurrent } from '@/features/auth/queries';
 import { useQueryClient } from '@tanstack/react-query';
 import { OAuthProvider } from 'appwrite';
 import { NEXT_URL } from '@/lib/constants';
+import { User } from '@/types';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -30,7 +31,7 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const { isAuthenticated, isLoading, error } = useAuthSyncEffect();
   const { signOut } = useClerkAuth();
-  const [user, setUser] = useState<any | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [userLoading, setUserLoading] = useState<boolean>(false);
   const queryClient = useQueryClient();
 

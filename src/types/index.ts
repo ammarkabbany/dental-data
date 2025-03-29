@@ -70,6 +70,14 @@ export type Case = Models.Document & {
   patient: string;
   date: string;
   doctorId: string;
+  doctor: {
+    $id: string;
+    name: string;
+  }
+  material: {
+    $id: string;
+    name: string;
+  }
   materialId: string;
   data: ToothCollection;
   shade: string;

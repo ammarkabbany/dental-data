@@ -20,8 +20,8 @@ import { useGetDoctors } from "@/features/doctors/hooks/use-get-doctors";
 // Define prop types for PrintableTable
 type PrintableTableProps = {
   cases: Case[] | null;
-  doctors: Doctor[] | null;
-  materials: Material[] | null;
+  // doctors: Doctor[] | null;
+  // materials: Material[] | null;
   options: {
     [key: string]: boolean;
   };
@@ -29,7 +29,7 @@ type PrintableTableProps = {
 
 // Define PrintableTable component with forwardRef
 const PrintableTable = React.forwardRef<HTMLDivElement, PrintableTableProps>(
-  ({ cases, doctors, materials, options }: PrintableTableProps, ref) => {
+  ({ cases, options }: PrintableTableProps, ref) => {
     // const { team } = useAuth();
 
     const loadTeethData = (array: Tooth[] | undefined) => {
@@ -71,12 +71,8 @@ const PrintableTable = React.forwardRef<HTMLDivElement, PrintableTableProps>(
             </TableHeader>
             <TableBody>
               {cases?.map((caseItem: Case) => {
-                const doctor = doctors?.find(
-                  (d) => d.$id === caseItem.doctorId,
-                )?.name;
-                const material = materials?.find(
-                  (m) => m.$id === caseItem.materialId,
-                )?.name;
+                const doctor = caseItem.doctor.name;
+                const material = caseItem.material.name
                 const caseData = caseItem.data ? JSON.parse(String(caseItem.data)) as ToothCollection : undefined;
                 const lowerLeft = loadTeethData(
                   caseData?.lower?.left,
@@ -160,8 +156,6 @@ const PrintComponent = ({selectedCases, options = defaultOptions}: PrintComponen
   const componentRef = useRef<HTMLDivElement>(null);
   const [showComponent, setShowComponent] = useState(false);
   const { isModalOpen, closeModal } = useModalStore();
-  const {data: materials} = useGetMaterials();
-  const {data: doctors} = useGetDoctors();
 
   React.useEffect(() => {
     if (isModalOpen('print')) {
@@ -200,8 +194,8 @@ const PrintComponent = ({selectedCases, options = defaultOptions}: PrintComponen
           <PrintableTable
             ref={componentRef}
             cases={selectedCases}
-            doctors={doctors || []}
-            materials={materials || []}
+            // doctors={doctors || []}
+            // materials={materials || []}
             options={options}
           />
         </div>
