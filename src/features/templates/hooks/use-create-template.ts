@@ -2,13 +2,18 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner";
 import { Template } from "@/types";
 import { CreateTemplate } from "../actions";
+import { useGetMembership } from "@/features/team/hooks/use-get-membership";
 
 
 export const useCreateTemplate = () => {
+  const {data: membership} = useGetMembership();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({data, teamId}: {data: Partial<Template>, teamId: string}) => {
-      const template = await CreateTemplate(teamId, data)
+    mutationFn: async ({data}: {data: Partial<Template>}) => {
+      if (!membership) {
+        throw new Error('Not a member of a team')
+      }
+      const template = await CreateTemplate(membership.teamId, data)
       return template;
     },
     onSuccess: (data) => {

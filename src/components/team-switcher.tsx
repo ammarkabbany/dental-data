@@ -10,11 +10,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { useTeam } from "@/providers/team-provider"
 import { ChevronsUpDown, PlusIcon, Users2 } from "lucide-react";
+import { useGetMembership } from "@/features/team/hooks/use-get-membership";
 
 export function TeamSwitcher() {
-  const { currentTeam: team } = useTeam();
+  const {data: membership} = useGetMembership();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -23,7 +23,7 @@ export function TeamSwitcher() {
           className="bg-sidebar h-12 hover:bg-sidebar-accent w-full text-sidebar-accent-foreground focus-visible:ring-0 gap-3 [&>svg]:size-auto"
         >
           <div className="flex aspect-square size-8 items-center justify-center rounded-md overflow-hidden bg-sidebar-primary text-sidebar-primary-foreground">
-            {team && (
+            {membership && (
               // <Image
               //   src={activeTeam.logo}
               //   width={36}
@@ -35,7 +35,7 @@ export function TeamSwitcher() {
           </div>
           <div className="grid flex-1 text-left text-base leading-tight">
             <span className="truncate font-medium">
-              {team?.name ?? "Select a Team"}
+              {membership?.teamName ?? "Select a Team"}
             </span>
           </div>
           <ChevronsUpDown
@@ -54,18 +54,18 @@ export function TeamSwitcher() {
         <DropdownMenuLabel className="uppercase text-muted-foreground/60 text-xs">
           Teams
         </DropdownMenuLabel>
-          {team && (
+          {membership && (
               <DropdownMenuItem
-                key={team.$id}
+                key={membership.teamId}
                 // onClick={() => setActiveTeam(team)}
                 className="gap-2 p-2"
               >
                 <div className="flex size-6 items-center justify-center rounded-md overflow-hidden">
-                  {team && (
+                  {membership && (
                     <Users2 className="size-5" />
                   )}
                 </div>
-                {team.name}
+                {membership.teamName}
               </DropdownMenuItem>
             )}
         {/* <DropdownMenuSeparator />

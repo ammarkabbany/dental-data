@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
@@ -19,37 +18,23 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import Logo from "@/components/logo";
-import { useAuth } from "@/providers/auth-provider";
 import Header from "@/components/layout/Header";
 import {
-  GoogleOneTap,
-  RedirectToSignIn,
   SignedIn,
   SignedOut,
-  SignIn,
   SignInButton,
 } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import { NEXT_URL } from "@/lib/constants";
-import TeamCreationModal from "@/components/team/create-team-modal";
-import { useTeam } from "@/providers/team-provider";
-import { useSearchParams } from "next/navigation";
-import { useTeamData } from "@/features/team/hooks/use-team";
+import { useAuth } from "@/providers/auth-provider";
 
 export default function Homepage() {
-  const { isAuthenticated, isLoading: isUserLoading } = useAuth();
-  const { currentTeam, isLoading } = useTeam();
-
-  const sft = useSearchParams().get("sft");
-
+  const {handleLogin} = useAuth();
   const handleClickScroll = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -59,7 +44,6 @@ export default function Homepage() {
 
   return (
     <>
-    <GoogleOneTap appearance={{baseTheme: dark}} />
     <div className="flex flex-col min-h-screen w-full mx-auto">
       <Header>
         <nav className="hidden md:flex items-center gap-6">
@@ -94,39 +78,15 @@ export default function Homepage() {
                 </div>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
                   <SignedIn>
-                    {isLoading ? (
-                      <></>
-                    ) : currentTeam ? (
-                      <Button size="lg" asChild>
-                        <Link href={"/dashboard"}>Go to Dashboard</Link>
-                      </Button>
-                    ) : (
-                      <TeamCreationModal open={!!sft}>
-                        <Button size="lg" className="gap-1.5 group">
-                          Start Free Trial
-                          <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                        </Button>
-                      </TeamCreationModal>
-                    )}
+                    <Button size="lg" asChild>
+                      <Link href={"/dashboard"}>Go to Dashboard</Link>
+                    </Button>
                   </SignedIn>
                   <SignedOut>
-                    {sft && !isUserLoading && !isAuthenticated && (
-                      <RedirectToSignIn
-                        signInForceRedirectUrl={`${NEXT_URL}?sft=true`}
-                        signUpForceRedirectUrl={`${NEXT_URL}?sft=true`}
-                      />
-                    )}
-                    <SignInButton
-                      mode="modal"
-                      appearance={{ baseTheme: dark }}
-                      forceRedirectUrl={`${NEXT_URL}?sft=true`}
-                      withSignUp
-                    >
-                      <Button size="lg" className="gap-1.5 group">
-                        Start Free Trial
-                        <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                      </Button>
-                    </SignInButton>
+                    <Button onClick={() => handleLogin()} size="lg" className="gap-1.5 group">
+                      Start Free Trial
+                      <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </Button>
                     <Button size="lg" variant="outline">
                       Book a Demo
                     </Button>
@@ -710,41 +670,20 @@ export default function Homepage() {
               </div>
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
                 <SignedIn>
-                  {isLoading ? (
-                    <></>
-                  ) : currentTeam ? (
-                    <Button variant={"secondary"} size="lg" asChild>
-                      <Link href={"/dashboard"}>Go to Dashboard</Link>
-                    </Button>
-                  ) : (
-                    <TeamCreationModal open={false}>
-                      <Button
-                        size="lg"
-                        variant="secondary"
-                        className="gap-1.5 group"
-                      >
-                        Start Your Free Trial
-                        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                      </Button>
-                    </TeamCreationModal>
-                  )}
+                  <Button variant={"secondary"} size="lg" asChild>
+                    <Link href={"/dashboard"}>Go to Dashboard</Link>
+                  </Button>
                 </SignedIn>
                 <SignedOut>
-                  <SignInButton
-                    mode="modal"
-                    appearance={{ baseTheme: dark }}
-                    forceRedirectUrl={`${NEXT_URL}?sft=true`}
-                    withSignUp
+                  <Button
+                    size="lg"
+                    variant="secondary"
+                    className="gap-1.5 group"
+                    onClick={() => handleLogin()}
                   >
-                    <Button
-                      size="lg"
-                      variant="secondary"
-                      className="gap-1.5 group"
-                    >
-                      Start Your Free Trial
-                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                    </Button>
-                  </SignInButton>
+                    Start Your Free Trial
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </Button>
                   <Button
                     size="lg"
                     variant="outline"

@@ -57,27 +57,25 @@ export function useAuthSyncEffect() {
       setLoading(true);
       try {
         const appwriteSession = await account.getSession('current');
+        const appwriteUser = await account.get();
         setUserId(appwriteSession.userId);
         setSessionId(appwriteSession.$id);
+        if (appwriteUser.prefs.avatar !== user?.imageUrl) {
+          await account.updatePrefs({
+            ...appwriteUser.prefs,
+            avatar: user?.imageUrl,
+          })
+        }
+        if (user && user.fullName && appwriteUser.name !== user.fullName) {
+          await account.updateName(user.fullName);
+        }
         setLoading(false);
         return;
       } catch (error) {        
-        try {
-          const appwrite = await CreateUser({
-            userId: user?.id,
-            email: user?.primaryEmailAddress?.emailAddress,
-            name: user?.fullName || user?.username,
-            avatar: user?.imageUrl
-          });
-          
-          const session = await account.createSession(appwrite.userId, appwrite.secret);
-          setUserId(session.userId);
-          setSessionId(session.$id);
-          // setUserId(user?.id)
-        } catch (createError) {
-          setError(createError as Error);
-          console.error('User creation error:', createError);
-        }
+        setUserId(null);
+        setSessionId(null);
+        setError(null);
+        return;
       } finally {
         setLoading(false);
       }
@@ -92,8 +90,8 @@ export function useAuthSyncEffect() {
   }, [isSignedIn, user]);
 
   return {
-    isLoading: !isLoaded || Loading,
-    isAuthenticated: (isSignedIn && userId !== null) || false,
+    isLoading: !isLoaded,
+    isAuthenticated: isLoaded && isSignedIn,
     error
   }
 }

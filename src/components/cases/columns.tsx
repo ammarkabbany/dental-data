@@ -8,10 +8,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { EditCaseModal } from "./edit-case-modal";
 import { Button } from "../ui/button";
 
-export const getColumns = ({getDoctorById, getMaterialById}: {
-  getDoctorById: (id: string) => Doctor | undefined,
-  getMaterialById: (id: string) => Material | undefined
-}): ColumnDef<Case>[] => [
+export const getColumns = (): ColumnDef<Case>[] => [
   {
     id: "select",
     size: 30,
@@ -93,7 +90,7 @@ export const getColumns = ({getDoctorById, getMaterialById}: {
     //   );
     // },
     accessorFn: (row) => {
-      const doctor = getDoctorById(row.doctorId);
+      const doctor = row.doctor;
       const doctorName = doctor?.name || "Unknown"
       return doctorName.length > 20 ? doctorName.substring(0, 20) + "..." : doctorName;
     },
@@ -177,7 +174,7 @@ export const getColumns = ({getDoctorById, getMaterialById}: {
   {
     accessorKey: "material",
     accessorFn: (row) => {
-      const material = getMaterialById(row.materialId);
+      const material = row.material;
       const materialName = material?.name || "Unknown"
       return materialName.length > 20 ? materialName.substring(0, 20) + "..." : materialName;
     },

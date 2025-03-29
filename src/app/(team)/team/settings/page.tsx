@@ -5,13 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePermission } from "@/hooks/use-permissions";
-import { useTeam } from "@/providers/team-provider";
 import { Users2 } from "lucide-react";
 import PlanBillingPage from "../billing-tab";
+import { useGetMembership } from "@/features/team/hooks/use-get-membership";
 
 export default function TeamPage() {
-  const {appwriteTeam, userRole, isLoading} = useTeam();
-  const canUpdate = usePermission(userRole).checkPermission('team', 'update');
+  const {data: membership} = useGetMembership();
+  const canUpdate = usePermission(membership?.roles[0] || null).checkPermission('team', 'update');
 
   // useEffect(() => {
   //   const fetchUserTeamPrefs = async () => {
@@ -26,13 +26,7 @@ export default function TeamPage() {
   return (
     <main>
       <Header />
-      {!appwriteTeam && !isLoading ? (<>
-        <div className="flex justify-center items-center mt-24">
-          <h1 className="text-4xl text-destructive-foreground">
-            Team not found
-          </h1>
-        </div>
-      </>) : (<div className="pt-8 pb-8 px-4 sm:px-8">
+      <div className="pt-8 pb-8 px-4 sm:px-8">
         <Tabs
           defaultValue="general"
           orientation="vertical"
@@ -76,7 +70,7 @@ export default function TeamPage() {
                   </p>
                 </div>
                 <div className="space-y-1 flex gap-x-2">
-                  <Input disabled={!canUpdate} variant={"default"} className="w-[250px] bg-zinc-900" name="team-name" defaultValue={appwriteTeam?.name}>
+                  <Input disabled={!canUpdate} variant={"default"} className="w-[250px] bg-zinc-900" name="team-name" defaultValue={membership?.teamName}>
                     <Input.Group>
                       <Input.LeftIcon>
                         <Users2 />
@@ -95,7 +89,7 @@ export default function TeamPage() {
                   </p>
                 </div>
                 <div className="space-y-1 flex gap-x-2">
-                  <Select disabled={!canUpdate} value={appwriteTeam?.prefs.currency}>
+                  <Select disabled={!canUpdate} value={'EGP'}>
                     <SelectTrigger className="w-[250px] bg-zinc-900">
                       <SelectValue placeholder="Select a currency" />
                     </SelectTrigger>
@@ -135,7 +129,7 @@ export default function TeamPage() {
             </TabsContent>
           </div>
         </Tabs>
-      </div>)}
+      </div>
     </main>
   );
 }

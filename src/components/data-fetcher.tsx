@@ -1,14 +1,15 @@
 import { usePrefetchCases } from "@/features/cases/hooks/use-get-cases";
 import { usePrefetchDoctors } from "@/features/doctors/hooks/use-get-doctors";
 import { usePrefetchMaterials } from "@/features/materials/hooks/use-get-materials";
+import { useAppwriteTeam } from "@/features/team/hooks/use-appwrite-team";
 import { usePrefetchTemplates } from "@/features/templates/hooks/use-get-templates";
 import { usePrefetchDashboardData } from "@/hooks/use-dashboard-data";
-import { useTeam } from "@/providers/team-provider";
-import { useTemplatesStore } from "@/store/templates-store";
+import { useAuth } from "@/providers/auth-provider";
 import { useEffect } from "react";
 
 export default function DataFetcher() {
-  const {isLoading, currentTeam} = useTeam();
+  const {isAuthenticated, isLoading: isUserLoading} = useAuth();
+  const {data, isLoading} = useAppwriteTeam();
   const prefetchDashboardData = usePrefetchDashboardData();
   const prefetchDoctors = usePrefetchDoctors();
   const prefetchMaterials = usePrefetchMaterials();
@@ -25,14 +26,10 @@ export default function DataFetcher() {
     prefetchCases();
     prefetchTemplates();
   }, [
-    // isDoctorsLoading,
-    // doctors,
-    // setDoctors,
-    // materials,
-    // isMaterialsLoading,
-    // setMaterials,
+    isAuthenticated,
+    isUserLoading,
     isLoading,
-    currentTeam,
+    data,
   ]);
 
   return <></>

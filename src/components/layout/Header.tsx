@@ -1,12 +1,15 @@
 import Logo from "../logo";
 import { useAuth } from "@/providers/auth-provider";
 import { Button } from "../ui/button";
-import { SignedIn, SignedOut, SignInButton, SignUpButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut, SignUpButton } from "@clerk/nextjs";
 import { UserNav } from "../admin-panel/user-nav";
 import Link from "next/link";
+import { account } from "@/lib/appwrite/client";
+import { OAuthProvider } from "appwrite";
+import { NEXT_URL } from "@/lib/constants";
 
 export default function Header({ children }: { children?: React.ReactNode }) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, handleLogin } = useAuth();
   return (
     <header className="border-b sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/75">
       <div className="container flex h-16 items-center justify-between mx-auto px-4 md:px-6">
@@ -34,11 +37,11 @@ export default function Header({ children }: { children?: React.ReactNode }) {
             </SignedIn>
           ) : (
             <SignedOut>
-              <Button variant="ghost" className="transition" size="sm" asChild>
-                <SignInButton />
+              <Button onClick={() => handleLogin()} variant="ghost" className="transition" size="sm">
+                Sign In
               </Button>
-              <Button className="transition" size="sm" asChild>
-                <SignUpButton>Get Started</SignUpButton>
+              <Button onClick={() => handleLogin()} className="transition" size="sm">
+                Get Started
               </Button>
             </SignedOut>
           )}

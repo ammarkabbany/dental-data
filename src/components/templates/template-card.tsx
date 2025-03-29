@@ -11,13 +11,13 @@ import { Check, Pencil, Star } from "lucide-react";
 import { Template } from "@/types";
 import { useRouter } from "next/navigation";
 import { usePermission } from "@/hooks/use-permissions";
-import { useTeam } from "@/providers/team-provider";
 import { TemplateUpdateModal } from "./update-template-modal";
 import { DialogTrigger } from "../ui/dialog";
 import { DeleteTemplateModal } from "./delete-template-modal";
 import { useTemplatesStore } from "@/store/templates-store";
 import { useGetDoctors } from "@/features/doctors/hooks/use-get-doctors";
 import { useGetMaterials } from "@/features/materials/hooks/use-get-materials";
+import { useGetMembership } from "@/features/team/hooks/use-get-membership";
 export const TemplateCard = ({ template }: { template: Template }) => {
   const router = useRouter();
   const { data: doctors } = useGetDoctors();
@@ -29,7 +29,8 @@ export const TemplateCard = ({ template }: { template: Template }) => {
     return doctors?.find((doctor) => doctor.$id === id);
   };
   const {toggleFavorite, favoriteTemplates} = useTemplatesStore();
-  const {userRole} = useTeam();
+  const {data: membership} = useGetMembership();
+  const userRole = membership?.roles[0] || null;
 
   const applyTemplate = (template: Template) => {
     let uriString = `/dashboard/cases/new?templateId=${template.$id}`;

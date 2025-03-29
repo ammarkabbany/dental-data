@@ -7,13 +7,10 @@ import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable'
 import autoTable from "jspdf-autotable";
-import { useTeam } from "@/providers/team-provider";
 import { useGetBillingPlan } from "@/features/team/hooks/use-get-billing-plan";
 
 export default function PlanBillingPage() {
-  const team = useTeam().currentTeam;
-
-  const {data: plan, isLoading} = useGetBillingPlan(team?.planId);
+  const {data: plan, isLoading} = useGetBillingPlan();
 
   if (isLoading) {
     return <div>Loading...</div>

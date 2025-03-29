@@ -17,10 +17,8 @@ import { Separator } from "../ui/separator";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useCreateDoctor } from "@/features/doctors/hooks/use-create-doctor";
-import { useTeam } from "@/providers/team-provider";
 
 export const DoctorCreateModal = () => {
-  const {currentTeam} = useTeam();
   const { isModalOpen, closeModal } = useModalStore();
 
   const {mutate, isPending, error} = useCreateDoctor();
@@ -40,10 +38,7 @@ export const DoctorCreateModal = () => {
   });
 
   const onSubmit = (values: z.infer<typeof createDoctorSchema>) => {
-    if (!currentTeam) {
-      return;
-    }
-    mutate({data: values, teamId: currentTeam.$id}, {
+    mutate({data: values}, {
       onSuccess: () => {
         form.reset();
         closeModal(Modals.CREATE_DOCTOR_MODAL);

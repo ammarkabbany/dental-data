@@ -4,15 +4,15 @@ import { Button } from "./ui/button";
 import { Case } from "@/types";
 import { RecentCaseRow } from "./recent-case-row";
 import { usePermission } from "@/hooks/use-permissions";
-import { useTeam } from "@/providers/team-provider";
+import { useGetMembership } from "@/features/team/hooks/use-get-membership";
 
 interface RecentCasesProps {
   cases: Partial<Case>[];
 }
 
 export default function RecentCases({ cases }: RecentCasesProps) {
-  const { userRole } = useTeam();
-  const canViewDue = usePermission(userRole).canViewDue()
+  const {data: membership} = useGetMembership();
+  const canViewDue = usePermission(membership?.roles[0] || null).canViewDue()
   return (
     <div className="rounded-lg shadow-sm border bg-dental-bg-card/50">
       <div className="p-6 border-b">
