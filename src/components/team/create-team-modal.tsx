@@ -24,7 +24,6 @@ import {
   FormMessage,
 } from "../ui/form";
 import { useAuth } from "@clerk/nextjs";
-import { useTeam } from "@/providers/team-provider";
 import Link from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
 

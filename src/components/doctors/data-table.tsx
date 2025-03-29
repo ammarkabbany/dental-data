@@ -30,24 +30,24 @@ import { DataTablePagination } from "../data-table-pagination";
 import { Input } from "../ui/input";
 import { Search } from "lucide-react";
 import { usePermission } from "@/hooks/use-permissions";
-import { useTeam } from "@/providers/team-provider";
 
 interface DataTableProps {
   data: Doctor[];
 }
 
 // Add these imports
-import { PaymentDialog } from "./payment-dialog";
-import { useState } from "react";
+import { useGetMembership } from "@/features/team/hooks/use-get-membership";
+import { useAppwriteTeam } from "@/features/team/hooks/use-appwrite-team";
 
 export function DoctorsDataTable({ data = [] }: DataTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
-  const {userRole, appwriteTeam} = useTeam();
+  const {data: membership} = useGetMembership();
+  const {data: appwriteTeam} = useAppwriteTeam();
 
-  const permissions = usePermission(userRole);
+  const permissions = usePermission(membership?.roles[0] || null);
   // Add these states
 
   const columns = getColumns(permissions, appwriteTeam?.prefs || {});

@@ -13,16 +13,13 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
 import { useCreatePayment } from "@/features/doctors/hooks/use-create-payment";
 import { DatePicker } from "../date-picker";
-import { ResponsiveModal, ResponsiveModalWithTrigger } from "../responsive-modal";
+import { ResponsiveModalWithTrigger } from "../responsive-modal";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "../ui/card";
@@ -31,7 +28,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogTrigger } from "../ui/dialog";
-import { useTeam } from "@/providers/team-provider";
+import { useAppwriteTeam } from "@/features/team/hooks/use-appwrite-team";
 
 interface PaymentDialogProps {
   doctor: Doctor;
@@ -43,7 +40,7 @@ export function PaymentDialog({
   children
 }: PaymentDialogProps) {
   const { mutate, isPending, error } = useCreatePayment();
-  const {appwriteTeam} = useTeam();
+  const {data: appwriteTeam} = useAppwriteTeam();
 
   const [open, setOpen] = useState(false);
 

@@ -9,9 +9,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "../ui/badge";
 import { Separator } from "../ui/separator";
 import { usePermission } from "@/hooks/use-permissions";
-import { useTeam } from "@/providers/team-provider";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { TeamSwitcher } from "../team-switcher";
+import { useGetMembership } from "@/features/team/hooks/use-get-membership";
 
 interface MenuProps {
   isOpen: boolean | undefined;
@@ -20,14 +20,14 @@ interface MenuProps {
 export function Menu({ isOpen }: MenuProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { userRole } = useTeam();
+  const {data: membership} = useGetMembership();
   const menuList = getMenuList(pathname);
   const isActive = (href: string) => pathname.endsWith(href)
   const navigate = (href: string) => {
     if (pathname === href) return;
     router.push(href);
   };
-  const permission = usePermission(userRole);
+  const permission = usePermission(membership?.roles[0] || null);
 
   const sidebarRef = useRef<HTMLDivElement>(null)
 

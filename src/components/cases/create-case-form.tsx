@@ -10,11 +10,8 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Separator } from "../ui/separator";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useTeam } from "@/providers/team-provider";
 import { useCreateCase } from "@/features/cases/hooks/use-create-case";
 import { createCaseSchema } from "@/features/cases/schemas";
 import { DatePicker } from "../date-picker";
@@ -30,10 +27,11 @@ import { usePermission } from "@/hooks/use-permissions";
 import { useUser } from "@clerk/nextjs";
 import { useTemplateParams } from "@/features/templates/hooks/use-template-params";
 import { useTemplatesStore } from "@/store/templates-store";
+import { useGetMembership } from "@/features/team/hooks/use-get-membership";
 
 export const CreateCaseForm = () => {
-  const { currentTeam, userRole } = useTeam();
-  const canViewDue = usePermission(userRole).canViewDue();
+  const {data: membership} = useGetMembership();
+  const canViewDue = usePermission(membership?.roles[0] || null).canViewDue();
   const { user } = useUser();
   const router = useRouter();
 
@@ -390,8 +388,11 @@ export const CreateCaseForm = () => {
   });
 
   const onSubmit = (values: z.infer<typeof createCaseSchema>) => {
+    if (!membership) {
+      return;
+    }
     mutate(
-      { data: values, teamId: currentTeam!.$id, userId: user!.id },
+      { data: values, teamId: membership.teamId, userId: user!.id },
       {
         onSuccess: () => {
           if (templateParams.templateId) {

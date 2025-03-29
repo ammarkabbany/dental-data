@@ -15,7 +15,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Separator } from "../ui/separator";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useTeam } from "@/providers/team-provider";
 import { createTemplateSchema } from "@/features/templates/schemas";
 import { useCreateTemplate } from "@/features/templates/hooks/use-create-template";
 import { CustomComboBox } from "../custom-combobox";
@@ -23,7 +22,6 @@ import { useGetDoctors } from "@/features/doctors/hooks/use-get-doctors";
 import { useGetMaterials } from "@/features/materials/hooks/use-get-materials";
 
 export const TemplateCreateModal = () => {
-  const { currentTeam } = useTeam();
   const { isModalOpen, closeModal } = useModalStore();
   const { data: doctors } = useGetDoctors();
   const { data: materials } = useGetMaterials();
@@ -49,11 +47,8 @@ export const TemplateCreateModal = () => {
   });
 
   const onSubmit = (values: z.infer<typeof createTemplateSchema>) => {
-    if (!currentTeam) {
-      return;
-    }
     mutate(
-      { data: values, teamId: currentTeam.$id },
+      { data: values },
       {
         onSuccess: () => {
           closeModal(Modals.CREATE_TEMPLATE_MODAL);

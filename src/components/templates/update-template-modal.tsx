@@ -14,7 +14,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Separator } from "../ui/separator";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useTeam } from "@/providers/team-provider";
 import { createTemplateSchema } from "@/features/templates/schemas";
 import { CustomComboBox } from "../custom-combobox";
 import { useUpdateTemplate } from "@/features/templates/hooks/use-update-template";
@@ -24,7 +23,6 @@ import { useGetDoctors } from "@/features/doctors/hooks/use-get-doctors";
 import { useGetMaterials } from "@/features/materials/hooks/use-get-materials";
 
 export const TemplateUpdateModal = ({template, trigger}: {template: Template, trigger: React.ReactNode}) => {
-  const { currentTeam } = useTeam();
   const { data: doctors } = useGetDoctors();
   const { data: materials } = useGetMaterials();
   const getMaterialById = (id: string) => {
@@ -54,11 +52,8 @@ export const TemplateUpdateModal = ({template, trigger}: {template: Template, tr
   });
 
   const onSubmit = (values: z.infer<typeof createTemplateSchema>) => {
-    if (!currentTeam) {
-      return;
-    }
     mutate(
-      { data: values, id: template.$id, teamId: currentTeam.$id },
+      { data: values, id: template.$id },
       {
         onSuccess: () => {
           onCancel();

@@ -2,26 +2,34 @@
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { DoctorCreateModal } from "@/components/doctors/create-doctor-modal";
 import { DoctorsDataTable } from "@/components/doctors/data-table";
+import NotFoundPage from "@/components/notFound";
 import { Button } from "@/components/ui/button";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import { useGetDoctors } from "@/features/doctors/hooks/use-get-doctors";
+import { useGetMembership } from "@/features/team/hooks/use-get-membership";
 import { usePermission } from "@/hooks/use-permissions";
-import { useTeam } from "@/providers/team-provider";
 import { Modals, useModalStore } from "@/store/modal-store";
 import { Add01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import Link from "next/link";
 
 export default function CasesPage() {
-  const { userRole, isLoading: isTeamLoading } = useTeam();
+  const {data: membership, isLoading} = useGetMembership();
 
   const {openModal} = useModalStore();
 
-  const canCreate = usePermission(userRole).checkPermission('doctors', 'create');
+  const canCreate = usePermission(membership?.roles[0] || null).checkPermission('doctors', 'create');
 
-  const { data: doctors, isLoading: isDocotrsLoading } = useGetDoctors();
+  const { data: doctors, isLoading: isDoctorsLoading } = useGetDoctors();
 
-  if (isTeamLoading || isDocotrsLoading) return (
+  if (!isLoading && !membership) {
+    return (
+      <ContentLayout title="Doctors">
+        <NotFoundPage className="h-[80vh]" href="/dashboard" />
+      </ContentLayout>
+    );
+  }
+
+  if (isDoctorsLoading || isLoading) return (
     <ContentLayout title="Doctors">
       <div className="h-full min-h-[80vh] flex items-center justify-center">
         <LoadingSpinner />

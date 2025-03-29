@@ -25,7 +25,7 @@ export default function QueryProvider({ children }: { children: React.ReactNode 
   useEffect(() => {
     if (typeof window === "undefined") return;
     const localStoragePersister = createSyncStoragePersister({
-      storage: window.localStorage,
+      storage: undefined,
       serialize: (data) => compress(JSON.stringify(data)),
       deserialize: (data) => JSON.parse(decompress(data)),
     })

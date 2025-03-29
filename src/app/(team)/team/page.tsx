@@ -1,35 +1,30 @@
 "use client";
 
-import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CalendarDays, Crown, Users } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
-import { useTeam } from "@/providers/team-provider";
 import { Progress } from "@/components/ui/progress";
 import { useGetBillingPlan } from "@/features/team/hooks/use-get-billing-plan";
-import { useEffect } from "react";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import { FileText } from "lucide-react"; // Add this import
 import { Settings } from "lucide-react"; // Add this import
 import { Button } from "@/components/ui/button"; // Add this import
 import Link from "next/link"; // Add this import
 import Header from "@/components/layout/Header";
-import { redirect, RedirectType } from "next/navigation";
+import { useCurrentTeam } from "@/features/team/hooks/use-current-team";
+import { useAppwriteTeam } from "@/features/team/hooks/use-appwrite-team";
+import TeamNotFound from "@/components/team-not-found";
 
 export default function TeamPage() {
-  const { currentTeam, appwriteTeam, isLoading } = useTeam();
+  const {data: currentTeam, isLoading} = useCurrentTeam();
+  const {data: appwriteTeam} = useAppwriteTeam();
 
   const {
     data: plan,
-    refetch,
-    isFetching,
-  } = useGetBillingPlan(currentTeam?.planId);
+    isLoading: isPlanLoading
+  } = useGetBillingPlan();
 
-  useEffect(() => {
-    if (!isLoading && currentTeam) refetch();
-  }, [isLoading, currentTeam])
-
-  if (isLoading || isFetching) {
+  if (isLoading || isPlanLoading) {
     return (
       <main>
         <Header />
@@ -39,9 +34,13 @@ export default function TeamPage() {
       </main>
     );
   }
+
   if (!currentTeam || !plan) {
-    return null;
-  };
+    return <main>
+      <Header />
+      <TeamNotFound />
+    </main>
+  }
 
   const subscriptionEnd = new Date(currentTeam.planExpiresAt);
   const totalDays = 30; // Assuming monthly subscription

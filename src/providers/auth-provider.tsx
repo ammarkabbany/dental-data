@@ -1,18 +1,21 @@
 'use client';
 
 import { createContext, ReactNode, useContext, useState, useEffect } from 'react';
-import { useAuth as useClerkAuth, useUser } from '@clerk/nextjs';
+import { useAuth as useClerkAuth } from '@clerk/nextjs';
 import * as React from 'react';
 import { useAuthSyncEffect } from '@/features/auth/hooks/auth-sync';
 import { account } from '@/lib/appwrite/client';
 import { getCurrent } from '@/features/auth/queries';
 import { useQueryClient } from '@tanstack/react-query';
+import { OAuthProvider } from 'appwrite';
+import { NEXT_URL } from '@/lib/constants';
 
 interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   user: any | null;
   logOut: () => Promise<void>;
+  handleLogin: (uri?: string) => void;
   refreshUser: () => Promise<void>;
 }
 
@@ -27,10 +30,13 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const { isAuthenticated, isLoading, error } = useAuthSyncEffect();
   const { signOut } = useClerkAuth();
-  const { user: clerkUser } = useUser();
   const [user, setUser] = useState<any | null>(null);
   const [userLoading, setUserLoading] = useState<boolean>(false);
   const queryClient = useQueryClient();
+
+  const handleLogin = (uri: string = "/") => {
+    account.createOAuth2Session(OAuthProvider.Oidc, `${NEXT_URL}${uri}`, `${NEXT_URL}`)
+  }
 
   // Fetch user data when authenticated
   useEffect(() => {
@@ -58,8 +64,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const handleLogout = async () => {
     try {
       // Clear Appwrite session
-      await account.deleteSession("current");
-      
+      try {
+        await account.deleteSession("current"); 
+      } catch (error) {
+        
+      }      
       // Clear local storage items
       window.localStorage.removeItem('favoriteTemplates');
       window.localStorage.removeItem('recentTemplates');
@@ -84,6 +93,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         isLoading: isLoading || userLoading,
         user,
         logOut: handleLogout,
+        handleLogin,
         refreshUser
       }}
     >

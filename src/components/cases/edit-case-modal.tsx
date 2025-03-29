@@ -14,7 +14,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui
 import { Separator } from "../ui/separator";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useTeam } from "@/providers/team-provider";
 import { createCaseSchema } from "@/features/cases/schemas";
 import { DatePicker } from "../date-picker";
 import { CustomComboBox } from "../custom-combobox";
@@ -27,10 +26,11 @@ import { useUpdateCase } from "@/features/cases/hooks/use-update-case";
 import { usePermission } from "@/hooks/use-permissions";
 import { useGetDoctors } from "@/features/doctors/hooks/use-get-doctors";
 import { useGetMaterials } from "@/features/materials/hooks/use-get-materials";
+import { useGetMembership } from "@/features/team/hooks/use-get-membership";
 
 export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
-  const { currentTeam, userRole } = useTeam();
-  const canViewDue = usePermission(userRole).canViewDue();
+  const {data: membership} = useGetMembership();
+  const canViewDue = usePermission(membership?.roles[0] || null).canViewDue();
   const [isDialogOpen, setDialogOpen] = useState(false);
 
   const onCancel = () => {
@@ -394,7 +394,6 @@ export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
         data: values,
         oldDue: selectedCase.due,
         caseId: selectedCase.$id,
-        teamId: currentTeam?.$id,
       },
       {
         onSuccess: () => {

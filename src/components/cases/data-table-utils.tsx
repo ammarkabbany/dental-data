@@ -22,8 +22,8 @@ import { CasesExportDialog } from "./cases-export-dialog";
 import { DeleteCaseModal } from "./delete-case-modal";
 import { Badge } from "../ui/badge";
 import { usePermission } from "@/hooks/use-permissions";
-import { useTeam } from "@/providers/team-provider";
 import { useGetDoctors } from "@/features/doctors/hooks/use-get-doctors";
+import { useGetMembership } from "@/features/team/hooks/use-get-membership";
 
 export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
   const [exportOptions, setExportOptions] = React.useState<{
@@ -32,7 +32,8 @@ export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
     showClient: true,
     showShade: true,
   });
-  const { userRole } = useTeam();
+  const {data: membership} = useGetMembership();
+  const userRole = membership?.roles[0] || null;
   const { data: doctors } = useGetDoctors();
   const currentDoctorFilterValue = table
     .getColumn("doctor")

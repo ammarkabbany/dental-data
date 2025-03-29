@@ -5,7 +5,6 @@ import { useStore } from "@/hooks/use-store";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { DentalToothIcon, Doctor02Icon } from "@hugeicons/core-free-icons";
 import { useDashboardData } from "@/hooks/use-dashboard-data";
-import { useTeam } from "@/providers/team-provider";
 import { CubeIcon, FileTextIcon } from "@radix-ui/react-icons";
 import RecentCases from "@/components/recent-cases";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -36,16 +35,16 @@ import { cn } from "@/lib/utils";
 import { Modals, useModalStore } from "@/store/modal-store";
 import { MaterialCreateModal } from "@/components/materials/create-material-modal";
 import { DoctorCreateModal } from "@/components/doctors/create-doctor-modal";
+import { useGetMembership } from "@/features/team/hooks/use-get-membership";
 
 export default function DashboardPage() {
-  const { userRole, appwriteTeam, isLoading: isTeamLoading } = useTeam();
   const { user } = useUser();
+  const {data: membership} = useGetMembership();
   const { data, isLoading } = useDashboardData();
-  const { checkPermission } = usePermission(userRole);
+  const { checkPermission } = usePermission(membership?.roles[0] || null);
   const {openModal} = useModalStore();
 
   // const sidebar = useStore(useSidebar, (x) => x);
-
   const containerVariants = {
     hidden: {},
     visible: {
@@ -94,7 +93,7 @@ export default function DashboardPage() {
     },
     {
       title: "Team",
-      value: formatNumbers(appwriteTeam?.total ?? 0),
+      value: formatNumbers(0),
       // change: {
       //   value: "-17%",
       //   trend: "down",
@@ -166,7 +165,7 @@ export default function DashboardPage() {
         </div>
 
         <div className="">
-          {isLoading || isTeamLoading ? (
+          {isLoading ? (
             <motion.div
               className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4"
               initial="hidden"

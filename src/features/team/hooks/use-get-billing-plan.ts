@@ -1,15 +1,18 @@
 import { useQuery } from "@tanstack/react-query"
 import { getBillingPlan } from "../planService";
+import { useCurrentTeam } from "./use-current-team";
 
-export const useGetBillingPlan = (id: string | undefined) => {
+export const useGetBillingPlan = () => {
+  const {data} = useCurrentTeam();
   return useQuery({
-    queryKey: ['billing_plan', id],
+    queryKey: ['billing_plan'],
     queryFn: async () => {
-      if (!id) return null;
-      const plan = await getBillingPlan(id);
+      if (!data?.planId) return null;
+      const plan = await getBillingPlan(data.planId);
       return plan;
     },
     // refetchInterval: 60000, // refetch every minute
     staleTime: 1000 * 60 * 5, // 5 minutes
+    enabled: !!data?.planId
   })
 }
