@@ -50,8 +50,8 @@ export const useGetCases = () => {
       return cases.documents.map((c) => {
         return {
           ...c,
-          doctor: doctors.find((d) => d.$id === c.doctorId),
-          material: materials.find((m) => m.$id === c.materialId),
+          doctor: doctors.find((d) => d.$id === c.doctorId) as Doctor,
+          material: materials.find((m) => m.$id === c.materialId) as Material,
         };
       });
     },
