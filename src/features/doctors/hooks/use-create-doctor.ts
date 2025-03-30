@@ -2,11 +2,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner";
 import { CreateDoctor } from "../actions";
 import { Doctor } from "@/types";
-import { useGetMembership } from "@/features/team/hooks/use-get-membership";
+import useTeamStore from "@/store/team-store";
 
 
 export const useCreateDoctor = () => {
-  const {data: membership} = useGetMembership();
+  const {membership} = useTeamStore();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({data}: {data: Partial<Doctor>}) => {

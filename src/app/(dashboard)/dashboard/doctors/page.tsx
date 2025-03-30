@@ -4,18 +4,18 @@ import { DoctorCreateModal } from "@/components/doctors/create-doctor-modal";
 import { DoctorsDataTable } from "@/components/doctors/data-table";
 import { Button } from "@/components/ui/button";
 import { useGetDoctors } from "@/features/doctors/hooks/use-get-doctors";
-import { useGetMembership } from "@/features/team/hooks/use-get-membership";
 import { usePermission } from "@/hooks/use-permissions";
 import { Modals, useModalStore } from "@/store/modal-store";
 import { Add01Icon, UserIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
+import useTeamStore from "@/store/team-store";
 
 export default function DoctorsPage() {
   const {openModal} = useModalStore();
-  const {data: membership} = useGetMembership();
-  const canCreate = usePermission(membership?.roles[0] || null).checkPermission('doctors', 'create');
+  const {userRole} = useTeamStore();
+  const canCreate = usePermission(userRole).checkPermission('doctors', 'create');
   const { data: doctors, isLoading } = useGetDoctors();
   const showEmptyState = !isLoading && (!doctors || doctors.length === 0);
 

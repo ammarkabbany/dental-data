@@ -36,13 +36,13 @@ import { cn } from "@/lib/utils";
 import { Modals, useModalStore } from "@/store/modal-store";
 import { MaterialCreateModal } from "@/components/materials/create-material-modal";
 import { DoctorCreateModal } from "@/components/doctors/create-doctor-modal";
-import { useGetMembership } from "@/features/team/hooks/use-get-membership";
+import useTeamStore from "@/store/team-store";
 
 export default function DashboardPage() {
   const { user } = useUser();
-  const {data: membership} = useGetMembership();
+  const {userRole} = useTeamStore();
   const { data, isLoading } = useDashboardData();
-  const { checkPermission } = usePermission(membership?.roles[0] || null);
+  const { checkPermission } = usePermission(userRole);
   const {openModal} = useModalStore();
 
   // const sidebar = useStore(useSidebar, (x) => x);

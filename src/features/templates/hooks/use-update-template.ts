@@ -1,12 +1,12 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query"
 import { toast } from "sonner";
 import { Template } from "@/types";
 import { UpdateTemplate } from "../actions";
-import { useGetMembership } from "@/features/team/hooks/use-get-membership";
+import useTeamStore from "@/store/team-store";
 
 
 export const useUpdateTemplate = () => {
-  const {data: membership} = useGetMembership();
+  const {membership} = useTeamStore();
   return useMutation({
     mutationFn: async ({data, id}: {data: Partial<Template>, id: Template['$id']}) => {
       if (!membership?.teamId) {

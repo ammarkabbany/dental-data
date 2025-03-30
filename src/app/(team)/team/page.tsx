@@ -5,59 +5,47 @@ import { CalendarDays, Crown, Users } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { Progress } from "@/components/ui/progress";
 import { useGetBillingPlan } from "@/features/team/hooks/use-get-billing-plan";
-import LoadingSpinner from "@/components/ui/loading-spinner";
 import { FileText, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Header from "@/components/layout/Header";
-import { useCurrentTeam } from "@/features/team/hooks/use-current-team";
-import { useAppwriteTeam } from "@/features/team/hooks/use-appwrite-team";
-import TeamNotFound from "@/components/team-not-found";
-import { useAuth } from "@/providers/auth-provider";
-import { useEffect } from "react";
 import { motion } from "framer-motion";
-import { useGetMembership } from "@/features/team/hooks/use-get-membership";
 import { usePermission } from "@/hooks/use-permissions";
+import useTeamStore from "@/store/team-store";
+import TeamNotFound from "@/components/team-not-found";
+import { useTeam } from "@/providers/team-provider";
+import { SignedIn, SignedOut } from "@clerk/nextjs";
+import RedirectToAuth from "@/components/auth/custom-auth-redirect";
+import LoadingSpinner from "@/components/ui/loading-spinner";
+import RedirectToOnboarding from "@/components/auth/custom-onboard-redirect";
 
 export default function TeamPage() {
-  const { isLoading: isUserLoading, isAuthenticated, handleLogin } = useAuth();
-  const {data: currentTeam, isLoading} = useCurrentTeam();
-  const {data: appwriteTeam} = useAppwriteTeam();
-  const {data: membership} = useGetMembership();
-  const canUpdate = usePermission(membership?.roles[0] || null).checkPermission('team', 'update');
-
-  useEffect(() => {
-    if (!isUserLoading && !isAuthenticated) {
-      handleLogin('/team')
-    }
-  }, [isUserLoading, isAuthenticated])
+  const {isLoading, isAuthenticated} = useTeam();
+  const {userRole, currentAppwriteTeam: appwriteTeam, currentTeam} = useTeamStore();
+  const canUpdate = usePermission(userRole).checkPermission('team', 'update');
 
   const {
     data: plan,
     isLoading: isPlanLoading
   } = useGetBillingPlan();
 
-  if (isUserLoading || (isLoading || isPlanLoading)) {
-    return (
-      <main>
-        <Header />
-        <div className="h-full min-h-[80vh] flex items-center justify-center">
-          <LoadingSpinner />
-        </div>
-      </main>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return <main>
+  if (isLoading) {
+    return <main className="bg-gradient-to-b from-background to-muted/30">
       <Header />
+      <div className="flex items-center justify-center min-h-screen">
+        <LoadingSpinner />
+      </div>
     </main>
   }
 
-  if (!currentTeam || !plan) {
-    return <main>
+  if (!isAuthenticated) {
+    return <RedirectToAuth />
+  }
+
+  if (!currentTeam) {
+    return <main className="bg-gradient-to-b from-background to-muted/30 min-h-screen">
       <Header />
-      <TeamNotFound />
+      <RedirectToOnboarding />
     </main>
   }
 
@@ -96,7 +84,8 @@ export default function TeamPage() {
   return (
     <main className="bg-gradient-to-b from-background to-muted/30 min-h-screen">
       <Header />
-      <div className="max-w-7xl mx-auto space-y-6 pt-8 pb-12 px-4 sm:px-8">
+      <SignedIn>
+        <div className="max-w-7xl mx-auto space-y-6 pt-8 pb-12 px-4 sm:px-8">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -234,6 +223,7 @@ export default function TeamPage() {
           </motion.div>
         </motion.div>
       </div>
+      </SignedIn>
     </main>
   );
 }

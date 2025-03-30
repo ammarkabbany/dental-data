@@ -2,20 +2,20 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { createIDBPersister } from "@/lib/indexedDBPersister";
-
+import { useState } from "react";
 export default function QueryProvider({ children }: { children: React.ReactNode }) {
   // Create a new QueryClient instance for each session to avoid hydration issues
   
-  const persister = createIDBPersister('query-idb');
+  // const persister = createIDBPersister('query-idb');
   
-  const queryClient = new QueryClient({
+  const [queryClient] = useState(() => new QueryClient({
     defaultOptions: {
       queries: {
-        gcTime: 1000 * 60 * 60 * 24, // 24 hours
+        refetchOnWindowFocus: false,
+        staleTime: 1000 * 60 * 60,
       },
     },
-  });
+  }));
 
   // Persist the query client to local storage
   // useEffect(() => {

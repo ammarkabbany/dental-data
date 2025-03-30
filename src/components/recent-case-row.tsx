@@ -3,14 +3,12 @@ import { UserAvatar } from "./user-avatar";
 import { formatCurrency } from "@/lib/format-utils";
 import { useGetUserInfo } from "@/features/auth/hooks/use-get-userinfo";
 import { usePermission } from "@/hooks/use-permissions";
-import { useGetMembership } from "@/features/team/hooks/use-get-membership";
-import { useAppwriteTeam } from "@/features/team/hooks/use-appwrite-team";
+import useTeamStore from "@/store/team-store";
 
 export const RecentCaseRow = ({ caseItem }: { caseItem: Partial<Case> }) => {
   const { data: user } = useGetUserInfo(caseItem.userId || "");
-  const {data: membership} = useGetMembership();
-  const {data: appwriteTeam} = useAppwriteTeam();
-  const canViewDue = usePermission(membership?.roles[0] || null).canViewDue()
+  const {userRole, currentAppwriteTeam: appwriteTeam} = useTeamStore();
+  const canViewDue = usePermission(userRole).canViewDue()
   return (
     <tr key={caseItem.$id} className="hover:bg-current/5">
       <td className="px-6 py-3 whitespace-nowrap">

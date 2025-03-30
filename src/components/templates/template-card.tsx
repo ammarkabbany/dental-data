@@ -17,11 +17,10 @@ import { DeleteTemplateModal } from "./delete-template-modal";
 import { useTemplatesStore } from "@/store/templates-store";
 import { useGetDoctors } from "@/features/doctors/hooks/use-get-doctors";
 import { useGetMaterials } from "@/features/materials/hooks/use-get-materials";
-import { useGetMembership } from "@/features/team/hooks/use-get-membership";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
 import { formatDates } from "@/lib/format-utils";
+import useTeamStore from "@/store/team-store";
 
 export const TemplateCard = ({ template }: { template: Template }) => {
   const router = useRouter();
@@ -30,8 +29,7 @@ export const TemplateCard = ({ template }: { template: Template }) => {
   const getMaterialById = (id: string) => materials?.find((material) => material.$id === id);
   const getDoctorById = (id: string) => doctors?.find((doctor) => doctor.$id === id);
   const {toggleFavorite, favoriteTemplates} = useTemplatesStore();
-  const {data: membership} = useGetMembership();
-  const userRole = membership?.roles[0] || null;
+  const {userRole} = useTeamStore();
 
   const applyTemplate = (template: Template) => {
     let uriString = `/dashboard/cases/new?templateId=${template.$id}`;

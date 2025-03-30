@@ -11,8 +11,6 @@ export const useGetBillingPlan = () => {
       const plan = await getBillingPlan(data.planId);
       return plan;
     },
-    // refetchInterval: 60000, // refetch every minute
-    staleTime: 1000 * 60 * 5, // 5 minutes
     enabled: !!data?.planId
   })
 }

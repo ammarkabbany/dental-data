@@ -115,9 +115,6 @@ export function useAnalyiticsData() {
   return useQuery({
     queryKey: ["analytics"],
     queryFn: getAnalyticsData,
-    staleTime: 1000 * 60 * 5, // 5 minutes
-    gcTime: 1000 * 60 * 30, // 30 minutes
-    retry: 1
   });
 }
 

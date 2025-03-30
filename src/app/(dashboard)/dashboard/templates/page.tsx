@@ -4,7 +4,6 @@ import { TemplateCreateModal } from "@/components/templates/create-template-moda
 import { TemplateCard } from "@/components/templates/template-card";
 import { Button } from "@/components/ui/button";
 import { SearchInput } from "@/components/search-input";
-import { useGetMembership } from "@/features/team/hooks/use-get-membership";
 import { useGetTemplates } from "@/features/templates/hooks/use-get-templates";
 import { usePermission } from "@/hooks/use-permissions";
 import { Modals, useModalStore } from "@/store/modal-store";
@@ -12,6 +11,7 @@ import { PlusIcon, FileTextIcon } from "@radix-ui/react-icons";
 import { motion, AnimatePresence } from "framer-motion";
 import * as React from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import useTeamStore from "@/store/team-store";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -34,8 +34,8 @@ const itemVariants = {
 
 export default function TemplatesPage() {
   const {data: templates, isLoading} = useGetTemplates();
-  const {data: membership} = useGetMembership();
-  const canCreate = usePermission(membership?.roles[0] || null).checkPermission('templates', 'create');
+  const {userRole} = useTeamStore();
+  const canCreate = usePermission(userRole).checkPermission('templates', 'create');
   const [searchTerm, setSearchTerm] = React.useState('');
   const {openModal} = useModalStore();
 

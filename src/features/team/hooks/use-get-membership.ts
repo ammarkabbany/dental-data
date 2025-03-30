@@ -7,7 +7,7 @@ export const useGetMembership = () => {
   const { isAuthenticated, user } = useAuth();
   
   return useQuery({
-    queryKey: ['membership', user?.$id],
+    queryKey: ['membership'],
     queryFn: async () => {
       try {
         const appwriteTeam = await getAppwriteTeam();
@@ -24,10 +24,5 @@ export const useGetMembership = () => {
       }
     },
     enabled: isAuthenticated && !!user, // Only run query when user is authenticated and user object exists
-    retry: 2,
-    gcTime: 1000 * 60 * 60, // Cache persists for 1 hour
-    staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
   })
 }

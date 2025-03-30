@@ -5,22 +5,20 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePermission } from "@/hooks/use-permissions";
-import { ArrowRight, Bell, CreditCard, Save, Settings, Users2 } from "lucide-react";
+import { ArrowRight, Bell, CreditCard, Settings } from "lucide-react";
 import PlanBillingPage from "./billing-tab";
 import NotificationsTab from "./notifications-tab";
-import { useGetMembership } from "@/features/team/hooks/use-get-membership";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { useAppwriteTeam } from "@/features/team/hooks/use-appwrite-team";
+import useTeamStore from "@/store/team-store";
 
 export default function TeamPage() {
-  const {data: membership} = useGetMembership();
-  const {data: appwriteTeam} = useAppwriteTeam();
-  const canUpdate = usePermission(membership?.roles[0] || null).checkPermission('team', 'update');
+  const {userRole, currentAppwriteTeam: appwriteTeam, membership} = useTeamStore();
+  const canUpdate = usePermission(userRole).checkPermission('team', 'update');
   const [activeTab, setActiveTab] = useState("general");
   const [teamName, setTeamName] = useState(membership?.teamName || "");
   const [currency, setCurrency] = useState(appwriteTeam?.prefs.currency || "USD");

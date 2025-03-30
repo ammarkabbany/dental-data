@@ -3,9 +3,7 @@
 import {
   BarChart3,
   FileText,
-  HelpCircle,
   PieChart,
-  Settings,
   Users,
   LayoutDashboard,
   Layers,
@@ -20,9 +18,9 @@ import { Separator } from "../ui/separator";
 import { usePermission } from "@/hooks/use-permissions";
 import { useRef } from "react";
 import { TeamSwitcher } from "../team-switcher";
-import { useGetMembership } from "@/features/team/hooks/use-get-membership";
 import { useAuth } from "@/providers/auth-provider";
 import { SignedIn } from "@clerk/nextjs";
+import useTeamStore from "@/store/team-store";
 
 interface MenuProps {
   isOpen: boolean | undefined;
@@ -31,7 +29,7 @@ interface MenuProps {
 export function Menu({ isOpen }: MenuProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { data: membership } = useGetMembership();
+  const {membership} = useTeamStore();
   const { isAuthenticated } = useAuth();
   const menuList = getMenuList(pathname);
   const isActive = (href: string) => pathname.endsWith(href);

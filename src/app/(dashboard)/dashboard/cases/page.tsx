@@ -3,17 +3,17 @@ import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { CasesDataTable } from "@/components/cases/data-table";
 import { Button } from "@/components/ui/button";
 import { useGetCases } from "@/features/cases/hooks/use-get-cases";
-import { useGetMembership } from "@/features/team/hooks/use-get-membership";
 import { usePermission } from "@/hooks/use-permissions";
 import { Add01Icon, FileIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
+import useTeamStore from "@/store/team-store";
 
 export default function CasesPage() {
-  const {data: membership} = useGetMembership();
-  const canCreate = usePermission(membership?.roles[0] || null).checkPermission('cases', 'create');
+  const {userRole} = useTeamStore();
+  const canCreate = usePermission(userRole).checkPermission('cases', 'create');
   const { data: cases, isLoading } = useGetCases();
   const showEmptyState = !isLoading && (!cases || cases.length === 0);
 

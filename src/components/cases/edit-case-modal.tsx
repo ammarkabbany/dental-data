@@ -26,11 +26,11 @@ import { useUpdateCase } from "@/features/cases/hooks/use-update-case";
 import { usePermission } from "@/hooks/use-permissions";
 import { useGetDoctors } from "@/features/doctors/hooks/use-get-doctors";
 import { useGetMaterials } from "@/features/materials/hooks/use-get-materials";
-import { useGetMembership } from "@/features/team/hooks/use-get-membership";
+import useTeamStore from "@/store/team-store";
 
 export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
-  const {data: membership} = useGetMembership();
-  const canViewDue = usePermission(membership?.roles[0] || null).canViewDue();
+  const {userRole, membership} = useTeamStore();
+  const canViewDue = usePermission(userRole).canViewDue();
   const [isDialogOpen, setDialogOpen] = useState(false);
 
   const onCancel = () => {

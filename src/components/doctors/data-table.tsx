@@ -35,20 +35,17 @@ interface DataTableProps {
   data: Doctor[];
 }
 
-// Add these imports
-import { useGetMembership } from "@/features/team/hooks/use-get-membership";
-import { useAppwriteTeam } from "@/features/team/hooks/use-appwrite-team";
 import { SearchInput } from "../search-input";
+import useTeamStore from "@/store/team-store";
 
 export function DoctorsDataTable({ data = [] }: DataTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
-  const {data: membership} = useGetMembership();
-  const {data: appwriteTeam} = useAppwriteTeam();
+  const {userRole, currentAppwriteTeam: appwriteTeam} = useTeamStore();
 
-  const permissions = usePermission(membership?.roles[0] || null);
+  const permissions = usePermission(userRole);
   // Add these states
 
   const columns = getColumns(permissions, appwriteTeam?.prefs || {});
@@ -159,7 +156,7 @@ export function DoctorsDataTable({ data = [] }: DataTableProps) {
       <div className="space-y-4">
         <ScrollArea 
           id="table-scroll-area"
-          className="max-h-[590px] overflow-auto"
+          className="h-[590px] overflow-auto"
           type="scroll"
         >
           <Table className="table-fixed border-separate border-spacing-0 [&_tr:not(:last-child)_td]:border-b">

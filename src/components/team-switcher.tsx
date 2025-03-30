@@ -11,10 +11,10 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { ChevronsUpDown, PlusIcon, Users2 } from "lucide-react";
-import { useGetMembership } from "@/features/team/hooks/use-get-membership";
+import useTeamStore from "@/store/team-store";
 
 export function TeamSwitcher() {
-  const {data: membership} = useGetMembership();
+  const {membership} = useTeamStore();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

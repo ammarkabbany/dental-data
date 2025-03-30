@@ -132,7 +132,7 @@ export function CasesDataTable({ data = [] }: DataTableProps) {
       <div className="space-y-4">
         <ScrollArea 
           id="table-scroll-area" 
-          className="max-h-[660px] overflow-auto"
+          className="h-[660px] overflow-auto"
           type="scroll"
         >
           <Table className="table-fixed border-separate border-spacing-0 [&_tr:not(:last-child)_td]:border-b">

@@ -8,7 +8,7 @@ export const useCreateTeam = () => {
   return useMutation({
     mutationFn: async ({name, userId}: {name: string, userId: string}) => {
       const team = await createTeam(name, userId);
-      const appwriteTeam = await teams.create(team.$id, name, ['owner', 'member'])
+      const appwriteTeam = await teams.create(team.$id, name, ['owner', 'admin', 'member'])
       return {
         team,
         appwriteTeam,

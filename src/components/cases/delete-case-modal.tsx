@@ -7,7 +7,7 @@ import { useState } from "react";
 import { Case } from "@/types";
 import { DialogClose, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { useDeleteCase } from "@/features/cases/hooks/use-delete-case";
-import { useGetMembership } from "@/features/team/hooks/use-get-membership";
+import useTeamStore from "@/store/team-store";
 
 interface DeleteCaseModalModal {
   cases: Case[];
@@ -16,7 +16,7 @@ interface DeleteCaseModalModal {
 export function DeleteCaseModal({ cases, component }: DeleteCaseModalModal) {
   const [open, setOpen] = useState(false);
   // const {team, updateTeam} = useTeamStore();
-  const {data: membership} = useGetMembership();
+  const {membership} = useTeamStore();
 
   const {mutate, isPending} = useDeleteCase();
  

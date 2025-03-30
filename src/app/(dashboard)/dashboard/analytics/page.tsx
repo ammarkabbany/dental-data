@@ -1,22 +1,19 @@
 "use client";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion } from "framer-motion";
 import { BarChart3, LineChart, PieChart, TrendingUp } from "lucide-react";
-import { useState } from "react";
 import AnalyticsAreaChart from "@/components/area-chart";
 import AnalyticsStatsCard from "@/components/analytics-card";
-import { useDashboardData } from "@/hooks/use-dashboard-data";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatNumbers } from "@/lib/format-utils";
 import { useAnalyiticsData } from "@/hooks/use-analytics-data";
-import { useGetMembership } from "@/features/team/hooks/use-get-membership";
 import { usePermission } from "@/hooks/use-permissions";
+import useTeamStore from "@/store/team-store";
 
 export default function AnalyticsPage() {
-  const {data: membership} = useGetMembership();
-  const canViewRevenue = usePermission(membership?.roles[0] || null).canViewDue();
+  const {userRole} = useTeamStore();
+  const canViewRevenue = usePermission(userRole).canViewDue();
   const { data, isLoading } = useAnalyiticsData();
   
   // Animation variants

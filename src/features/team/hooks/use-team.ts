@@ -3,8 +3,10 @@ import { account, databases } from "@/lib/appwrite/client";
 import { DATABASE_ID, TEAMS_COLLECTION_ID } from "@/lib/constants";
 import { Team } from "@/types";
 import { getAppwriteMembership, getAppwriteTeam } from "../queries";
+import useTeamStore from "@/store/team-store";
 
 export const useTeamData = () => {
+  const {setCurrentAppwriteTeam, setCurrentTeam, setMembership, setUserRole} = useTeamStore();
   const query = useQuery({
     queryKey: ["team"],
     queryFn: async () => {
@@ -14,6 +16,7 @@ export const useTeamData = () => {
         team: null,
         role: null
       };
+      setCurrentAppwriteTeam(appwriteTeam);
       try {
         const user = await account.get();
         const team = await databases.getDocument<Team>(
@@ -21,8 +24,11 @@ export const useTeamData = () => {
           TEAMS_COLLECTION_ID,
           appwriteTeam.$id
         )
+        setCurrentTeam(team);
         const membership = await getAppwriteMembership(team.$id, user.$id);
+        setMembership(membership || null);
         const role = membership?.roles[0];
+        setUserRole(role || null);
         return {
           appwriteTeam,
           team,

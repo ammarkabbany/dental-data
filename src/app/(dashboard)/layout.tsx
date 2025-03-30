@@ -14,6 +14,8 @@ import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import RedirectToAuth from "@/components/auth/custom-auth-redirect";
 import LoadingSpinner from "@/components/ui/loading-spinner";
+import { useTeam } from "@/providers/team-provider";
+import RedirectToOnboarding from "@/components/auth/custom-onboard-redirect";
 
 export default function DashboardLayout({
   children,
@@ -21,6 +23,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const queryClient = useQueryClient();
+  const {currentTeam, isLoading, isAuthenticated} = useTeam();
 
   // Handle real-time updates
   useRealtimeUpdates(CASES_COLLECTION_ID, (payload) => {
@@ -74,6 +77,17 @@ export default function DashboardLayout({
   useRealtimeUpdates(TEMPLATES_COLLECTION_ID, () => {
     queryClient.invalidateQueries({ queryKey: ["templates"] });
   });
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <LoadingSpinner />
+      </div>
+    ); 
+  }
+  if (!currentTeam && isAuthenticated) {
+    return <RedirectToOnboarding />;
+  }
 
   return (
     <>
