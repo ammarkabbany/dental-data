@@ -1,6 +1,15 @@
 "use client";
 
-import { BarChart3, FileText, HelpCircle, PieChart, Settings, Users, LayoutDashboard, Layers } from "lucide-react";
+import {
+  BarChart3,
+  FileText,
+  HelpCircle,
+  PieChart,
+  Settings,
+  Users,
+  LayoutDashboard,
+  Layers,
+} from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 
 import { cn } from "@/lib/utils";
@@ -12,6 +21,8 @@ import { usePermission } from "@/hooks/use-permissions";
 import { useRef } from "react";
 import { TeamSwitcher } from "../team-switcher";
 import { useGetMembership } from "@/features/team/hooks/use-get-membership";
+import { useAuth } from "@/providers/auth-provider";
+import { SignedIn } from "@clerk/nextjs";
 
 interface MenuProps {
   isOpen: boolean | undefined;
@@ -20,75 +31,81 @@ interface MenuProps {
 export function Menu({ isOpen }: MenuProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const {data: membership} = useGetMembership();
+  const { data: membership } = useGetMembership();
+  const { isAuthenticated } = useAuth();
   const menuList = getMenuList(pathname);
-  const isActive = (href: string) => pathname.endsWith(href)
+  const isActive = (href: string) => pathname.endsWith(href);
   const navigate = (href: string) => {
-    if (pathname === href) return;
+    if (pathname === href || !isAuthenticated) return;
     router.push(href);
   };
   const permission = usePermission(membership?.roles[0] || null);
 
-  const sidebarRef = useRef<HTMLDivElement>(null)
+  const sidebarRef = useRef<HTMLDivElement>(null);
 
   return (
     <ScrollArea ref={sidebarRef} className="[&>div>div[style]]:!block relative">
       <div className="space-y-1">
         <TeamSwitcher />
         <Separator className="my-2" />
-        <h3 className="px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Dashboard</h3>
+        <h3 className="px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          Dashboard
+        </h3>
         <NavItem
           icon={LayoutDashboard}
           label="Overview"
-          active={isActive('dashboard')}
-          onClick={() => navigate('/dashboard')}
+          active={isActive("dashboard")}
+          onClick={() => navigate("/dashboard")}
         />
-        <NavItem comingSoon icon={BarChart3} label="Analytics" />
+        <SignedIn>
+          <NavItem comingSoon icon={BarChart3} label="Analytics" />
 
-        {/* <Separator className="my-3" /> */}
+          {/* <Separator className="my-3" /> */}
 
-        {/* <h3 className="px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Lab Management</h3> */}
-        <NavItem
-          icon={FileText}
-          label="Cases"
-          active={isActive('cases')}
-          onClick={() => navigate('/dashboard/cases')}
-        />
-        {permission.checkPermission('doctors', 'create') && <NavItem
-          icon={Users}
-          label="Doctors"
-          active={isActive('doctors')}
-          onClick={() => navigate('/dashboard/doctors')}
-        />}
-
-        {/* <Separator className="my-3" /> */}
-
-        {/* <h3 className="px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Utilities</h3> */}
-        <NavItem
-          icon={Layers}
-          label="Templates"
-          active={isActive('templates')}
-          onClick={() => navigate('/dashboard/templates')}
-        />
-
-        {permission.canViewDue() && <>
-        {/* <Separator className="my-3" /> */}
-
-          {/* <h3 className="px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Reports</h3> */}
+          {/* <h3 className="px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Lab Management</h3> */}
           <NavItem
-            icon={PieChart}
-            label="Reports"
-            disabled
+            icon={FileText}
+            label="Cases"
+            active={isActive("cases")}
+            onClick={() => navigate("/dashboard/cases")}
           />
-          <NavItem disabled icon={BarChart3} label="Financial" /></>}
+          {permission.checkPermission("doctors", "create") && (
+            <NavItem
+              icon={Users}
+              label="Doctors"
+              active={isActive("doctors")}
+              onClick={() => navigate("/dashboard/doctors")}
+            />
+          )}
 
-        {/* <Separator className="my-3" /> */}
-        {/* <h3 className="px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">other</h3>
+          {/* <Separator className="my-3" /> */}
+
+          {/* <h3 className="px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Utilities</h3> */}
+          <NavItem
+            icon={Layers}
+            label="Templates"
+            active={isActive("templates")}
+            onClick={() => navigate("/dashboard/templates")}
+          />
+
+          {permission.canViewDue() && (
+            <>
+              {/* <Separator className="my-3" /> */}
+
+              {/* <h3 className="px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Reports</h3> */}
+              <NavItem icon={PieChart} label="Reports" disabled />
+              <NavItem disabled icon={BarChart3} label="Financial" />
+            </>
+          )}
+
+          {/* <Separator className="my-3" /> */}
+          {/* <h3 className="px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">other</h3>
 
         <NavItem
           icon={Settings}
           label="Settings"
         /> */}
+        </SignedIn>
       </div>
     </ScrollArea>
   );

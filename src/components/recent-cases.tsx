@@ -13,6 +13,7 @@ interface RecentCasesProps {
 export default function RecentCases({ cases }: RecentCasesProps) {
   const {data: membership} = useGetMembership();
   const canViewDue = usePermission(membership?.roles[0] || null).canViewDue()
+  const canCreate = usePermission(membership?.roles[0] || null).checkPermission('cases', 'create')
   return (
     <div className="rounded-lg shadow-sm border bg-dental-bg-card/50">
       <div className="p-6 border-b">
@@ -41,7 +42,7 @@ export default function RecentCases({ cases }: RecentCasesProps) {
           <p className="mb-4 max-w-sm text-muted-foreground">
             Get started by creating your first case to track work.
           </p>
-          <Link href="/dashboard/cases/new">
+          {canCreate && <Link href="/dashboard/cases/new">
             <Button
               variant="outline"
               // startIcon={<Plus size={16} />}
@@ -49,7 +50,7 @@ export default function RecentCases({ cases }: RecentCasesProps) {
             >
               Create Case
             </Button>
-          </Link>
+          </Link>}
         </div>
       ) : (
         <div className="overflow-x-auto">

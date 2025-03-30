@@ -6,21 +6,25 @@ import { formatDistanceToNow } from "date-fns";
 import { Progress } from "@/components/ui/progress";
 import { useGetBillingPlan } from "@/features/team/hooks/use-get-billing-plan";
 import LoadingSpinner from "@/components/ui/loading-spinner";
-import { FileText } from "lucide-react"; // Add this import
-import { Settings } from "lucide-react"; // Add this import
-import { Button } from "@/components/ui/button"; // Add this import
-import Link from "next/link"; // Add this import
+import { FileText, Settings } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import Header from "@/components/layout/Header";
 import { useCurrentTeam } from "@/features/team/hooks/use-current-team";
 import { useAppwriteTeam } from "@/features/team/hooks/use-appwrite-team";
 import TeamNotFound from "@/components/team-not-found";
 import { useAuth } from "@/providers/auth-provider";
 import { useEffect } from "react";
+import { motion } from "framer-motion";
+import { useGetMembership } from "@/features/team/hooks/use-get-membership";
+import { usePermission } from "@/hooks/use-permissions";
 
 export default function TeamPage() {
   const { isLoading: isUserLoading, isAuthenticated, handleLogin } = useAuth();
   const {data: currentTeam, isLoading} = useCurrentTeam();
   const {data: appwriteTeam} = useAppwriteTeam();
+  const {data: membership} = useGetMembership();
+  const canUpdate = usePermission(membership?.roles[0] || null).checkPermission('team', 'update');
 
   useEffect(() => {
     if (!isUserLoading && !isAuthenticated) {
@@ -66,106 +70,169 @@ export default function TeamPage() {
   const hasExpired = progress >= 100;
   const remainingCases = currentTeam.maxCases - currentTeam.casesUsed;
 
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100
+      }
+    }
+  };
+
   return (
-    <main>
+    <main className="bg-gradient-to-b from-background to-muted/30 min-h-screen">
       <Header />
-      <div className="space-y-4 pt-8 pb-8 px-4 sm:px-8">
-        {/* Add this section before the grid */}
-        <Card className="bg-muted/50">
-          <CardHeader className="pb-2 flex flex-row items-center justify-between">
-            <CardTitle className="text-2xl font-bold">
-              {currentTeam.name}
-            </CardTitle>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-muted-foreground"
-              asChild
-            >
-              <Link href="/team/settings">
-                <Settings className="size-4 mr-2" />
-                Settings
-              </Link>
-            </Button>
-          </CardHeader>
-        </Card>
-
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {/* Add this new card */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Cases Usage</CardTitle>
-              <FileText className="size-4 text-purple-500" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {currentTeam.casesUsed || 0} / {currentTeam.maxCases}
-              </div>
-              <Progress
-                value={(currentTeam.casesUsed / currentTeam.maxCases) * 100}
-                className="mt-2"
-              />
-              <p className="text-xs text-muted-foreground mt-1">
-                {remainingCases <= currentTeam.maxCases
-                  ? `${remainingCases} cases remaining`
-                  : "Limit reached"}
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">
-                Subscription Plan
+      <div className="max-w-7xl mx-auto space-y-6 pt-8 pb-12 px-4 sm:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Card className="bg-card shadow-md overflow-hidden">
+            <CardHeader className="pb-2 flex flex-row items-center justify-between">
+              <CardTitle className="text-2xl font-bold">
+                {currentTeam.name}
               </CardTitle>
-              <Crown className="size-4 text-yellow-500" />
+              <Button
+                variant="outline"
+                size="sm"
+                className="transition-colors"
+                asChild
+              >
+                <Link href="/team/settings">
+                  <Settings className="size-4 mr-2" />
+                  Settings
+                </Link>
+              </Button>
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold capitalize">{plan?.name}</div>
-              <p className="text-xs text-muted-foreground">
-                {plan?.$id === "free"
-                  ? "Upgrade for more features"
-                  : "Pro Plan"}
-              </p>
-            </CardContent>
           </Card>
+        </motion.div>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">
-                Time Remaining
-              </CardTitle>
-              <CalendarDays className="size-4 text-blue-500" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {formatDistanceToNow(subscriptionEnd)}
-              </div>
-              <Progress value={progress} className="mt-2" />
-              <p className="text-xs text-muted-foreground mt-1">
-                {hasExpired ? "Expired" : "Renews"} on{" "}
-                {subscriptionEnd.toLocaleDateString()}
-              </p>
-            </CardContent>
-          </Card>
+        <motion.div 
+          className="grid gap-6 md:grid-cols-2 lg:grid-cols-4"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <motion.div variants={itemVariants}>
+            <Card className="border-0 bg-gradient-to-br from-sidebar/10 to-sidebar shadow-sm hover:shadow-md transition-shadow duration-300 h-full">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium">Cases Usage</CardTitle>
+                <div className="p-2 rounded-full bg-purple-100 dark:bg-purple-900/20">
+                  <FileText className="size-4 text-purple-500" />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {currentTeam.casesUsed || 0} / {currentTeam.maxCases}
+                </div>
+                <Progress
+                  value={(currentTeam.casesUsed / currentTeam.maxCases) * 100}
+                  className="mt-2 h-2"
+                />
+                <p className="text-xs text-muted-foreground mt-2">
+                  {remainingCases > 0
+                    ? `${remainingCases} cases remaining`
+                    : "Limit reached"}
+                </p>
+              </CardContent>
+            </Card>
+          </motion.div>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">
-                Team Members
-              </CardTitle>
-              <Users className="size-4 text-green-500" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {appwriteTeam?.total || 0}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Limited to {plan?.maxTeamMembers} member(s)
-              </p>
-            </CardContent>
-          </Card>
-        </div>
+          <motion.div variants={itemVariants}>
+            <Card className="border-0 bg-gradient-to-br from-sidebar/10 to-sidebar shadow-sm hover:shadow-md transition-shadow duration-300 h-full">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Subscription Plan
+                </CardTitle>
+                <div className="p-2 rounded-full bg-yellow-100 dark:bg-yellow-900/20">
+                  <Crown className="size-4 text-yellow-500" />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold capitalize">{plan?.name}</div>
+                <p className="text-xs text-muted-foreground mt-2">
+                  {plan?.$id === "free"
+                    ? "Upgrade for more features"
+                    : "Pro Plan"}
+                </p>
+                {canUpdate && (
+                  <Button variant="link" size="sm" className="mt-2 p-0 h-auto text-primary" asChild>
+                    <Link href="/team/billing">Upgrade now</Link>
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          <motion.div variants={itemVariants}>
+            <Card className="border-0 bg-gradient-to-br from-sidebar/10 to-sidebar shadow-sm hover:shadow-md transition-shadow duration-300 h-full">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Time Remaining
+                </CardTitle>
+                <div className="p-2 rounded-full bg-blue-100 dark:bg-blue-900/20">
+                  <CalendarDays className="size-4 text-blue-500" />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {formatDistanceToNow(subscriptionEnd)}
+                </div>
+                <Progress 
+                  value={progress} 
+                  className="mt-2 h-2" 
+                />
+                <p className="text-xs text-muted-foreground mt-2">
+                  <span className={hasExpired ? "text-red-500 font-medium" : ""}>
+                    {hasExpired ? "Expired" : "Renews"}
+                  </span>{" "}
+                  on {subscriptionEnd.toLocaleDateString()}
+                </p>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          <motion.div variants={itemVariants}>
+            <Card className="border-0 bg-gradient-to-br from-sidebar/10 to-sidebar shadow-sm hover:shadow-md transition-shadow duration-300 h-full">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Team Members
+                </CardTitle>
+                <div className="p-2 rounded-full bg-green-100 dark:bg-green-900/20">
+                  <Users className="size-4 text-green-500" />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {appwriteTeam?.total || 0}
+                </div>
+                <p className="text-xs text-muted-foreground mt-2">
+                  Limited to {plan?.maxTeamMembers} member{plan?.maxTeamMembers !== 1 ? 's' : ''}
+                </p>
+                {canUpdate && (
+                  <Button variant="link" size="sm" className="mt-2 p-0 h-auto text-primary" asChild>
+                    <Link href="/team/members">Invite members</Link>
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+          </motion.div>
+        </motion.div>
       </div>
     </main>
   );

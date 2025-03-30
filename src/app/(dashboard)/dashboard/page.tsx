@@ -12,6 +12,7 @@ import { motion } from "framer-motion";
 import {
   BarChart3,
   Calendar,
+  FileChartLine,
   FilePlus,
   MessageSquare,
   Plus,
@@ -92,14 +93,10 @@ export default function DashboardPage() {
       icon: <CubeIcon className="size-6" />,
     },
     {
-      title: "Team",
-      value: formatNumbers(0),
-      // change: {
-      //   value: "-17%",
-      //   trend: "down",
-      // },
-      href: "/team",
-      icon: <Users />,
+      title: "Avg. Cases/Doctor",
+      value: (data?.casesCount && data?.doctorsCount) ? formatNumbers(data.casesCount / (data.doctorsCount || 1)) : "0",
+      href: "/dashboard/analytics", // Or a dedicated doctor activity report
+      icon: <FileChartLine className="size-6" />, // Icon representing average/statistics
     },
   ];
 
@@ -136,6 +133,7 @@ export default function DashboardPage() {
       <MaterialCreateModal />
       <DoctorCreateModal />
       <div className="space-y-4">
+        {/* Welcome Card */}
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-green-600 via-lime-600 to-emerald-700 p-6 text-white shadow-xl shadow-lime-900/20">
           <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10 blur-3xl"></div>
           <div className="absolute -bottom-12 left-1/3 h-40 w-40 rounded-full bg-white/10 blur-3xl"></div>
@@ -164,23 +162,34 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="">
+        {/* Stats Grid */}
+        <div>
           {isLoading ? (
             <motion.div
-              className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4"
+              className="grid grid-cols-2 min-[1200px]:grid-cols-4 border border-border rounded-xl bg-gradient-to-br from-sidebar/60 to-sidebar"
               initial="hidden"
               animate="visible"
               variants={containerVariants}
             >
               {Array.from({ length: 4 }).map((_, i) => (
-                <motion.div key={i} variants={itemVariants}>
-                  <Skeleton className="flex h-[150px] dark:bg-accent shadow-inner dark:shadow-white/15 shadow-neutral-400/75" />
+                <motion.div
+                  key={i}
+                  variants={itemVariants}
+                  className="relative p-4 lg:p-5 group"
+                >
+                  <div className="flex items-center gap-4">
+                    <Skeleton className="size-10 rounded-full" />
+                    <div className="flex-1">
+                      <Skeleton className="h-4 w-20 mb-2" />
+                      <Skeleton className="h-8 w-24 mb-2" />
+                      <Skeleton className="h-3 w-32" />
+                    </div>
+                  </div>
                 </motion.div>
               ))}
             </motion.div>
           ) : (
             <motion.div
-              className=""
               initial="hidden"
               animate="visible"
               variants={containerVariants}
@@ -189,58 +198,98 @@ export default function DashboardPage() {
             </motion.div>
           )}
         </div>
-        <div className="grid gap-4 grid-cols-1 md:grid-cols-3 lg:grid-cols-3">
-          {actionCards.map((card, index) => (
-            <motion.div
-              key={card.title}
-              variants={itemVariants}
-              whileHover="hover"
-              className="h-[200px]"
-            >
-              <Card
-                className={cn(
-                  "border border-muted h-full",
-                  card.isPrimary && "bg-primary text-primary-foreground"
-                )}
+
+        {/* Action Cards */}
+        <motion.div 
+          className="grid gap-4 grid-cols-1 md:grid-cols-3 lg:grid-cols-3"
+          initial="hidden"
+          animate="visible"
+          variants={containerVariants}
+        >
+          {isLoading ? (
+            <>
+              {Array.from({ length: 3 }).map((_, i) => (
+                <motion.div
+                  key={i}
+                  variants={itemVariants}
+                  className="h-[200px]"
+                >
+                  <Card className="border border-muted h-full">
+                    <CardHeader className="pb-2">
+                      <Skeleton className="h-6 w-32" />
+                    </CardHeader>
+                    <CardContent className="pb-2">
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 w-2/3 mt-2" />
+                    </CardContent>
+                    <CardFooter className="mt-auto">
+                      <Skeleton className="h-9 w-full" />
+                    </CardFooter>
+                  </Card>
+                </motion.div>
+              ))}
+            </>
+          ) : (
+            actionCards.map((card, index) => (
+              <motion.div
+                key={card.title}
+                variants={itemVariants}
+                whileHover="hover"
+                className="h-[200px]"
               >
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    {card.icon}
-                    {card.title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pb-2">
-                  <p className={cn(
-                    "text-sm",
-                    card.isPrimary ? "opacity-90" : "text-muted-foreground"
-                  )}>
-                    {card.description}
-                  </p>
-                </CardContent>
-                <CardFooter className="mt-auto">
-                  <Button
-                    variant={card.isPrimary ? "secondary" : "outline"}
-                    size="sm"
-                    className="w-full transition cursor-pointer"
-                    onClick={card.onClick}
-                    asChild={card.href !== undefined}
-                  >
-                    {card.href ? <Link href={card.href}>
-                      <Plus className="mr-1 h-4 w-4" />
-                      {card.buttonText}
-                    </Link> : (
-                      <>
+                <Card
+                  className={cn(
+                    "border border-muted h-full",
+                    card.isPrimary && "bg-primary text-primary-foreground"
+                  )}
+                >
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base flex items-center gap-2">
+                      {card.icon}
+                      {card.title}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="pb-2">
+                    <p className={cn(
+                      "text-sm",
+                      card.isPrimary ? "opacity-90" : "text-muted-foreground"
+                    )}>
+                      {card.description}
+                    </p>
+                  </CardContent>
+                  <CardFooter className="mt-auto">
+                    <Button
+                      variant={card.isPrimary ? "secondary" : "outline"}
+                      size="sm"
+                      className="w-full transition cursor-pointer"
+                      onClick={card.onClick}
+                      asChild={card.href !== undefined}
+                    >
+                      {card.href ? <Link href={card.href}>
                         <Plus className="mr-1 h-4 w-4" />
                         {card.buttonText}
-                      </>
-                    )}
-                  </Button>
-                </CardFooter>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
-        <RecentCases cases={data?.recentCases ?? []} />
+                      </Link> : (
+                        <>
+                          <Plus className="mr-1 h-4 w-4" />
+                          {card.buttonText}
+                        </>
+                      )}
+                    </Button>
+                  </CardFooter>
+                </Card>
+              </motion.div>
+            ))
+          )}
+        </motion.div>
+
+        {/* Recent Cases */}
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={containerVariants}
+        >
+          <RecentCases cases={data?.recentCases ?? []} />
+        </motion.div>
       </div>
     </ContentLayout>
   );

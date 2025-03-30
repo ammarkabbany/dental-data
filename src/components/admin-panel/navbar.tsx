@@ -2,6 +2,7 @@ import { UserNav } from "@/components/admin-panel/user-nav";
 import { SheetMenu } from "@/components/admin-panel/sheet-menu";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Notification03Icon } from "@hugeicons/core-free-icons";
+import { SignedIn } from "@clerk/nextjs";
 
 interface NavbarProps {
   title: string;
@@ -20,7 +21,9 @@ export function Navbar({ title }: NavbarProps) {
           {/* <div>
             <HugeiconsIcon className="size-5" icon={Notification03Icon} />
           </div> */}
-          <UserNav />
+          <SignedIn>
+            <UserNav />
+          </SignedIn>
         </div>
       </div>
     </header>

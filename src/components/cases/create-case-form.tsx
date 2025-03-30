@@ -404,14 +404,19 @@ export const CreateCaseForm = () => {
           form.resetField('due')
           form.resetField('invoice')
           form.resetField('note')
-          form.resetField('data')
-          setTeethData([]);
-          setLastCheckedTooth(undefined)
-          setCheckedTeeth([])
+          handleResetTeeth();
         },
       }
     );
   };
+
+  const handleResetTeeth = () => {
+    form.resetField("data");
+    form.resetField('due')
+    setTeethData([]);
+    setLastCheckedTooth(undefined);
+    setCheckedTeeth([]);
+  }
 
   const applyTemplate = (template: Template | undefined) => {
     if (!template) return;
@@ -424,70 +429,23 @@ export const CreateCaseForm = () => {
   };
 
   return (
-    <div className="flex flex-col sm:flex-row justify-evenly gap-4">
+    <div className="flex flex-col lg:flex-row gap-6">
       <TemplatesSidebar applyTemplate={applyTemplate} />
-      <div className="max-w-4xl container rounded-none">
+      <div className="flex-1 px-4 lg:px-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="grid md:grid-cols-2 gap-12">
-              <div className="!flex !flex-col gap-y-6">
-                <FormField
-                  control={form.control}
-                  name="patient"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Patient</FormLabel>
-                      <FormControl>
-                        <Input
-                          className="placeholder:text-muted-foreground/50"
-                          {...field}
-                          placeholder="-"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="doctorId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Doctor</FormLabel>
-                      <FormControl>
-                        <CustomComboBox
-                          label="doctor"
-                          property="$id"
-                          variant={"secondary"}
-                          values={doctors || []}
-                          value={field.value}
-                          action={field.onChange}
-                          previewValue={`${getDoctorById(field.value)?.name}`}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="grid grid-cols-3 gap-2">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div className="grid lg:grid-cols-2 gap-8">
+              <div className="space-y-6">
+                {/* Form Fields Section */}
+                <div className="bg-card/50 p-6 rounded-lg border shadow-sm space-y-6">
                   <FormField
                     control={form.control}
-                    name="materialId"
+                    name="patient"
                     render={({ field }) => (
-                      <FormItem className="col-span-2">
-                        <FormLabel>Material</FormLabel>
+                      <FormItem>
+                        <FormLabel>Patient</FormLabel>
                         <FormControl>
-                          <CustomComboBox
-                            label="material"
-                            property="$id"
-                            variant={"secondary"}
-                            values={materials || []}
-                            value={field.value}
-                            action={handleMaterialSelection}
-                            previewValue={`${getMaterialById(field.value)?.name} ${
-                              getMaterialById(field.value)?.price
-                            }`}
-                          />
+                          <Input {...field} placeholder="Patient name" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -495,120 +453,161 @@ export const CreateCaseForm = () => {
                   />
                   <FormField
                     control={form.control}
-                    name="shade"
+                    name="doctorId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Doctor</FormLabel>
+                        <FormControl>
+                          <CustomComboBox
+                            label="doctor"
+                            property="$id"
+                            variant={"secondary"}
+                            values={doctors || []}
+                            value={field.value}
+                            action={field.onChange}
+                            previewValue={`${getDoctorById(field.value)?.name}`}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <div className="grid grid-cols-3 gap-2">
+                    <FormField
+                      control={form.control}
+                      name="materialId"
+                      render={({ field }) => (
+                        <FormItem className="col-span-2">
+                          <FormLabel>Material</FormLabel>
+                          <FormControl>
+                            <CustomComboBox
+                              label="material"
+                              property="$id"
+                              variant={"secondary"}
+                              values={materials || []}
+                              value={field.value}
+                              action={handleMaterialSelection}
+                              previewValue={`${getMaterialById(field.value)?.name} ${
+                                getMaterialById(field.value)?.price
+                              }`}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="shade"
+                      render={({ field }) => (
+                        <FormItem className="">
+                          <FormLabel>Shade</FormLabel>
+                          <FormControl>
+                            <Input
+                              className="placeholder:text-muted-foreground/50"
+                              {...field}
+                              placeholder="-"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                    <FormField
+                      control={form.control}
+                      name="date"
+                      render={({ field }) => (
+                        <FormItem className="col-span-2">
+                          <FormLabel htmlFor="case-date-picker">Date</FormLabel>
+                          <FormControl>
+                            <DatePicker
+                              {...field}
+                              date={field.value}
+                              setDate={(v: Date) => {
+                                field.onChange(
+                                  new Date(v).toLocaleDateString("en-CA")
+                                );
+                              }}
+                              mode="single"
+                              id="case-date-picker"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="due"
+                      render={({ field }) => (
+                        <FormItem hidden={!canViewDue}>
+                          <FormLabel>Due</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              {...field}
+                              onChange={(e) => {
+                                field.onChange(e.target.valueAsNumber);
+                              }}
+                              placeholder="Enter number"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <FormField
+                    control={form.control}
+                    name="note"
                     render={({ field }) => (
                       <FormItem className="">
-                        <FormLabel>Shade</FormLabel>
+                        <FormLabel>Note</FormLabel>
                         <FormControl>
                           <Input
                             className="placeholder:text-muted-foreground/50"
                             {...field}
-                            placeholder="-"
+                            placeholder="note"
                           />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                </div>
-                <div className="grid grid-cols-3 gap-2">
-                  <FormField
-                    control={form.control}
-                    name="date"
-                    render={({ field }) => (
-                      <FormItem className="col-span-2">
-                        <FormLabel htmlFor="case-date-picker">Date</FormLabel>
-                        <FormControl>
-                          <DatePicker
-                            {...field}
-                            date={field.value}
-                            setDate={(v: Date) => {
-                              field.onChange(
-                                new Date(v).toLocaleDateString("en-CA")
-                              );
-                            }}
-                            mode="single"
-                            id="case-date-picker"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="due"
-                    render={({ field }) => (
-                      <FormItem hidden={!canViewDue}>
-                        <FormLabel>Due</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            {...field}
-                            onChange={(e) => {
-                              field.onChange(e.target.valueAsNumber);
-                            }}
-                            placeholder="Enter number"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <FormField
-                  control={form.control}
-                  name="note"
-                  render={({ field }) => (
-                    <FormItem className="">
-                      <FormLabel>Note</FormLabel>
-                      <FormControl>
-                        <Input
-                          className="placeholder:text-muted-foreground/50"
-                          {...field}
-                          placeholder="note"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="flex items-center justify-end gap-4 mt-4">
-                  <Button
-                    variant="secondary"
-                    type="button"
-                    size={"lg"}
-                    className={`${!onCancel && "invisible"}`}
-                    onClick={onCancel}
-                    disabled={isPending}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    size={"lg"}
-                    variant="default"
-                    disabled={isPending}
-                  >
-                    Create
-                  </Button>
+                  <div className="flex items-center justify-end gap-4">
+                    <Button
+                      variant="secondary"
+                      type="button"
+                      className="w-full sm:w-auto"
+                      onClick={onCancel}
+                      disabled={isPending}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="submit"
+                      className="w-full sm:w-auto"
+                      disabled={isPending}
+                    >
+                      {isPending ? "Creating..." : "Create Case"}
+                    </Button>
+                  </div>
                 </div>
               </div>
-              <div className="mt-4">
+              <div className="bg-card/50 p-6 rounded-lg border shadow-sm">
                 <TeethFormData
-                  data={[]}
+                  data={teethData}
                   checkedTeeth={checkedTeeth}
                   materials={materials || []}
                   handleChangeToothMaterial={handleChangeToothMaterial}
                   handleCheckTeeth={handleCheckTeeth}
+                  resetTeeth={handleResetTeeth}
                 />
               </div>
             </div>
-            {/* <Separator className="mt-2" /> */}
           </form>
-          {error && (
-            <div className="text-red-500 text-xs mt-4">{error.message}</div>
-          )}
         </Form>
       </div>
     </div>

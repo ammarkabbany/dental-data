@@ -38,6 +38,7 @@ interface DataTableProps {
 // Add these imports
 import { useGetMembership } from "@/features/team/hooks/use-get-membership";
 import { useAppwriteTeam } from "@/features/team/hooks/use-appwrite-team";
+import { SearchInput } from "../search-input";
 
 export function DoctorsDataTable({ data = [] }: DataTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -148,24 +149,17 @@ export function DoctorsDataTable({ data = [] }: DataTableProps) {
   return (
     <div className="w-full">
       <div className="flex items-center justify-between space-x-2 py-4">
-        <Input
+        <SearchInput
           className=""
-          placeholder="Search"
-          variant={"filled"}
+          placeholder="Search doctors..."
           value={table.getState().globalFilter || ""}
           onChange={(event) => {table.setGlobalFilter(event.target.value)}}
-        >
-          <Input.Group>
-            <Input.LeftIcon>
-              <Search className="text-muted-foreground" />
-            </Input.LeftIcon>
-          </Input.Group>
-        </Input>
+        />
       </div>
       <div className="space-y-4">
         <ScrollArea 
           id="table-scroll-area"
-          className="h-[590px] overflow-auto"
+          className="max-h-[590px] overflow-auto"
           type="scroll"
         >
           <Table className="table-fixed border-separate border-spacing-0 [&_tr:not(:last-child)_td]:border-b">

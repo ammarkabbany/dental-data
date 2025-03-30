@@ -11,6 +11,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tooth } from "@/types";
+import { Button } from "@/components/ui/button";
+import { RefreshCw } from "lucide-react";
 
 interface TeethFormDataProps {
   handleChangeToothMaterial(newValue: any): void;
@@ -18,6 +20,7 @@ interface TeethFormDataProps {
   data: Tooth[];
   checkedTeeth: number[];
   materials: Material[];
+  resetTeeth?: () => void; // New reset function prop
 }
 
 export default function TeethFormData({
@@ -26,6 +29,7 @@ export default function TeethFormData({
   data,
   checkedTeeth,
   materials,
+  resetTeeth,
 }: TeethFormDataProps) {
   const [selectedTooth, setSelectedTooth] = useState<Tooth | undefined>();
 
@@ -97,120 +101,124 @@ export default function TeethFormData({
   }, []);
 
   return (
-    <div className="flex flex-col gap-2 items-center">
-      <div className="flex flex-col gap-1 max-w-32">
-        {groupedUpper.map(
-          (
-            pair: { label: any; reverse: any; translate: any }[],
-            index: number | null | undefined,
-          ) => (
+    <div className="flex flex-col items-center space-y-6">
+      <div className="relative w-full max-w-[125px] mx-auto">
+        {/* Upper Teeth */}
+        <div className="flex flex-col gap-1">
+          {groupedUpper.map((pair: any, index: any) => (
             <div
               key={index}
-              className={`grid grid-flow-col ${index === 0 ? "gap-4" : ""}`} // Correct conditional classname rendering
+              className="grid grid-cols-2 gap-1 justify-items-center"
             >
-              {pair.map(({ label, reverse, translate }) => (
+              {pair.map(({ label, reverse, translate }: any) => (
                 <div
                   key={label}
-                  className={`flex flex-row${
-                    reverse ? "-reverse" : ""
-                  } items-center gap-2 justify-center ${translate}`}
+                  className={`flex ${reverse ? 'flex-row-reverse' : 'flex-row'} 
+                    items-center justify-center transform ${translate} transition-transform`}
                 >
                   <CustomCheckbox
                     checked={checkedTeeth.includes(label)}
-                    onChange={(e) => handleCheckTeeth(e, label)} // Pass event and label to handler
-                    label={label}
+                    onChange={(e) => handleCheckTeeth(e, label)}
+                    label={label.toString()}
                     reverse={reverse}
                   />
                 </div>
               ))}
             </div>
-          ),
+          ))}
+        </div>
+
+        {/* Reset Button */}
+        {resetTeeth && (
+          <div className="flex justify-center mb-2">
+            <Button 
+              variant="outline" 
+              type="reset"
+              size="sm" 
+              onClick={resetTeeth}
+              className="text-xs px-2 py-1 h-auto"
+            >
+              <RefreshCw className="h-3 w-3 mr-1" />
+              Reset
+            </Button>
+          </div>
         )}
 
-        <div className="h-2" />
+        {/* Separator */}
+        <div className="h-px w-full bg-border my-2" />
 
-        {groupedLower.map(
-          (
-            pair: { label: any; reverse: any; translate: any }[],
-            index: number | null | undefined,
-          ) => (
+        {/* Lower Teeth */}
+        <div className="flex flex-col gap-1">
+          {groupedLower.map((pair: any, index: any) => (
             <div
               key={index}
-              className={`grid grid-flow-col ${index === 15 ? "gap-4" : ""}`} // Correct conditional classname rendering
+              className="grid grid-cols-2 gap-1 justify-items-center"
             >
-              {pair.map(({ label, reverse, translate }) => (
+              {pair.map(({ label, reverse, translate }: any) => (
                 <div
                   key={label}
-                  className={`flex flex-row${
-                    reverse ? "-reverse" : ""
-                  } items-center gap-1 justify-center ${translate}`}
+                  className={`flex ${reverse ? 'flex-row-reverse' : 'flex-row'} 
+                    items-center justify-center transform ${translate} transition-transform`}
                 >
                   <CustomCheckbox
                     checked={checkedTeeth.includes(label)}
-                    onChange={(e) => handleCheckTeeth(e, label)} // Pass event and label to handler
-                    label={label}
+                    onChange={(e) => handleCheckTeeth(e, label)}
+                    label={label.toString()}
                     reverse={reverse}
                   />
                 </div>
               ))}
             </div>
-          ),
-        )}
+          ))}
+        </div>
       </div>
 
-      <div className="flex gap-8 py-2">
-        <div>
-          <Label id="toothSelect-label">Tooth</Label>
+      {/* Controls */}
+      {/* <div className="grid sm:grid-cols-2 gap-4 w-full max-w-[400px]">
+        <div className="space-y-2">
+          <Label className="text-sm font-medium">Select Tooth</Label>
           <Select
-            name="toothSelect"
             value={String(selectedTooth?.label)}
             onValueChange={handleSelectTooth}
-            // onChange={handleSelectTooth}
-            // className="rounded-md w-24 text-gray-200"
           >
-            <SelectTrigger className="w-[150px]">
+            <SelectTrigger className="w-full">
               <SelectValue placeholder="Select a tooth" />
-            </SelectTrigger>{" "}
-            <SelectContent className="">
-              {data &&
-                data
-                  .sort((a, b) => a?.label - b?.label)
-                  .map((t, i) => {
-                    return (
-                      <SelectItem key={i} value={String(t.label)}>
-                        {t.label}
-                      </SelectItem>
-                    );
-                  })}
-            </SelectContent>
-          </Select>
-        </div>
-        <div>
-          <Label id="materialSelectTooth-label">Material</Label>
-          <Select
-            name="material"
-            value={selectedTooth?.materialId}
-            disabled={!selectedTooth}
-            onValueChange={doHandleSelectToothMaterial}
-            // onChange={doHandleSelectToothMaterial}
-          >
-            <SelectTrigger className="">
-              <SelectValue placeholder="Select a material" />
-            </SelectTrigger>{" "}
-            <SelectContent className="">
-              {materials
-                .filter(
-                  (_material: Material) =>
-                    _material?.$id !== selectedTooth?.materialId,
-                ) // Exclude the selected material from the rest
-                .map((_material: Material, index: number) => (
-                  <SelectItem className="" key={index} value={_material?.$id}>
-                    {_material.name} {_material.price}
+            </SelectTrigger>
+            <SelectContent>
+              {data?.sort((a, b) => a?.label - b?.label)
+                .map((t, i) => (
+                  <SelectItem key={i} value={String(t.label)}>
+                    Tooth {t.label}
                   </SelectItem>
                 ))}
             </SelectContent>
           </Select>
         </div>
+
+        <div className="space-y-2">
+          <Label className="text-sm font-medium">Select Material</Label>
+          <Select
+            value={selectedTooth?.materialId}
+            disabled={!selectedTooth}
+            onValueChange={doHandleSelectToothMaterial}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select material" />
+            </SelectTrigger>
+            <SelectContent>
+              {materials
+                .filter((_material) => _material?.$id !== selectedTooth?.materialId)
+                .map((_material, index) => (
+                  <SelectItem key={index} value={_material?.$id}>
+                    {_material.name} ({_material.price})
+                  </SelectItem>
+                ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div> */}
+      <div className="text-center text-sm text-muted-foreground mt-4">
+        <p>Select teeth by clicking. Use Shift+Click to select multiple teeth.</p>
       </div>
     </div>
   );

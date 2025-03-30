@@ -7,7 +7,7 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Check, Pencil, Star } from "lucide-react";
+import { Check, Pencil, Star, User2, Palette, Calendar } from "lucide-react";
 import { Template } from "@/types";
 import { useRouter } from "next/navigation";
 import { usePermission } from "@/hooks/use-permissions";
@@ -18,16 +18,17 @@ import { useTemplatesStore } from "@/store/templates-store";
 import { useGetDoctors } from "@/features/doctors/hooks/use-get-doctors";
 import { useGetMaterials } from "@/features/materials/hooks/use-get-materials";
 import { useGetMembership } from "@/features/team/hooks/use-get-membership";
+import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
+import { formatDates } from "@/lib/format-utils";
+
 export const TemplateCard = ({ template }: { template: Template }) => {
   const router = useRouter();
   const { data: doctors } = useGetDoctors();
   const { data: materials } = useGetMaterials();
-  const getMaterialById = (id: string) => {
-    return materials?.find((material) => material.$id === id);
-  };
-  const getDoctorById = (id: string) => {
-    return doctors?.find((doctor) => doctor.$id === id);
-  };
+  const getMaterialById = (id: string) => materials?.find((material) => material.$id === id);
+  const getDoctorById = (id: string) => doctors?.find((doctor) => doctor.$id === id);
   const {toggleFavorite, favoriteTemplates} = useTemplatesStore();
   const {data: membership} = useGetMembership();
   const userRole = membership?.roles[0] || null;
@@ -42,65 +43,114 @@ export const TemplateCard = ({ template }: { template: Template }) => {
   }
 
   return (
-    <Card
-      key={template.$id}
-      className="relative transition-shadow hover:shadow-lg from-sidebar/60 to-sidebar bg-gradient-to-br"
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ scale: 1.02 }}
+      transition={{ duration: 0.2 }}
     >
-      {/* Favorite Button (Star) */}
-      <button
-        onClick={() => toggleFavorite(template)}
-        // disabled={favoriteLoading}
-        className="absolute right-5 top-7 text-gray-400 hover:text-yellow-500"
-      >
-        {favoriteTemplates.includes(template.$id) ? (
-        <Star className="h-5 w-5 fill-yellow-500 stroke-yellow-500" />
-        ) : (
-        <Star className="h-5 w-5 stroke-gray-400 hover:stroke-yellow-500 transition-all duration-150" />
-        )}
-      </button>
-
-      <CardHeader>
-        <CardTitle className="text-lg">{template.name}</CardTitle>
-        <p className="text-sm text-muted-foreground">
-          Doctor: {getDoctorById(template.doctor || "")?.name ?? "none"}
-        </p>
-        <p className="text-sm text-muted-foreground">
-          Material: {getMaterialById(template.material || "")?.name ?? "none"}
-        </p>
-      </CardHeader>
-
-      <CardContent>
-        {/* Shade */}
-        <p className="mt-1 text-sm text-muted-foreground">
-          Shade: {template.shade ?? "none"}
-        </p>
-
-        {/* Date Created */}
-        <p className="mt-2 text-xs text-muted-foreground">
-          Created on: {new Date(template.$createdAt).toLocaleDateString()}
-        </p>
-      </CardContent>
-
-      <CardFooter className="flex justify-between">
-        <Button
-          onClick={() => applyTemplate(template)}
-          variant="default"
-          size="sm"
-          className="items-center text-sm"
+      <Card className={cn(
+        "relative overflow-hidden group border-border/50",
+        "bg-gradient-to-br from-sidebar/60 to-sidebar hover:shadow-xl transition-all duration-300",
+        favoriteTemplates.includes(template.$id) && "ring-1 ring-yellow-500/50"
+      )}>
+        {/* Favorite Button */}
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={() => toggleFavorite(template)}
+          className="absolute right-4 top-4 z-10"
         >
-          <Check className="h-4 w-4" /> Apply
-        </Button>
-        <div className="flex gap-1">
-          {usePermission(userRole).checkPermission('templates', 'update') && <TemplateUpdateModal trigger={
-            <DialogTrigger asChild>
-            <Button variant="secondary" size="icon">
-              <Pencil className="h-4 w-4" />
-            </Button>
-          </DialogTrigger>
-          } template={template} />}
-          {usePermission(userRole).checkPermission('templates', 'delete') && <DeleteTemplateModal templateId={template.$id} />}
-        </div>
-      </CardFooter>
-    </Card>
+          <Star 
+            className={cn(
+              "h-5 w-5 transition-all duration-300",
+              favoriteTemplates.includes(template.$id)
+                ? "fill-yellow-500 stroke-yellow-500"
+                : "stroke-gray-400 hover:stroke-yellow-500"
+            )}
+          />
+        </motion.button>
+
+        <CardHeader className="pb-4">
+          <CardTitle className="text-lg font-semibold tracking-tight">
+            {template.name}
+          </CardTitle>
+        </CardHeader>
+
+        <CardContent className="space-y-4 flex flex-col h-[100px]">
+          <div className="space-y-2 flex-grow">
+            {/* Doctor Info */}
+            <div className="flex items-center gap-2 text-sm">
+              <User2 className="h-4 w-4 text-blue-400" />
+              <span className="text-muted-foreground">
+                {getDoctorById(template.doctor || "")?.name ?? "No doctor assigned"}
+              </span>
+            </div>
+
+            {/* Material Info */}
+            <div className="flex items-center gap-2 text-sm">
+              <div className="h-4 w-4 rounded bg-primary/20 flex items-center justify-center">
+                <span className="text-[10px] text-primary">M</span>
+              </div>
+              <span className="text-muted-foreground">
+                {getMaterialById(template.material || "")?.name ?? "No material specified"}
+              </span>
+            </div>
+
+            {/* Shade Info */}
+            {template.shade && (
+              <div className="flex items-center gap-2 text-sm">
+                <Palette className="h-4 w-4 text-purple-400" />
+                <span className="text-muted-foreground">{template.shade}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Date Badge */}
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <Calendar className="h-3 w-3" />
+            {formatDates(template.$createdAt)}
+          </div>
+        </CardContent>
+
+        <CardFooter className="flex justify-between pt-4 border-t border-border/50">
+          <Button
+            onClick={() => applyTemplate(template)}
+            variant="default"
+            size="sm"
+            className="relative overflow-hidden group"
+          >
+            <motion.div
+              className="flex items-center gap-2"
+            >
+              <Check className="h-4 w-4" />
+              <span>Apply</span>
+            </motion.div>
+          </Button>
+
+          <div className="flex">
+            {usePermission(userRole).checkPermission('templates', 'update') && (
+              <TemplateUpdateModal
+                trigger={
+                  <DialogTrigger asChild>
+                    <Button 
+                      variant="secondary" 
+                      size="icon"
+                      className="mx-2"
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                  </DialogTrigger>
+                }
+                template={template}
+              />
+            )}
+            {usePermission(userRole).checkPermission('templates', 'delete') && (
+              <DeleteTemplateModal templateId={template.$id} />
+            )}
+          </div>
+        </CardFooter>
+      </Card>
+    </motion.div>
   );
 };

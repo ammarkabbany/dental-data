@@ -1,0 +1,133 @@
+import { databases } from "@/lib/appwrite/client";
+import {
+  CASES_COLLECTION_ID,
+  DATABASE_ID,
+  DOCTORS_COLLECTION_ID,
+  MATERIALS_COLLECTION_ID,
+} from "@/lib/constants";
+import { Case, Doctor } from "@/types";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Query } from "appwrite";
+import {
+  endOfMonth,
+  endOfYear,
+  format,
+  startOfMonth,
+  startOfYear,
+  subMonths,
+  subYears,
+} from "date-fns";
+
+async function getAnalyticsData() {
+  const now = new Date();
+  const periods = {
+    thisMonth: {
+      start: startOfMonth(now),
+      end: endOfMonth(now),
+      label: format(now, "MMMM yyyy"),
+    },
+    lastMonth: {
+      start: startOfMonth(subMonths(now, 1)),
+      end: endOfMonth(subMonths(now, 1)),
+      label: format(subMonths(now, 1), "MMMM yyyy"),
+    },
+    threeMonths: {
+      start: startOfMonth(subMonths(now, 3)),
+      end: now,
+      label: "Last 3 Months",
+    },
+    sixMonths: {
+      start: startOfMonth(subMonths(now, 6)),
+      end: now,
+      label: "Last 6 Months",
+    },
+    thisYear: {
+      start: startOfYear(now),
+      end: now,
+      label: format(now, "yyyy"),
+    },
+    lastYear: {
+      start: startOfYear(subYears(now, 1)),
+      end: endOfYear(subYears(now, 1)),
+      label: format(subYears(now, 1), "yyyy"),
+    },
+  };
+  // const cookie = await getSessionCookie();
+  // databases.client.setSession(cookie!)
+  const thisMonthCases = await databases.listDocuments(
+    DATABASE_ID,
+    CASES_COLLECTION_ID,
+    [
+      Query.greaterThanEqual("date", periods.thisMonth.start.toISOString()),
+      Query.lessThanEqual("date", periods.thisMonth.end.toISOString()),
+      Query.limit(1),
+      Query.select(["$id"]),
+    ]
+  );
+
+  const lastMonthCases = await databases.listDocuments(
+    DATABASE_ID,
+    CASES_COLLECTION_ID,
+    [
+      Query.greaterThanEqual("date", periods.lastMonth.start.toISOString()),
+      Query.lessThanEqual("date", periods.lastMonth.end.toISOString()),
+      Query.limit(1),
+      Query.select(["$id"]),
+    ]
+  );
+  const casesMonthDifference = ((thisMonthCases.total - lastMonthCases.total) / thisMonthCases.total) * 100;
+
+  const casesData = await databases.listDocuments<Case>(
+    DATABASE_ID,
+    CASES_COLLECTION_ID,
+    [
+      Query.limit(1),
+      Query.select(["$id"]),
+    ]
+  )
+
+  const doctorsData = await databases.listDocuments<Doctor>(
+    DATABASE_ID,
+    DOCTORS_COLLECTION_ID,
+    [
+      Query.limit(5),
+      Query.select(["$id", "name", "totalCases"]),
+      Query.orderDesc('totalCases')
+    ]
+  );
+
+  const materialsCount = await databases.listDocuments(
+    DATABASE_ID,
+    MATERIALS_COLLECTION_ID,
+    [Query.limit(1), Query.select(["$id"])]
+  );
+
+  return {
+    casesDifference: casesMonthDifference,
+    casesCount: casesData.total,
+    doctorsCount: doctorsData.total,
+    topDoctors: doctorsData.documents,
+    materialsCount: materialsCount.total,
+  };
+}
+
+export function useAnalyiticsData() {
+  return useQuery({
+    queryKey: ["analytics"],
+    queryFn: getAnalyticsData,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    gcTime: 1000 * 60 * 30, // 30 minutes
+    retry: 1
+  });
+}
+
+export function usePrefetchAnalyticsData() {
+  const queryClient = useQueryClient();
+  
+  return async () => {
+    await queryClient.prefetchQuery({
+      queryKey: ["analytics"],
+      queryFn: getAnalyticsData,
+    });
+  };
+}

@@ -10,13 +10,10 @@ import {
   TEMPLATES_COLLECTION_ID,
 } from "@/lib/constants";
 import DataFetcher from "@/components/data-fetcher";
-import SimplePageLoader from "@/components/page-loader";
-import TeamNotFound from "@/components/team-not-found";
-import Header from "@/components/layout/Header";
-import { useAuth } from "@/providers/auth-provider";
-import { useGetMembership } from "@/features/team/hooks/use-get-membership";
-import { useEffect } from "react";
-import { usePathname } from "next/navigation";
+import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { ContentLayout } from "@/components/admin-panel/content-layout";
+import RedirectToAuth from "@/components/auth/custom-auth-redirect";
+import LoadingSpinner from "@/components/ui/loading-spinner";
 
 export default function DashboardLayout({
   children,
@@ -24,18 +21,6 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const queryClient = useQueryClient();
-  const {
-    isLoading: isUserLoading,
-    isAuthenticated,
-    user,
-    handleLogin,
-  } = useAuth();
-  const {
-    data: membership,
-    isLoading: isMembershipLoading,
-    isError,
-  } = useGetMembership();
-  const pathname = usePathname();
 
   // Handle real-time updates
   useRealtimeUpdates(CASES_COLLECTION_ID, (payload) => {
@@ -90,50 +75,20 @@ export default function DashboardLayout({
     queryClient.invalidateQueries({ queryKey: ["templates"] });
   });
 
-  useEffect(() => {
-    if (!isUserLoading && !isAuthenticated) {
-      handleLogin(pathname);
-    }
-  }, [isUserLoading, isAuthenticated]);
-
-  // Show loading state when user or membership is loading
-  if (isUserLoading || (isAuthenticated && isMembershipLoading && !isError)) {
-    return (
-      <div className="min-h-screen">
-        <div className="flex items-center justify-center h-[calc(100vh-64px)]">
-          <SimplePageLoader isLoading fullScreen />
-        </div>
-      </div>
-    );
-  }
-
-  // Show TeamNotFound when user is authenticated but no membership is found
-  if (isAuthenticated && user && !membership && !isMembershipLoading) {
-    return (
-      <div>
-        <Header />
-        <TeamNotFound />
-      </div>
-    );
-  }
-
-  // If user is authenticated and has membership, show the dashboard
-  if (isAuthenticated && membership) {
-    return (
-      <AdminPanelLayout>
-        <DataFetcher />
-        {children}
-      </AdminPanelLayout>
-    );
-  }
-
-  // Fallback for any other case (should not normally happen)
   return (
-    <div>
-      <Header />
-      <div className="container mx-auto p-8 text-center">
-        <SimplePageLoader fullScreen isLoading />
-      </div>
-    </div>
+    <>
+      <SignedIn>
+        <AdminPanelLayout>
+          <DataFetcher />
+          {children}
+        </AdminPanelLayout>
+      </SignedIn>
+      <SignedOut>
+        <div className="flex items-center justify-center min-h-screen">
+          <LoadingSpinner />
+          <RedirectToAuth />
+        </div>
+      </SignedOut>
+    </>
   );
 }

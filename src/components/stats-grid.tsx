@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import { ArrowTopRightIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 export interface StatsCardProps {
   title: string;
@@ -18,40 +19,79 @@ export function StatsCard({ title, value, change, icon, href }: StatsCardProps) 
   const trendColor = isPositive ? "text-emerald-500" : "text-red-500";
 
   return (
-    <div className="relative p-4 lg:p-5 group before:absolute before:inset-y-8 before:right-0 before:w-px before:bg-gradient-to-b before:from-input/30 before:via-input before:to-input/30 last:before:hidden">
+    <motion.div 
+      className="relative p-4 lg:p-5 group before:absolute before:inset-y-8 before:right-0 before:w-px before:bg-gradient-to-b before:from-input/30 before:via-input before:to-input/30 last:before:hidden"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+    >
       <div className="relative flex items-center gap-4">
-        <ArrowTopRightIcon
-          className="size-5 absolute right-0 top-0 opacity-0 group-has-[a:hover]:opacity-100 transition-opacity text-emerald-500"
-          aria-hidden="true"
-        />
+        <motion.div
+          whileHover={{ scale: 1.1 }}
+          transition={{ type: "spring", stiffness: 400, damping: 10 }}
+        >
+          <ArrowTopRightIcon
+            className="size-5 absolute right-0 top-0 opacity-0 group-has-[a:hover]:opacity-100 transition-opacity text-emerald-500"
+            aria-hidden="true"
+          />
+        </motion.div>
         {/* Icon */}
-        <div className="max-[480px]:hidden size-10 shrink-0 rounded-full bg-emerald-600/25 border border-emerald-600/50 flex items-center justify-center text-emerald-500">
+        <motion.div 
+          className="max-[480px]:hidden size-10 shrink-0 rounded-full bg-emerald-600/25 border border-emerald-600/50 flex items-center justify-center text-emerald-500"
+          whileHover={{ scale: 1.1 }}
+          transition={{ type: "spring", stiffness: 400, damping: 10 }}
+        >
           {icon}
-        </div>
+        </motion.div>
         {/* Content */}
         <div>
-          {href ? <Link
-            href={href}
-            className="font-medium tracking-widest text-xs uppercase text-muted-foreground/60 before:absolute before:inset-0"
-          >
-            {title}
-          </Link> : (
-            <div 
+          {href ? (
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              <Link
+                href={href}
+                className="font-medium tracking-widest text-xs uppercase text-muted-foreground/60 before:absolute before:inset-0"
+              >
+                {title}
+              </Link>
+            </motion.div>
+          ) : (
+            <motion.div 
               className="font-medium tracking-widest text-xs uppercase text-muted-foreground/60 before:absolute before:inset-0"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
             >
               {title}
-            </div>
+            </motion.div>
           )}
-          <div className="text-2xl font-semibold mb-2">{value}</div>
-          {change && <div className="text-xs text-muted-foreground/60">
-            <span className={cn("font-medium", trendColor)}>
-              {isPositive ? "↗" : "↘"} {change?.value}
-            </span>{" "}
-            vs last month
-          </div>}
+          <motion.div 
+            className="text-2xl font-semibold mb-2"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            {value}
+          </motion.div>
+          {change && (
+            <motion.div 
+              className="text-xs text-muted-foreground/60"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+            >
+              <span className={cn("font-medium", trendColor)}>
+                {isPositive ? "↗" : "↘"} {change?.value}
+              </span>{" "}
+              vs last month
+            </motion.div>
+          )}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
