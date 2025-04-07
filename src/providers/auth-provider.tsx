@@ -15,6 +15,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   user: any | null;
+  isAdmin: boolean;
   logOut: () => Promise<void>;
   handleLogin: (uri?: string) => void;
   refreshUser: () => Promise<void>;
@@ -33,6 +34,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const { signOut } = useClerkAuth();
   const [user, setUser] = useState<User | null>(null);
   const [userLoading, setUserLoading] = useState<boolean>(false);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const queryClient = useQueryClient();
 
   const handleLogin = (uri: string = "/") => {
@@ -54,6 +56,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUserLoading(true);
       const currentUser = await getCurrent();
       setUser(currentUser);
+      setIsAdmin(currentUser?.labels.includes('admin') ?? false);
       queryClient.setQueryData(['current'], currentUser);
     } catch (error) {
       console.error('Error fetching user data:', error);
@@ -93,6 +96,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         isAuthenticated,
         isLoading: isLoading || userLoading,
         user,
+        isAdmin,
         logOut: handleLogout,
         handleLogin,
         refreshUser

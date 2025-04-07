@@ -670,7 +670,7 @@ export default function Homepage() {
               </div>
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
                 <SignedIn>
-                  <Button variant={"secondary"} size="lg" asChild>
+                  <Button className="to-secondary hover:from-secondary/80 hover:to-secondary/80" variant={"secondary"} size="lg" asChild>
                     <Link href={"/dashboard"}>Go to Dashboard</Link>
                   </Button>
                 </SignedIn>
@@ -678,7 +678,7 @@ export default function Homepage() {
                   <Button
                     size="lg"
                     variant="secondary"
-                    className="gap-1.5 group"
+                    className="gap-1.5 group to-secondary hover:from-secondary/80 hover:to-secondary/80"
                     onClick={() => handleLogin()}
                   >
                     Start Your Free Trial

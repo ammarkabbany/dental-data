@@ -19,12 +19,12 @@ export default function TemplatesSidebar({ applyTemplate }: { applyTemplate: (te
   }, [isLoading, data])
 
   return (
-    <aside className="w-64 flex flex-col border-r">
-      <ScrollArea className="flex-1">
-        <div className="p-4 space-y-6">
+    <aside className="w-full lg:w-64 flex flex-col lg:border-r bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <ScrollArea className="flex-1 p-2 lg:p-4">
+        <div className="space-y-4 lg:space-y-6">
           {/* Favorites Section */}
           <section>
-            <div className="flex items-center gap-2 mb-3">
+            <div className="flex items-center gap-2 mb-2 lg:mb-3">
               <Star className="w-4 h-4 text-yellow-500" />
               <h2 className="font-semibold">Favorites</h2>
             </div>
@@ -48,7 +48,7 @@ export default function TemplatesSidebar({ applyTemplate }: { applyTemplate: (te
                       variant="secondary"
                       size="sm"
                       onClick={() => applyTemplate(getTemplateById(template))}
-                      className="w-full justify-start font-normal hover:bg-accent/80 transition-colors"
+                      className="w-full justify-start font-normal hover:bg-accent/80 transition-colors text-sm lg:text-base"
                     >
                       {getTemplateById(template)?.name}
                     </Button>

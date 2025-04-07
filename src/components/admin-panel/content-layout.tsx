@@ -1,4 +1,5 @@
 import { Navbar } from "@/components/admin-panel/navbar";
+import { MobileNotSupportedWarning } from "../layout/mobile-warning";
 
 interface ContentLayoutProps {
   title: string;

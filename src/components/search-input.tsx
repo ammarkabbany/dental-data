@@ -9,7 +9,13 @@ interface SearchInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   onClear?: () => void;
 }
 
-export function SearchInput({ value, onChange, onClear, className, ...props }: SearchInputProps) {
+export function SearchInput({
+  value,
+  onChange,
+  onClear,
+  className,
+  ...props
+}: SearchInputProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: -20 }}
@@ -29,7 +35,7 @@ export function SearchInput({ value, onChange, onClear, className, ...props }: S
             <SearchIcon className="h-4 w-4 text-muted-foreground/70" />
           </Input.LeftIcon>
           {value && (
-            <Input.ClearButton 
+            <Input.ClearButton
               onClick={onClear}
               className="text-muted-foreground/70 hover:text-foreground transition-colors"
             />

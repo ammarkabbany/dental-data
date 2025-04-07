@@ -7,6 +7,7 @@ import {
   Users,
   LayoutDashboard,
   Layers,
+  ShieldUser,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -30,7 +31,7 @@ export function Menu({ isOpen }: MenuProps) {
   const pathname = usePathname();
   const router = useRouter();
   const {membership} = useTeamStore();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isAdmin } = useAuth();
   const menuList = getMenuList(pathname);
   const isActive = (href: string) => pathname.endsWith(href);
   const navigate = (href: string) => {
@@ -56,6 +57,14 @@ export function Menu({ isOpen }: MenuProps) {
           onClick={() => navigate("/dashboard")}
         />
         <SignedIn>
+          {isAdmin && (
+            <NavItem
+              icon={ShieldUser}
+              label="Admin"
+              active={isActive("admin")}
+              onClick={() => navigate("/admin")}
+            />
+          )}
           <NavItem comingSoon icon={BarChart3} label="Analytics" />
 
           {/* <Separator className="my-3" /> */}

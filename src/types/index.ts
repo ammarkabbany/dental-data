@@ -86,6 +86,12 @@ export type Case = Models.Document & {
   note: string;
   teamId: string;
   userId: string; // represents the user who created the case
+  user?: {
+    id: string;
+    name: string;
+    email: string;
+    avatar?: string;
+  } | null;
 }
 
 /**

@@ -427,7 +427,7 @@ export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
         </DialogTrigger>
       }
     >
-      <Card className="w-full h-full border-none shadow-none">
+      <Card className="w-full h-full border-none shadow-none bg-gradient-to-t from-card to-secondary/40">
         <CardHeader className="flex px-7">
           <CardTitle className="text-xl font-bold">
             Update case details

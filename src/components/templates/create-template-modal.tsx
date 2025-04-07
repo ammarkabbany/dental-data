@@ -62,7 +62,7 @@ export const TemplateCreateModal = () => {
       open={isModalOpen(Modals.CREATE_TEMPLATE_MODAL)}
       onOpenChange={() => closeModal(Modals.CREATE_TEMPLATE_MODAL)}
     >
-      <Card className="w-full h-full border-none shadow-none">
+      <Card className="w-full h-full border-none shadow-none bg-gradient-to-t from-card to-secondary/40">
         <CardHeader className="flex">
           <CardTitle className="text-xl font-bold">
             Create new template
@@ -99,7 +99,7 @@ export const TemplateCreateModal = () => {
                           <CustomComboBox
                             label="material"
                             property="$id"
-                            variant={"outline"}
+                            variant={"secondary"}
                             values={materials || []}
                             value={field.value}
                             action={field.onChange}
@@ -122,7 +122,7 @@ export const TemplateCreateModal = () => {
                           <CustomComboBox
                             label="doctor"
                             property="$id"
-                            variant={"outline"}
+                            variant={"secondary"}
                             values={doctors || []}
                             value={field.value}
                             action={field.onChange}

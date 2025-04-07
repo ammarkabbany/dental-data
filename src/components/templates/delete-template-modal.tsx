@@ -58,8 +58,9 @@ export function DeleteTemplateModal({ templateId, component }: DeleteTemplateMod
           )}
         </DialogTrigger>
       }
+      className="bg-gradient-to-t from-card to-secondary"
     >
-      <div className="p-7 space-y-4">
+      <div className="p-7 space-y-4 ">
       <DialogHeader>
         <DialogTitle>Are you sure?</DialogTitle>
         <DialogDescription>

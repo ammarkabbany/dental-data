@@ -5,7 +5,7 @@ import { ArrowLeft } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "./ui/button"
 
-export default function NotFoundPage({href = "/", className = ""}) {
+export default function NotFound({href = "/", className = ""}) {
 
   return (
     <div className={cn("flex items-center justify-center p-4", className)}>
