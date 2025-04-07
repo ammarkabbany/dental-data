@@ -5,7 +5,7 @@ import { useStore } from "@/hooks/use-store";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { DentalToothIcon, Doctor02Icon } from "@hugeicons/core-free-icons";
 import { useDashboardData } from "@/hooks/use-dashboard-data";
-import { CubeIcon, FileTextIcon } from "@radix-ui/react-icons";
+import { CubeIcon, FileTextIcon, QuestionMarkIcon } from "@radix-ui/react-icons";
 import RecentCases from "@/components/recent-cases";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
@@ -93,10 +93,14 @@ export default function DashboardPage() {
       icon: <CubeIcon className="size-6" />,
     },
     {
-      title: "Avg. Cases/Doctor",
-      value: (data?.casesCount && data?.doctorsCount) ? formatNumbers(data.casesCount / (data.doctorsCount || 1)) : "0",
-      href: "/dashboard/analytics", // Or a dedicated doctor activity report
-      icon: <FileChartLine className="size-6" />, // Icon representing average/statistics
+      title: "N/A",
+      value: formatNumbers(0),
+      // change: {
+      //   value: "0%",
+      //   trend: "down",
+      // },
+      href: "#",
+      icon: <QuestionMarkIcon className="size-6" />,
     },
   ];
 
@@ -261,7 +265,7 @@ export default function DashboardPage() {
                     <Button
                       variant={card.isPrimary ? "secondary" : "outline"}
                       size="sm"
-                      className="w-full transition cursor-pointer"
+                      className="w-full transition cursor-pointer to-secondary hover:from-secondary/80 hover:to-secondary/80"
                       onClick={card.onClick}
                       asChild={card.href !== undefined}
                     >

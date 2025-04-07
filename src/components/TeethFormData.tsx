@@ -101,8 +101,8 @@ export default function TeethFormData({
   }, []);
 
   return (
-    <div className="flex flex-col items-center space-y-6">
-      <div className="relative w-full max-w-[125px] mx-auto">
+    <div className="flex flex-col items-center space-y-4 lg:space-y-6">
+      <div className="relative max-w-[125px] mx-auto">
         {/* Upper Teeth */}
         <div className="flex flex-col gap-1">
           {groupedUpper.map((pair: any, index: any) => (
@@ -114,7 +114,8 @@ export default function TeethFormData({
                 <div
                   key={label}
                   className={`flex ${reverse ? 'flex-row-reverse' : 'flex-row'} 
-                    items-center justify-center transform ${translate} transition-transform`}
+                    items-center justify-center transform ${translate} transition-transform
+                    sm:hover:scale-110`}
                 >
                   <CustomCheckbox
                     checked={checkedTeeth.includes(label)}
@@ -130,13 +131,13 @@ export default function TeethFormData({
 
         {/* Reset Button */}
         {resetTeeth && (
-          <div className="flex justify-center mb-2">
+          <div className="flex justify-center my-2">
             <Button 
               variant="outline" 
               type="reset"
               size="sm" 
               onClick={resetTeeth}
-              className="text-xs px-2 py-1 h-auto"
+              className="text-xs px-2 py-1 h-auto hover:bg-accent/80"
             >
               <RefreshCw className="h-3 w-3 mr-1" />
               Reset

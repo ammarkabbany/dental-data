@@ -32,7 +32,7 @@ export default function CasesPage() {
           </p>
         </div>
         {canCreate && (
-          <Button className="transition hover:scale-105" asChild>
+          <Button className="transition" asChild>
             <Link href="/dashboard/cases/new">
               <HugeiconsIcon icon={Add01Icon} className="mr-2" /> 
               Add Case

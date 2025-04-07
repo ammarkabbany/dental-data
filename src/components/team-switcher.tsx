@@ -20,7 +20,7 @@ export function TeamSwitcher() {
       <DropdownMenuTrigger asChild>
         <Button
           size="lg"
-          className="bg-sidebar h-12 hover:bg-sidebar-accent w-full text-sidebar-accent-foreground focus-visible:ring-0 gap-3 [&>svg]:size-auto"
+          className="bg-transparent shadow-none h-12 hover:bg-sidebar-accent w-full text-sidebar-accent-foreground focus-visible:ring-0 gap-3 [&>svg]:size-auto"
         >
           <div className="flex aspect-square size-8 items-center justify-center rounded-md overflow-hidden bg-sidebar-primary text-sidebar-primary-foreground">
             {membership && (

@@ -1,18 +1,11 @@
 "use client";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect } from "react";
 import { useUser } from "@clerk/nextjs"; // Assuming you're using Clerk
 import { Team } from "@/types"; // Adjust the import based on your structure
 import { useAuth } from "./auth-provider";
-import {
-  getAppwriteMembership,
-  getAppwriteTeam,
-} from "@/features/team/queries";
-import { Models, Query } from "appwrite";
-import { getUserRole } from "@/features/auth/actions";
-import { databases } from "@/lib/appwrite/client";
-import { DATABASE_ID, TEAMS_COLLECTION_ID } from "@/lib/constants";
+import { Models } from "appwrite";
+import { TEAMS_COLLECTION_ID } from "@/lib/constants";
 import { useRealtimeUpdates } from "@/hooks/use-realtime-updates";
-import { useQueryClient } from "@tanstack/react-query";
 import { useTeamData } from "@/features/team/hooks/use-team";
 
 interface TeamContextType {

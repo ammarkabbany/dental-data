@@ -71,8 +71,8 @@ const PrintableTable = React.forwardRef<HTMLDivElement, PrintableTableProps>(
             </TableHeader>
             <TableBody>
               {cases?.map((caseItem: Case) => {
-                const doctor = caseItem.doctor.name;
-                const material = caseItem.material.name
+                const doctor = caseItem.doctor?.name?? "N/A";
+                const material = caseItem.material?.name ?? "N/A"
                 const caseData = caseItem.data ? JSON.parse(String(caseItem.data)) as ToothCollection : undefined;
                 const lowerLeft = loadTeethData(
                   caseData?.lower?.left,
@@ -189,7 +189,7 @@ const PrintComponent = ({selectedCases, options = defaultOptions}: PrintComponen
 
   return (
     <div>
-      {!showComponent && (
+      {isModalOpen('print') && (
         <div style={{ display: "none" }}>
           <PrintableTable
             ref={componentRef}

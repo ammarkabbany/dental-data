@@ -1,12 +1,19 @@
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 
-export default function Logo({src, className}: {src: string, className?: string}) {
+interface LogoProps {
+  src: string;
+  className?: string;
+  w?: number;
+  h?: number; 
+}
+
+export default function Logo({src, className, w, h}: LogoProps) {
   return (
     <Image
       src={src}
-      width={64}
-      height={64}
+      width={w ?? 64}
+      height={h ?? 64}
       alt="logo"
       // layout="static"
       className={cn("size-[86px] object-cover", className)}

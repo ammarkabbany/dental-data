@@ -27,6 +27,7 @@ import { usePermission } from "@/hooks/use-permissions";
 import { useTemplateParams } from "@/features/templates/hooks/use-template-params";
 import { useTemplatesStore } from "@/store/templates-store";
 import useTeamStore from "@/store/team-store";
+import { AlertCircle } from "lucide-react"; // Add this import
 
 export const CreateCaseForm = () => {
   const {membership, userRole} = useTeamStore();
@@ -46,6 +47,7 @@ export const CreateCaseForm = () => {
     return doctors?.find((doctor) => doctor.$id === id);
   };
 
+  const [showSidebar, setShowSidebar] = useState(false);
   const [teethData, setTeethData] = useState<Tooth[]>([]);
   const [checkedTeeth, setCheckedTeeth] = useState<number[]>([]);
   const [lastCheckedTooth, setLastCheckedTooth] = useState<
@@ -429,15 +431,26 @@ export const CreateCaseForm = () => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6">
-      <TemplatesSidebar applyTemplate={applyTemplate} />
-      <div className="flex-1 px-4 lg:px-6">
+    <div className="flex flex-col 2xl:flex-row gap-4">
+      <div className="lg:hidden">
+        <Button
+          variant="outline"
+          className="w-full mb-4"
+          onClick={() => setShowSidebar(!showSidebar)}
+        >
+          {showSidebar ? "Hide Templates" : "Show Templates"}
+        </Button>
+        {showSidebar && <TemplatesSidebar applyTemplate={applyTemplate} />}
+      </div>
+      <div className="hidden lg:block">
+        <TemplatesSidebar applyTemplate={applyTemplate} />
+      </div>
+      <div className="flex-1 px-2 3xl:px-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid lg:grid-cols-2 gap-8">
-              <div className="space-y-6">
-                {/* Form Fields Section */}
-                <div className="bg-card/50 p-6 rounded-lg border shadow-sm space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 lg:space-y-6">
+            <div className="grid md:grid-cols-2 gap-4 lg:gap-8">
+              <div className="space-y-4 lg:space-y-6">
+                <div className="bg-card/50 p-4 lg:p-6 rounded-lg border shadow-sm space-y-4 lg:space-y-6">
                   <FormField
                     control={form.control}
                     name="patient"
@@ -576,7 +589,7 @@ export const CreateCaseForm = () => {
                       </FormItem>
                     )}
                   />
-                  <div className="flex items-center justify-end gap-4">
+                  <div className="flex flex-col md:flex-row items-center justify-end gap-4">
                     <Button
                       variant="secondary"
                       type="button"
@@ -596,7 +609,13 @@ export const CreateCaseForm = () => {
                   </div>
                 </div>
               </div>
-              <div className="bg-card/50 p-6 rounded-lg border shadow-sm">
+              <div className="bg-card/50 p-4 border rounded-lg relative min-w-[360px]">
+                {!form.getValues().materialId && (
+                  <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-10 flex items-center justify-center flex-col gap-2 rounded-lg">
+                    <AlertCircle className="w-8 h-8 text-muted-foreground" />
+                    <p className="text-muted-foreground font-medium">Please select a material</p>
+                  </div>
+                )}
                 <TeethFormData
                   data={teethData}
                   checkedTeeth={checkedTeeth}

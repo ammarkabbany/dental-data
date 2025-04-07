@@ -62,6 +62,7 @@ export function DeleteCaseModal({ cases, component }: DeleteCaseModalModal) {
           )}
         </DialogTrigger>
       }
+      className="bg-gradient-to-t from-card to-secondary"
     >
       <div className="p-7 space-y-4">
       <DialogHeader>

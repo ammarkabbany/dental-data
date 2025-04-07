@@ -37,7 +37,7 @@ export default function DoctorsPage() {
           </div>
           {canCreate && (
             <Button 
-              className="transition hover:scale-105" 
+              className="transition" 
               onClick={() => openModal(Modals.CREATE_DOCTOR_MODAL)}
             >
               <HugeiconsIcon icon={Add01Icon} className="mr-2" /> 
@@ -76,7 +76,7 @@ export default function DoctorsPage() {
               {canCreate && (
                 <Button 
                   onClick={() => openModal(Modals.CREATE_DOCTOR_MODAL)}
-                  className="hover:scale-105 transition-transform"
+                  className="transition-transform"
                 >
                   <HugeiconsIcon icon={Add01Icon} className="mr-2" />
                   Add Your First Doctor

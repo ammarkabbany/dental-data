@@ -62,7 +62,7 @@ const permissionMatrix: Record<string, Record<Resource, Action[]>> = {
 };
 
 export function usePermission(userRole: TeamMember['role'] | null) {
-  const checkPermission = (resource: Resource, action: Action): boolean => {
+  const checkPermission: (resource: Resource, action: Action) => boolean = (resource: Resource, action: Action): boolean => {
     if (!userRole) return false;
     
     const role = userRole.toLowerCase();

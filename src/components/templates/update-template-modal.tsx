@@ -68,7 +68,7 @@ export const TemplateUpdateModal = ({template, trigger}: {template: Template, tr
       onOpenChange={(open) => setDialogOpen(open)}
       trigger={trigger}
     >
-      <Card className="w-full h-full border-none shadow-none">
+      <Card className="w-full h-full border-none shadow-none bg-gradient-to-t from-card to-secondary/40">
         <CardHeader className="flex">
           <CardTitle className="text-xl font-bold">
             Update template details
@@ -105,7 +105,7 @@ export const TemplateUpdateModal = ({template, trigger}: {template: Template, tr
                           <CustomComboBox
                             label="material"
                             property="$id"
-                            variant={"outline"}
+                            variant={"secondary"}
                             values={materials || []}
                             value={field.value}
                             action={field.onChange}
@@ -128,7 +128,7 @@ export const TemplateUpdateModal = ({template, trigger}: {template: Template, tr
                           <CustomComboBox
                             label="doctor"
                             property="$id"
-                            variant={"outline"}
+                            variant={"secondary"}
                             values={doctors || []}
                             value={field.value}
                             action={field.onChange}

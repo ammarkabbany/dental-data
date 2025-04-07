@@ -1,5 +1,5 @@
 "use server"
-import { Account, Client, Databases, Users, Storage, Functions } from 'node-appwrite'
+import { Account, Client, Databases, Users, Storage, Functions, Teams } from 'node-appwrite'
 import { AUTH_COOKIE } from '../constants'
 import { cookies } from 'next/headers'
 
@@ -40,6 +40,9 @@ export async function createAdminClient() {
     },
     get users() {
       return new Users(client);
+    },
+    get teams() {
+      return new Teams(client);
     },
     get storage() {
       return new Storage(client);
