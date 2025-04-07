@@ -39,7 +39,8 @@ export default function QueryProvider({ children }: { children: React.ReactNode 
             const queryKey = query.queryKey[0];
             return typeof queryKey === 'string' && 
                   !queryKey.includes('auth') && 
-                  !queryKey.includes('current');
+                  !queryKey.includes('current') &&
+                  !queryKey.includes('team')
           },
         },
       });
