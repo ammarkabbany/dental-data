@@ -8,11 +8,8 @@ import NotFoundPage from "@/app/not-found";
 import AdminPanelLayout from "@/components/admin-panel/admin-panel-layout";
 
 const AdminDashboardPage = () => {
-  const { isAdmin, isLoading, isAuthenticated } = useAuth();
+  const { isAdmin, isAuthenticated } = useAuth();
 
-  if (isLoading) {
-    return null;
-  }
   if (!isAuthenticated || !isAdmin) {
     return <NotFoundPage />;
   }

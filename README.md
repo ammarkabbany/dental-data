@@ -23,6 +23,8 @@ A comprehensive dental practice management system.
 
 ## Project Structure
 
+The project is organized into a feature-based structure:
+```
 src/
 ├── app/               # Next.js App Router pages and layouts
 ├── components/        # Reusable UI components
@@ -38,3 +40,4 @@ src/
 ├── providers/         # React context providers
 ├── store/             # Zustand stores
 └── types/             # TypeScript type definitions
+```
