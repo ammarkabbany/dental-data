@@ -24,9 +24,9 @@ import { ResponsiveModalWithTrigger } from "../responsive-modal";
 import { DialogTrigger } from "../ui/dialog";
 import { useUpdateCase } from "@/features/cases/hooks/use-update-case";
 import { usePermission } from "@/hooks/use-permissions";
-import { useGetDoctors } from "@/features/doctors/hooks/use-get-doctors";
-import { useGetMaterials } from "@/features/materials/hooks/use-get-materials";
 import useTeamStore from "@/store/team-store";
+import { useDoctorsStore } from "@/store/doctors-store";
+import { useMaterialsStore } from "@/store/material-store";
 
 export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
   const {userRole, membership} = useTeamStore();
@@ -38,14 +38,8 @@ export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
     form.reset();
   };
 
-  const { data: doctors } = useGetDoctors();
-  const { data: materials } = useGetMaterials();
-  const getMatrialById = (id: string) => {
-    return materials?.find((material) => material.$id === id);
-  };
-  const getDoctorById = (id: string) => {
-    return doctors?.find((doctor) => doctor.$id === id);
-  };
+  const {getDoctorById, doctors} = useDoctorsStore();
+  const {getMaterialById, materials} = useMaterialsStore();
 
   const caseData: ToothCollection = JSON.parse(String(selectedCase?.data));
 
@@ -68,8 +62,19 @@ export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
 
   const { mutate, isPending, error } = useUpdateCase();
 
+  const handleDoctorSelection = (currentValue: string) => {
+    if (form.getValues().doctorId) {
+      if (currentValue === form.getValues().doctorId) {
+        form.resetField("doctorId");
+        return;
+      }
+    }
+    const docDoctor = doctors?.find((doc) => doc.name === currentValue);
+    form.setValue("doctorId", docDoctor?.$id || "");
+  };
+
   const handleMaterialSelection = (currentValue: string) => {
-    const docMaterial = materials?.find((mat) => mat.$id === currentValue);
+    const docMaterial = materials?.find((mat) => mat.name === currentValue);
     const teethQuantity = teethData.length;
 
     // Update the form values
@@ -470,11 +475,11 @@ export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
                         <FormControl>
                           <CustomComboBox
                             label="doctor"
-                            property="$id"
+                            // property="$id"
                             variant={"secondary"}
                             values={doctors || []}
-                            value={field.value}
-                            action={field.onChange}
+                            value={getDoctorById(field.value)?.name}
+                            action={handleDoctorSelection}
                             previewValue={`${getDoctorById(field.value)?.name}`}
                           />
                         </FormControl>
@@ -492,14 +497,14 @@ export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
                           <FormControl>
                             <CustomComboBox
                               label="material"
-                              property="$id"
+                              // property="$id"
                               variant={"secondary"}
                               values={materials || []}
-                              value={field.value}
+                              value={getMaterialById(field.value)?.name}
                               action={handleMaterialSelection}
                               previewValue={`${
-                                getMatrialById(field.value)?.name
-                              } ${getMatrialById(field.value)?.price}`}
+                                getMaterialById(field.value)?.name
+                              } ${getMaterialById(field.value)?.price}`}
                             />
                           </FormControl>
                           <FormMessage />

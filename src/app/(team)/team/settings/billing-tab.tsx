@@ -23,7 +23,7 @@ export default function PlanBillingPage() {
       price: 0,
       features: ['500 cases', '1 team member', 'Basic support'],
       isCurrent: plan?.$id === "free",
-      upgradeOrDowngrade: true
+      upgradeOrDowngrade: false
     },
     {
       name: 'Starter',

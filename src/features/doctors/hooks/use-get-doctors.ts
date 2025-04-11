@@ -3,8 +3,10 @@ import { Doctor } from "@/types";
 import { databases } from "@/lib/appwrite/client";
 import { DATABASE_ID, DOCTORS_COLLECTION_ID } from "@/lib/constants";
 import { Query } from "appwrite";
+import { useDoctorsStore } from "@/store/doctors-store";
 
 export const useGetDoctors = () => {
+  const {setDoctors} = useDoctorsStore();
   return useQuery({
     queryKey: ["doctors"],
     queryFn: async () => {
@@ -13,6 +15,7 @@ export const useGetDoctors = () => {
         DOCTORS_COLLECTION_ID,
         [Query.limit(9999)]
       );
+      setDoctors(doctors.documents);
       
       return doctors.documents;
     },
@@ -21,6 +24,7 @@ export const useGetDoctors = () => {
 
 export const usePrefetchDoctors = () => {
   const queryClient = useQueryClient();
+  const {setDoctors} = useDoctorsStore();
   
   return async () => {
     await queryClient.prefetchQuery({
@@ -31,6 +35,7 @@ export const usePrefetchDoctors = () => {
           DOCTORS_COLLECTION_ID,
           [Query.limit(9999)]
         );
+        setDoctors(doctors.documents);
         
         return doctors.documents;
       },

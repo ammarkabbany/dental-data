@@ -16,37 +16,38 @@ export default function QueryProvider({ children }: { children: React.ReactNode 
     defaultOptions: {
       queries: {
         refetchOnWindowFocus: false,
+        // refetchOnMount: true,
         staleTime: 1000 * 60 * 60,
       },
     },
   }));
 
   // Persist the query client to local storage
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const localStoragePersister = createSyncStoragePersister({
-      storage: window.localStorage,
-      serialize: (data) => compress(JSON.stringify(data)),
-      deserialize: (data) => JSON.parse(decompress(data)),
-    })
-    const persist = async () => {
-      persistQueryClient({
-        queryClient,
-        persister: localStoragePersister,
-        dehydrateOptions: {
-          shouldDehydrateQuery: (query) => {
-            // Don't persist queries with "auth" or "current" in the key
-            const queryKey = query.queryKey[0];
-            return typeof queryKey === 'string' && 
-                  !queryKey.includes('auth') && 
-                  !queryKey.includes('current') &&
-                  !queryKey.includes('team')
-          },
-        },
-      });
-    };
-    persist();
-  }, [queryClient]);
+  // useEffect(() => {
+  //   if (typeof window === "undefined") return;
+  //   const localStoragePersister = createSyncStoragePersister({
+  //     storage: window.localStorage,
+  //     serialize: (data) => compress(JSON.stringify(data)),
+  //     deserialize: (data) => JSON.parse(decompress(data)),
+  //   })
+  //   const persist = async () => {
+  //     persistQueryClient({
+  //       queryClient,
+  //       persister: localStoragePersister,
+  //       dehydrateOptions: {
+  //         shouldDehydrateQuery: (query) => {
+  //           // Don't persist queries with "auth" or "current" in the key
+  //           const queryKey = query.queryKey[0];
+  //           return typeof queryKey === 'string' && 
+  //                 !queryKey.includes('auth') && 
+  //                 !queryKey.includes('current') &&
+  //                 !queryKey.includes('team')
+  //         },
+  //       },
+  //     });
+  //   };
+  //   persist();
+  // }, [queryClient]);
 
   return (
     <QueryClientProvider client={queryClient}>

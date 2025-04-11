@@ -16,8 +16,6 @@ import { useCreateCase } from "@/features/cases/hooks/use-create-case";
 import { createCaseSchema } from "@/features/cases/schemas";
 import { DatePicker } from "../date-picker";
 import { CustomComboBox } from "../custom-combobox";
-import { useGetDoctors } from "@/features/doctors/hooks/use-get-doctors";
-import { useGetMaterials } from "@/features/materials/hooks/use-get-materials";
 import { useEffect, useState } from "react";
 import TeethFormData from "../TeethFormData";
 import { Material, Template, Tooth } from "@/types";
@@ -28,6 +26,8 @@ import { useTemplateParams } from "@/features/templates/hooks/use-template-param
 import { useTemplatesStore } from "@/store/templates-store";
 import useTeamStore from "@/store/team-store";
 import { AlertCircle } from "lucide-react"; // Add this import
+import { useDoctorsStore } from "@/store/doctors-store";
+import { useMaterialsStore } from "@/store/material-store";
 
 export const CreateCaseForm = () => {
   const {membership, userRole} = useTeamStore();
@@ -36,16 +36,11 @@ export const CreateCaseForm = () => {
 
   const templateParams = useTemplateParams();
 
-  const { data: doctors } = useGetDoctors();
-  const { data: materials } = useGetMaterials();
+  const {getDoctorById, doctors} = useDoctorsStore();
+  const {getMaterialById, materials} = useMaterialsStore();
+
   const { addRecentTemplate, applyTemplate: storeCurrentTemplate, currentTemplate } =
     useTemplatesStore();
-  const getMaterialById = (id: string) => {
-    return materials?.find((material) => material.$id === id);
-  };
-  const getDoctorById = (id: string) => {
-    return doctors?.find((doctor) => doctor.$id === id);
-  };
 
   const [showSidebar, setShowSidebar] = useState(false);
   const [teethData, setTeethData] = useState<Tooth[]>([]);
@@ -60,8 +55,19 @@ export const CreateCaseForm = () => {
     router.back();
   };
 
+  const handleDoctorSelection = (currentValue: string) => {
+    if (form.getValues().doctorId) {
+      if (currentValue === form.getValues().doctorId) {
+        form.resetField("doctorId");
+        return;
+      }
+    }
+    const docDoctor = doctors?.find((doc) => doc.name === currentValue);
+    form.setValue("doctorId", docDoctor?.$id || "");
+  };
+
   const handleMaterialSelection = (currentValue: string) => {
-    const docMaterial = materials?.find((mat) => mat.$id === currentValue);
+    const docMaterial = materials?.find((mat) => mat.name === currentValue);
     const teethQuantity = teethData.length;
 
     // Update the form values
@@ -473,11 +479,11 @@ export const CreateCaseForm = () => {
                         <FormControl>
                           <CustomComboBox
                             label="doctor"
-                            property="$id"
+                            // property="$id"
                             variant={"secondary"}
                             values={doctors || []}
-                            value={field.value}
-                            action={field.onChange}
+                            value={getDoctorById(field.value)?.name}
+                            action={handleDoctorSelection}
                             previewValue={`${getDoctorById(field.value)?.name}`}
                           />
                         </FormControl>
@@ -495,10 +501,10 @@ export const CreateCaseForm = () => {
                           <FormControl>
                             <CustomComboBox
                               label="material"
-                              property="$id"
+                              // property="$id"
                               variant={"secondary"}
                               values={materials || []}
-                              value={field.value}
+                              value={getMaterialById(field.value)?.name}
                               action={handleMaterialSelection}
                               previewValue={`${getMaterialById(field.value)?.name} ${
                                 getMaterialById(field.value)?.price

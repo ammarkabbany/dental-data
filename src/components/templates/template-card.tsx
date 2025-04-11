@@ -15,19 +15,17 @@ import { TemplateUpdateModal } from "./update-template-modal";
 import { DialogTrigger } from "../ui/dialog";
 import { DeleteTemplateModal } from "./delete-template-modal";
 import { useTemplatesStore } from "@/store/templates-store";
-import { useGetDoctors } from "@/features/doctors/hooks/use-get-doctors";
-import { useGetMaterials } from "@/features/materials/hooks/use-get-materials";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { formatDates } from "@/lib/format-utils";
 import useTeamStore from "@/store/team-store";
+import { useDoctorsStore } from "@/store/doctors-store";
+import { useMaterialsStore } from "@/store/material-store";
 
 export const TemplateCard = ({ template }: { template: Template }) => {
   const router = useRouter();
-  const { data: doctors } = useGetDoctors();
-  const { data: materials } = useGetMaterials();
-  const getMaterialById = (id: string) => materials?.find((material) => material.$id === id);
-  const getDoctorById = (id: string) => doctors?.find((doctor) => doctor.$id === id);
+  const {getDoctorById, doctors} = useDoctorsStore();
+  const {getMaterialById, materials} = useMaterialsStore();
   const {toggleFavorite, favoriteTemplates} = useTemplatesStore();
   const {userRole} = useTeamStore();
 

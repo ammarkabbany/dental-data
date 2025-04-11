@@ -31,20 +31,23 @@ export default function DashboardLayout({
     const caseData: Case = payload.payload; // The updated/created/deleted case
 
     // Add the new case to the cached data
-    queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+    // queryClient.invalidateQueries({ queryKey: ["dashboard"] });
     // queryClient.setQueryData(['cases'], (oldData: any[]) => [caseData, ...oldData].sort((a,b) => b.date.localeCompare(a.date)));
-    queryClient.refetchQueries({ queryKey: ["cases"] });
+    // queryClient.refetchQueries({ queryKey: ["cases"] });
     // if (caseData.userId !== user?.$id) {
     //   toast.success(`New case added by team`);
-    // }
-    // } else if (
-    //   events.includes("databases.*.collections.*.documents.*.update")
-    // ) {
-    //   // Update the existing case in the cached data
-    //   queryClient.setQueryData(["cases"], (oldData: any[]) =>
-    //     oldData.map((c) => (c.$id === caseData.$id ? caseData : c))
-    //   );
-    // } else if (
+    if (events.includes("databases.*.collections.*.documents.*.create")) {
+      queryClient.setQueryData(['cases'], (oldData: any[]) => [caseData, ...oldData]);
+    }
+      else if (
+      events.includes("databases.*.collections.*.documents.*.update")
+    ) {
+      // Update the existing case in the cached data
+      queryClient.setQueryData(["cases"], (oldData: any[]) =>
+        oldData.map((c) => (c.$id === caseData.$id ? caseData : c))
+      );
+    }
+    // else if (
     //   events.includes("databases.*.collections.*.documents.*.delete")
     // ) {
     //   // Remove the deleted case from the cached data
@@ -55,20 +58,6 @@ export default function DashboardLayout({
     //   //   toast.success(`case deleted by team`);
     //   // }
     //   queryClient.invalidateQueries({ queryKey: ["dashboard"] });
-    // }
-  });
-  useRealtimeUpdates(DOCTORS_COLLECTION_ID, (payload) => {
-    const events = payload.events; // e.g., 'databases.*.collections.*.documents.*.create'
-    const doctor: Doctor = payload.payload; // The updated/created/deleted doctor
-    queryClient.invalidateQueries({ queryKey: ["doctors"] });
-    // if (events.includes("databases.*.collections.*.documents.*.create")) {
-    //   queryClient.invalidateQueries({ queryKey: ["doctors"] });
-    // }
-    // if (events.includes("databases.*.collections.*.documents.*.update")) {
-    //   queryClient.invalidateQueries({ queryKey: ["doctors"] });
-    // }
-    // if (events.includes("databases.*.collections.*.documents.*.delete")) {
-    //   queryClient.invalidateQueries({ queryKey: ["doctors"] });
     // }
   });
   useRealtimeUpdates(MATERIALS_COLLECTION_ID, () => {
