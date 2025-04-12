@@ -30,12 +30,6 @@ export default function DashboardLayout({
     const events = payload.events; // e.g., 'databases.*.collections.*.documents.*.create'
     const caseData: Case = payload.payload; // The updated/created/deleted case
 
-    // Add the new case to the cached data
-    // queryClient.invalidateQueries({ queryKey: ["dashboard"] });
-    // queryClient.setQueryData(['cases'], (oldData: any[]) => [caseData, ...oldData].sort((a,b) => b.date.localeCompare(a.date)));
-    // queryClient.refetchQueries({ queryKey: ["cases"] });
-    // if (caseData.userId !== user?.$id) {
-    //   toast.success(`New case added by team`);
     if (events.includes("databases.*.collections.*.documents.*.create")) {
       queryClient.setQueryData(['cases'], (oldData: any[]) => [caseData, ...oldData]);
     }
@@ -47,21 +41,15 @@ export default function DashboardLayout({
         oldData.map((c) => (c.$id === caseData.$id ? caseData : c))
       );
     }
-    // else if (
-    //   events.includes("databases.*.collections.*.documents.*.delete")
-    // ) {
+    else if (
+      events.includes("databases.*.collections.*.documents.*.delete")
+    ) {
     //   // Remove the deleted case from the cached data
-    //   queryClient.setQueryData(["cases"], (oldData: any[]) =>
-    //     oldData.filter((c) => c.$id !== caseData.$id)
-    //   );
-    //   // if (caseData.userId !== user?.$id) {
-    //   //   toast.success(`case deleted by team`);
-    //   // }
-    //   queryClient.invalidateQueries({ queryKey: ["dashboard"] });
-    // }
-  });
-  useRealtimeUpdates(MATERIALS_COLLECTION_ID, () => {
-    queryClient.invalidateQueries({ queryKey: ["materials"] });
+      queryClient.setQueryData(["cases"], (oldData: any[]) =>
+        oldData.filter((c) => c.$id !== caseData.$id)
+      );
+    }
+    queryClient.refetchQueries({ queryKey: ["dashboard"] });
   });
   useRealtimeUpdates(TEMPLATES_COLLECTION_ID, () => {
     queryClient.invalidateQueries({ queryKey: ["templates"] });

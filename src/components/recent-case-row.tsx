@@ -4,18 +4,20 @@ import { formatCurrency } from "@/lib/format-utils";
 import { useGetUserInfo } from "@/features/auth/hooks/use-get-userinfo";
 import { usePermission } from "@/hooks/use-permissions";
 import useTeamStore from "@/store/team-store";
+import { useDoctorsStore } from "@/store/doctors-store";
 
 export const RecentCaseRow = ({ caseItem }: { caseItem: Partial<Case> }) => {
   const { data: user } = useGetUserInfo(caseItem.userId || "");
   const {userRole, currentAppwriteTeam: appwriteTeam} = useTeamStore();
   const canViewDue = usePermission(userRole).canViewDue()
+  const {getDoctorById} = useDoctorsStore();
   return (
     <tr key={caseItem.$id} className="hover:bg-current/5">
       <td className="px-6 py-3 whitespace-nowrap">
         <div className="font-medium">{caseItem.patient}</div>
       </td>
       <td className="px-6 py-3 whitespace-nowrap">
-        {caseItem.doctor?.name || ""}
+        {getDoctorById(caseItem.doctorId || "")?.name || "N/A"}
       </td>
       {/* <td className="px-6 py-4 whitespace-nowrap text-gray-500">
                     {new Date(caseItem.dueDate).toLocaleDateString()}

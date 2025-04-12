@@ -8,5 +8,6 @@ export const useGetUserInfo = (userId: string) => {
       const userInfo = await getUserInfo(userId);
       return userInfo;
     },
+    staleTime: Infinity,
   })
 }
