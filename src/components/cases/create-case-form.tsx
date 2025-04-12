@@ -407,19 +407,24 @@ export const CreateCaseForm = () => {
           if (currentTemplate) {
             addRecentTemplate(currentTemplate.$id);
           }
+          handleResetTeeth();
           form.resetField('patient')
           form.resetField('shade')
-          form.resetField('due')
           form.resetField('invoice')
           form.resetField('note')
-          handleResetTeeth();
         },
       }
     );
   };
 
   const handleResetTeeth = () => {
-    form.resetField("data");
+    form.resetField('data')
+    form.resetField('data.lower')
+    form.setValue('data.lower.left', [])
+    form.setValue('data.lower.right', [])
+    form.resetField('data.upper')
+    form.setValue('data.upper.left', [])
+    form.setValue('data.upper.right', [])
     form.resetField('due')
     setTeethData([]);
     setLastCheckedTooth(undefined);
