@@ -14,7 +14,7 @@ import { User } from '@/types';
 interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
-  user: any | null;
+  user: User | null;
   isAdmin: boolean;
   logOut: () => Promise<void>;
   handleLogin: (uri?: string) => void;
