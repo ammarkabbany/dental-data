@@ -18,19 +18,13 @@ import { Button } from "../ui/button";
 import { createTemplateSchema } from "@/features/templates/schemas";
 import { useCreateTemplate } from "@/features/templates/hooks/use-create-template";
 import { CustomComboBox } from "../custom-combobox";
-import { useGetDoctors } from "@/features/doctors/hooks/use-get-doctors";
-import { useGetMaterials } from "@/features/materials/hooks/use-get-materials";
+import { useDoctorsStore } from "@/store/doctors-store";
+import { useMaterialsStore } from "@/store/material-store";
 
 export const TemplateCreateModal = () => {
   const { isModalOpen, closeModal } = useModalStore();
-  const { data: doctors } = useGetDoctors();
-  const { data: materials } = useGetMaterials();
-  const getMaterialById = (id: string) => {
-    return materials?.find((material) => material.$id === id);
-  };
-  const getDoctorById = (id: string) => {
-    return doctors?.find((doctor) => doctor.$id === id);
-  };
+  const {getDoctorById, doctors} = useDoctorsStore();
+  const {getMaterialById, materials} = useMaterialsStore();
 
   const { mutate, isPending, error } = useCreateTemplate();
 

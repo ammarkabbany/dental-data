@@ -11,6 +11,7 @@ export const useGetBillingPlan = () => {
       const plan = await getBillingPlan(data.planId);
       return plan;
     },
-    enabled: !!data?.planId
+    enabled: !!data?.planId,
+    staleTime: 0
   })
 }

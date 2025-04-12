@@ -13,15 +13,15 @@ import { useModalStore } from "@/store/modal-store";
 import { calculateUnits } from "@/lib/case-utils";
 import { formatCurrency } from "@/lib/format-utils";
 import { Separator } from "@/components/ui/separator";
-import { useGetMaterials } from "@/features/materials/hooks/use-get-materials";
-import { useGetDoctors } from "@/features/doctors/hooks/use-get-doctors";
+import { useDoctorsStore } from "@/store/doctors-store";
+import { useMaterialsStore } from "@/store/material-store";
 // import { formatCurrency } from "~/lib/utils";
 
 // Define prop types for PrintableTable
 type PrintableTableProps = {
   cases: Case[] | null;
-  // doctors: Doctor[] | null;
-  // materials: Material[] | null;
+  getDoctorById: (id: string) => Doctor | undefined;
+  getMaterialById: (id: string) => Material | undefined;
   options: {
     [key: string]: boolean;
   };
@@ -29,7 +29,7 @@ type PrintableTableProps = {
 
 // Define PrintableTable component with forwardRef
 const PrintableTable = React.forwardRef<HTMLDivElement, PrintableTableProps>(
-  ({ cases, options }: PrintableTableProps, ref) => {
+  ({ cases, options, getDoctorById, getMaterialById }: PrintableTableProps, ref) => {
     // const { team } = useAuth();
 
     const loadTeethData = (array: Tooth[] | undefined) => {
@@ -71,8 +71,9 @@ const PrintableTable = React.forwardRef<HTMLDivElement, PrintableTableProps>(
             </TableHeader>
             <TableBody>
               {cases?.map((caseItem: Case) => {
-                const doctor = caseItem.doctor?.name?? "N/A";
-                const material = caseItem.material?.name ?? "N/A"
+                const doctor = getDoctorById(caseItem.doctorId)?.name ?? "N/A"
+                const material = getMaterialById(caseItem.materialId)?.name ?? "N/A"
+                // const material = caseItem.material?.name ?? "N/A"
                 const caseData = caseItem.data ? JSON.parse(String(caseItem.data)) as ToothCollection : undefined;
                 const lowerLeft = loadTeethData(
                   caseData?.lower?.left,
@@ -156,6 +157,8 @@ const PrintComponent = ({selectedCases, options = defaultOptions}: PrintComponen
   const componentRef = useRef<HTMLDivElement>(null);
   const [showComponent, setShowComponent] = useState(false);
   const { isModalOpen, closeModal } = useModalStore();
+  const {getDoctorById} = useDoctorsStore();
+  const {getMaterialById} = useMaterialsStore();
 
   React.useEffect(() => {
     if (isModalOpen('print')) {
@@ -194,6 +197,8 @@ const PrintComponent = ({selectedCases, options = defaultOptions}: PrintComponen
           <PrintableTable
             ref={componentRef}
             cases={selectedCases}
+            getDoctorById={getDoctorById}
+            getMaterialById={getMaterialById}
             // doctors={doctors || []}
             // materials={materials || []}
             options={options}

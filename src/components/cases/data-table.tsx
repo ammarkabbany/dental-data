@@ -28,8 +28,6 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Case } from "@/types";
 import { DataTablePagination } from "../data-table-pagination";
 import CasesDataTableUtils from "./data-table-utils";
-import { useGetDoctors } from "@/features/doctors/hooks/use-get-doctors";
-import { useGetMaterials } from "@/features/materials/hooks/use-get-materials";
 
 interface DataTableProps {
   data: Case[];

@@ -7,6 +7,8 @@ import { Case, Doctor, Material, Tooth, ToothCollection } from "@/types";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { EditCaseModal } from "./edit-case-modal";
 import { Button } from "../ui/button";
+import { useDoctorsStore } from "@/store/doctors-store";
+import { useMaterialsStore } from "@/store/material-store";
 
 export const getColumns = (): ColumnDef<Case>[] => [
   {
@@ -90,7 +92,8 @@ export const getColumns = (): ColumnDef<Case>[] => [
     //   );
     // },
     accessorFn: (row) => {
-      const doctor = row.doctor;
+      const id = row.doctorId;
+      const doctor = useDoctorsStore.getState().getDoctorById(id);
       const doctorName = doctor?.name || "Unknown"
       return doctorName.length > 20 ? doctorName.substring(0, 20) + "..." : doctorName;
     },
@@ -174,7 +177,8 @@ export const getColumns = (): ColumnDef<Case>[] => [
   {
     accessorKey: "material",
     accessorFn: (row) => {
-      const material = row.material;
+      const id = row.materialId;
+      const material = useMaterialsStore.getState().getMaterialById(id);
       const materialName = material?.name || "Unknown"
       return materialName.length > 20 ? materialName.substring(0, 20) + "..." : materialName;
     },

@@ -11,13 +11,14 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
 import useTeamStore from "@/store/team-store";
+import { useDoctorsStore } from "@/store/doctors-store";
 
 export default function DoctorsPage() {
   const {openModal} = useModalStore();
   const {userRole} = useTeamStore();
   const canCreate = usePermission(userRole).checkPermission('doctors', 'create');
-  const { data: doctors, isLoading } = useGetDoctors();
-  const showEmptyState = !isLoading && (!doctors || doctors.length === 0);
+  const {doctors} = useDoctorsStore();
+  const showEmptyState = (!doctors || doctors.length === 0);
 
   return (
     <>
@@ -47,7 +48,7 @@ export default function DoctorsPage() {
         </motion.div>
 
         <AnimatePresence mode="wait">
-          {isLoading ? (
+          {/* {isLoading ? (
             <motion.div
               key="loading"
               initial={{ opacity: 0 }}
@@ -57,8 +58,8 @@ export default function DoctorsPage() {
             >
               <Skeleton className="h-12 w-full" />
               <Skeleton className="h-[400px] w-full" />
-            </motion.div>
-          ) : showEmptyState ? (
+            </motion.div> */}
+            {showEmptyState ? (
             <motion.div
               key="empty"
               initial={{ opacity: 0, y: 20 }}

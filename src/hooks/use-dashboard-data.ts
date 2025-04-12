@@ -94,21 +94,21 @@ async function getDashboardData() {
     ]
   );
 
-  const doctorIds = cases.documents.map(c => c.doctorId);
+  // const doctorIds = cases.documents.map(c => c.doctorId);
 
-  if (cases.documents.length > 0 && doctorIds) {
-    const doctors = await databases.listDocuments<Doctor>(
-      DATABASE_ID,
-      DOCTORS_COLLECTION_ID,
-      [Query.equal("$id", doctorIds), Query.limit(5), Query.select(["$id", "name"])]
-    )
+  // if (cases.documents.length > 0 && doctorIds) {
+  //   const doctors = await databases.listDocuments<Doctor>(
+  //     DATABASE_ID,
+  //     DOCTORS_COLLECTION_ID,
+  //     [Query.equal("$id", doctorIds), Query.limit(5), Query.select(["$id", "name"])]
+  //   )
 
-    cases.documents.forEach(c => {
-      const doctor = doctors.documents.find(d => d.$id === c.doctorId);
-      if (doctor) {
-        c.doctor = doctor;
-      }
-  })}
+  //   cases.documents.forEach(c => {
+  //     const doctor = doctors.documents.find(d => d.$id === c.doctorId);
+  //     if (doctor) {
+  //       c.doctor = doctor;
+  //     }
+  // })}
 
   const doctorsCount = await databases.listDocuments<Doctor>(
     DATABASE_ID,

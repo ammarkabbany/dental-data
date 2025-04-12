@@ -3,8 +3,10 @@ import { Material } from "@/types";
 import { databases } from "@/lib/appwrite/client";
 import { DATABASE_ID, MATERIALS_COLLECTION_ID } from "@/lib/constants";
 import { Query } from "appwrite";
+import { useMaterialsStore } from "@/store/material-store";
 
 export const useGetMaterials = () => {
+  const {setMaterials} = useMaterialsStore();
   return useQuery({
     queryKey: ['materials'],
     queryFn: async () => {
@@ -13,6 +15,7 @@ export const useGetMaterials = () => {
         MATERIALS_COLLECTION_ID,
         [Query.limit(9999)]
       );
+      setMaterials(materials.documents);
       
       return materials.documents;
     },
@@ -21,6 +24,7 @@ export const useGetMaterials = () => {
 
 export const usePrefetchMaterials = () => {
   const queryClient = useQueryClient();
+  const {setMaterials} = useMaterialsStore();
   
   return async () => {
     await queryClient.prefetchQuery({
@@ -31,6 +35,7 @@ export const usePrefetchMaterials = () => {
           MATERIALS_COLLECTION_ID,
           [Query.limit(9999)]
         );
+        setMaterials(materials.documents);
         
         return materials.documents;
       },

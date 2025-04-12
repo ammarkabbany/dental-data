@@ -22,8 +22,8 @@ import { CasesExportDialog } from "./cases-export-dialog";
 import { DeleteCaseModal } from "./delete-case-modal";
 import { Badge } from "../ui/badge";
 import { usePermission } from "@/hooks/use-permissions";
-import { useGetDoctors } from "@/features/doctors/hooks/use-get-doctors";
 import useTeamStore from "@/store/team-store";
+import { useDoctorsStore } from "@/store/doctors-store";
 
 export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
   const [exportOptions, setExportOptions] = React.useState<{
@@ -33,7 +33,7 @@ export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
     showShade: true,
   });
   const {userRole} = useTeamStore();
-  const { data: doctors } = useGetDoctors();
+  const { doctors } = useDoctorsStore();
   const currentDoctorFilterValue = table
     .getColumn("doctor")
     ?.getFilterValue() as string;

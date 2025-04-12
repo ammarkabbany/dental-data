@@ -54,16 +54,6 @@ export function UsersDataTable({ data = [] }: DataTableProps) {
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
-  // const {data: doctors} = useGetDoctors();
-  // const {data: materials} = useGetMaterials();
-
-  // const getMaterialById = (id: string) => {
-  //   return materials?.find((material) => material.$id === id);
-  // };
-  // const getDoctorById = (id: string) => {
-  //   return doctors?.find((doctor) => doctor.$id === id);
-  // };
-
   const table = useReactTable({
     data,
     columns,
