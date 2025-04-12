@@ -15,11 +15,14 @@ import { formatCurrency } from "@/lib/format-utils";
 import { Separator } from "@/components/ui/separator";
 import { useDoctorsStore } from "@/store/doctors-store";
 import { useMaterialsStore } from "@/store/material-store";
+import { useAuth } from "@/providers/auth-provider";
+import { Models } from "appwrite";
 // import { formatCurrency } from "~/lib/utils";
 
 // Define prop types for PrintableTable
 type PrintableTableProps = {
   cases: Case[] | null;
+  userPrefs: Models.Preferences | undefined;
   getDoctorById: (id: string) => Doctor | undefined;
   getMaterialById: (id: string) => Material | undefined;
   options: {
@@ -29,7 +32,7 @@ type PrintableTableProps = {
 
 // Define PrintableTable component with forwardRef
 const PrintableTable = React.forwardRef<HTMLDivElement, PrintableTableProps>(
-  ({ cases, options, getDoctorById, getMaterialById }: PrintableTableProps, ref) => {
+  ({ cases, options, getDoctorById, getMaterialById, userPrefs }: PrintableTableProps, ref) => {
     // const { team } = useAuth();
 
     const loadTeethData = (array: Tooth[] | undefined) => {
@@ -130,7 +133,7 @@ const PrintableTable = React.forwardRef<HTMLDivElement, PrintableTableProps>(
             <div className="text-right font-bold min-w-24">Total Due</div>
             <div className="font-bold">
               {formatCurrency(cases
-                ?.reduce((total, caseItem) => total + caseItem.due, 0) || 0, "USD")}
+                ?.reduce((total, caseItem) => total + caseItem.due, 0) || 0, userPrefs?.currency)}
             </div>
           </div>
         </div>
@@ -157,6 +160,7 @@ const PrintComponent = ({selectedCases, options = defaultOptions}: PrintComponen
   const componentRef = useRef<HTMLDivElement>(null);
   const [showComponent, setShowComponent] = useState(false);
   const { isModalOpen, closeModal } = useModalStore();
+  const {user} = useAuth();
   const {getDoctorById} = useDoctorsStore();
   const {getMaterialById} = useMaterialsStore();
 
@@ -196,6 +200,7 @@ const PrintComponent = ({selectedCases, options = defaultOptions}: PrintComponen
         <div style={{ display: "none" }}>
           <PrintableTable
             ref={componentRef}
+            userPrefs={user?.prefs}
             cases={selectedCases}
             getDoctorById={getDoctorById}
             getMaterialById={getMaterialById}
