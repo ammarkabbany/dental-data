@@ -14,18 +14,20 @@ import {
 import { cookies } from "next/headers";
 import { TeamMember } from "@/types";
 import { Query } from "node-appwrite";
+import { avatars } from "@/lib/appwrite/client";
 
 export const getUserInfo = async (userId: string) => {
   if (!userId) return null;
   try {
     const { users } = await createAdminClient();
     const user = await users.get(userId);
-    const avatar = user.prefs.avatar;
+    const prefAvatar = user.prefs.avatar;
+    const avatar = avatars.getInitials(user.name, 50, 50, "7c68fe");
     return {
       id: user.$id,
       name: user.name,
       email: user.email,
-      avatar,
+      avatar: prefAvatar ?? avatar,
     };
   } catch (error) {
     return null;

@@ -15,14 +15,40 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import useTeamStore from "@/store/team-store";
+import RedirectToAuth from "@/components/auth/custom-auth-redirect";
+import RedirectToOnboarding from "@/components/auth/custom-onboard-redirect";
+import LoadingSpinner from "@/components/ui/loading-spinner";
+import { useTeam } from "@/providers/team-provider";
 
 export default function TeamPage() {
-  const {userRole, currentAppwriteTeam: appwriteTeam, membership} = useTeamStore();
+  const { userRole, appwriteTeam, isAuthenticated, currentTeam, isLoading } = useTeam();
+  const { membership } = useTeamStore((state) => state);
   const canUpdate = usePermission(userRole).checkPermission('team', 'update');
   const [activeTab, setActiveTab] = useState("general");
   const [teamName, setTeamName] = useState(membership?.teamName || "");
   const [currency, setCurrency] = useState(appwriteTeam?.prefs.currency || "USD");
   const [isSaving, setIsSaving] = useState(false);
+
+
+  if (isLoading) {
+    return <main className="bg-gradient-to-b from-background to-muted/30">
+      <Header />
+      <div className="flex items-center justify-center min-h-screen">
+        <LoadingSpinner />
+      </div>
+    </main>
+  }
+
+  if (!isAuthenticated) {
+    return <RedirectToAuth />
+  }
+
+  if (!currentTeam) {
+    return <main className="bg-gradient-to-b from-background to-muted/30 min-h-screen">
+      <Header />
+      <RedirectToOnboarding />
+    </main>
+  }
 
   // Animation variants
   const containerVariants = {
@@ -49,7 +75,7 @@ export default function TeamPage() {
 
   const handleSave = (type: string) => {
     setIsSaving(true);
-    
+
     // Simulate API call
     setTimeout(() => {
       setIsSaving(false);
@@ -70,7 +96,7 @@ export default function TeamPage() {
           <h1 className="text-3xl font-bold">Team Settings</h1>
           <p className="text-muted-foreground mt-1">Manage your team preferences and configuration</p>
         </motion.div>
-        
+
         <Tabs
           value={activeTab}
           onValueChange={setActiveTab}
@@ -107,7 +133,7 @@ export default function TeamPage() {
               </TabsList>
             </CardContent>
           </Card>
-          
+
           <div className="grow">
             <Card className="border-0 shadow-sm">
               <TabsContent value="general" className="m-0">
@@ -118,7 +144,7 @@ export default function TeamPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="p-6">
-                  <motion.div 
+                  <motion.div
                     variants={containerVariants}
                     initial="hidden"
                     animate="visible"
@@ -128,9 +154,9 @@ export default function TeamPage() {
                       <div className="space-y-6">
                         <div className="space-y-2">
                           <Label htmlFor="teamName" className="text-base">Team Name</Label>
-                          <Input 
-                            id="teamName" 
-                            value={teamName} 
+                          <Input
+                            id="teamName"
+                            value={teamName}
                             onChange={(e) => setTeamName(e.target.value)}
                             placeholder="Enter team name"
                             disabled={!canUpdate}
@@ -140,11 +166,11 @@ export default function TeamPage() {
                             This name will be displayed across the platform
                           </p>
                         </div>
-                        
+
                         <div className="space-y-2">
                           <Label htmlFor="currency" className="text-base">Default Currency</Label>
-                          <Select 
-                            value={currency} 
+                          <Select
+                            value={currency}
                             onValueChange={setCurrency}
                             disabled={!canUpdate}
                           >
@@ -167,7 +193,7 @@ export default function TeamPage() {
                             Currency used for displaying financial information
                           </p>
                         </div>
-                        
+
                         <div className="space-y-2 pt-4 border-t">
                           <div className="flex items-center justify-between">
                             <div>
@@ -179,7 +205,7 @@ export default function TeamPage() {
                             <Switch defaultChecked={true} disabled={!canUpdate} />
                           </div>
                         </div>
-                        
+
                         <div className="space-y-2 pt-4 border-t">
                           <div className="flex items-center justify-between">
                             <div>
@@ -192,10 +218,10 @@ export default function TeamPage() {
                           </div>
                         </div>
                       </div>
-                      
+
                       {canUpdate && (
                         <div className="mt-8 flex justify-end">
-                          <Button 
+                          <Button
                             variant="default"
                             onClick={() => handleSave('General')}
                             disabled={isSaving}
@@ -209,7 +235,7 @@ export default function TeamPage() {
                   </motion.div>
                 </CardContent>
               </TabsContent>
-              
+
               <TabsContent value="billing" className="m-0">
                 <CardHeader className="border-b pb-6">
                   <CardTitle className="text-xl font-medium">Billing Settings</CardTitle>
@@ -221,7 +247,7 @@ export default function TeamPage() {
                   <PlanBillingPage />
                 </CardContent>
               </TabsContent>
-              
+
               <TabsContent value="notifications" className="m-0">
                 <CardHeader className="border-b pb-6">
                   <CardTitle className="text-xl font-medium">Notification Settings</CardTitle>
@@ -230,7 +256,7 @@ export default function TeamPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="p-6">
-                  <NotificationsTab 
+                  <NotificationsTab
                     canUpdate={canUpdate}
                     isSaving={isSaving}
                     handleSave={handleSave}

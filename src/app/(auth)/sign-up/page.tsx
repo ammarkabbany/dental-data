@@ -23,18 +23,22 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "react-aria-components";
 import { Button } from "@/components/ui/button";
 import GoogleIcon from "@/components/icons/google";
-import GithubIcon from "@/components/icons/github";
 import Link from "next/link";
 import { LockKeyholeIcon, Mail, User2 } from "lucide-react";
 import { useRegister } from "@/features/auth/hooks/use-register";
-import { signUpWithGoogle } from "@/features/auth/oauth";
 import { account } from "@/lib/appwrite/client";
 import { OAuthProvider } from "appwrite";
 import { NEXT_URL } from "@/lib/constants";
+import LoadingSpinner from "@/components/ui/loading-spinner";
+import { useAuth } from "@/providers/auth-provider";
+import { redirect } from "next/navigation";
+import { useRedirectUrl } from "@/features/auth/hooks/use-redirect-url";
 
-export default function LoginPage() {
+export default function RegisterPage() {
+  const { isLoading, isAuthenticated } = useAuth();
+  const redirectUrl = useRedirectUrl();
 
-  const {mutate, isPending, error} = useRegister();
+  const { mutate, isPending, error } = useRegister();
 
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
@@ -45,8 +49,17 @@ export default function LoginPage() {
     },
   });
 
+  if (isLoading) {
+    return <main className="bg-gradient-to-b from-background to-muted/30">
+      <div className="flex items-center justify-center min-h-screen">
+        <LoadingSpinner />
+      </div>
+    </main>
+  }
+  if (isAuthenticated) redirect("/");
+
   const onSubmit = (values: z.infer<typeof registerSchema>) => {
-    mutate({data: values})
+    mutate({ data: values })
   };
 
   return (
@@ -67,8 +80,8 @@ export default function LoginPage() {
                     <FormLabel>Name</FormLabel>
                     <FormControl>
                       <Input
-                      {...field} 
-                      placeholder="Enter name" 
+                        {...field}
+                        placeholder="Enter name"
                       >
                         <Input.Group>
                           <Input.LeftIcon>
@@ -89,8 +102,8 @@ export default function LoginPage() {
                     <FormLabel>Email</FormLabel>
                     <FormControl>
                       <Input
-                      {...field} 
-                      placeholder="Enter email" 
+                        {...field}
+                        placeholder="Enter email"
                       >
                         <Input.Group>
                           <Input.LeftIcon>
@@ -111,8 +124,8 @@ export default function LoginPage() {
                     <FormLabel>Password</FormLabel>
                     <FormControl>
                       <Input
-                      type="password"
-                      {...field} placeholder="Enter password"
+                        type="password"
+                        {...field} placeholder="Enter password"
                       >
                         <Input.Group>
                           <Input.LeftIcon>
@@ -147,7 +160,7 @@ export default function LoginPage() {
         </h3>
         <div className="">
           <Button
-            onClick={() => account.createOAuth2Session(OAuthProvider.Google, `${NEXT_URL}/dashboard`, `${NEXT_URL}?authStatus=failed`)}
+            onClick={() => account.createOAuth2Session(OAuthProvider.Google, `${NEXT_URL}${redirectUrl}`, `${NEXT_URL}?authStatus=failed`)}
             className="items-center w-full"
             variant="secondary"
             disabled={isPending}
@@ -161,7 +174,7 @@ export default function LoginPage() {
         <p className="text-sm text-gray-600">
           Already have an account?{" "}
           {/* ${params.size > 0 && "?"+encodeURIComponent(params.get("redirect"))} */}
-          <Link aria-disabled={isPending} href={`/auth/login`} className="text-blue-500 hover:underline">
+          <Link aria-disabled={isPending} href={`/login`} className="text-blue-500 hover:underline">
             Sign in
           </Link>
         </p>

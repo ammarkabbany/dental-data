@@ -12,16 +12,14 @@ import Header from "@/components/layout/Header";
 import { motion } from "framer-motion";
 import { usePermission } from "@/hooks/use-permissions";
 import useTeamStore from "@/store/team-store";
-import TeamNotFound from "@/components/team-not-found";
 import { useTeam } from "@/providers/team-provider";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
 import RedirectToAuth from "@/components/auth/custom-auth-redirect";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import RedirectToOnboarding from "@/components/auth/custom-onboard-redirect";
 
 export default function TeamPage() {
-  const {isLoading, isAuthenticated} = useTeam();
-  const {userRole, currentAppwriteTeam: appwriteTeam, currentTeam} = useTeamStore();
+  const { isLoading, isAuthenticated } = useTeam();
+  const { userRole, currentAppwriteTeam: appwriteTeam, currentTeam } = useTeamStore();
   const canUpdate = usePermission(userRole).checkPermission('team', 'update');
 
   const {
@@ -84,8 +82,7 @@ export default function TeamPage() {
   return (
     <main className="bg-gradient-to-b from-background to-muted/30 min-h-screen">
       <Header />
-      <SignedIn>
-        <div className="max-w-7xl mx-auto space-y-6 pt-8 pb-12 px-4 sm:px-8">
+      <div className="max-w-7xl mx-auto space-y-6 pt-8 pb-12 px-4 sm:px-8">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -111,7 +108,7 @@ export default function TeamPage() {
           </Card>
         </motion.div>
 
-        <motion.div 
+        <motion.div
           className="grid gap-6 md:grid-cols-2 lg:grid-cols-4"
           variants={containerVariants}
           initial="hidden"
@@ -182,9 +179,9 @@ export default function TeamPage() {
                 <div className="text-2xl font-bold">
                   {formatDistanceToNow(subscriptionEnd)}
                 </div>
-                <Progress 
-                  value={progress} 
-                  className="mt-2 h-2" 
+                <Progress
+                  value={progress}
+                  className="mt-2 h-2"
                 />
                 <p className="text-xs text-muted-foreground mt-2">
                   <span className={hasExpired ? "text-red-500 font-medium" : ""}>
@@ -223,7 +220,6 @@ export default function TeamPage() {
           </motion.div>
         </motion.div>
       </div>
-      </SignedIn>
     </main>
   );
 }
