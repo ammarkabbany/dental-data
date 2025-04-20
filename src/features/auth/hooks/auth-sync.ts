@@ -1,17 +1,12 @@
 import { account } from "@/lib/appwrite/client";
+import { AppwriteException } from "appwrite";
 import { useEffect, useState } from "react";
-import { CreateUser } from "../actions";
-import { useAuth, useUser } from "@clerk/nextjs";
 
 export function useAuthSyncEffect() {
 
-  const { isSignedIn, isLoaded } = useAuth();
-  const { user } = useUser();
-
-  const [userId, setUserId] = useState<string | null>(null);
   const [Loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<Error | null>(null);
-  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [error, setError] = useState<Error | AppwriteException | null>(null);
+  const [isSignedIn, setIsSignedIn] = useState<boolean>(false);
 
   // const refreshToken = async () => {
   //   try {
@@ -22,13 +17,13 @@ export function useAuthSyncEffect() {
   //       },
   //       body: JSON.stringify({ userId, sessionId }),
   //     });
-  
+
   //     const data = await response.json();
-  
+
   //     if (!response.ok) {
   //       throw new Error(data.error || 'Failed to get JWT');
   //     }
-      
+
   //     // console.log("token refreshed", data)
   //   } catch (error) {
   //     console.error('Token refresh error:', error);
@@ -48,33 +43,30 @@ export function useAuthSyncEffect() {
   // }, [userId, sessionId]);
 
   useEffect(() => {
-    if (!isSignedIn || !user) {
-      setLoading(false);
-      return;
-    }
-  
+    //   if (!isSignedIn || !user) {
+    //     setLoading(false);
+    //     return;
+    //   }
+    // 
     async function syncUser() {
       setLoading(true);
       try {
-        const appwriteSession = await account.getSession('current');
-        const appwriteUser = await account.get();
-        setUserId(appwriteSession.userId);
-        setSessionId(appwriteSession.$id);
-        if (appwriteUser.prefs.avatar !== user?.imageUrl) {
-          await account.updatePrefs({
-            ...appwriteUser.prefs,
-            avatar: user?.imageUrl,
-          })
-        }
-        if (user && user.fullName && appwriteUser.name !== user.fullName) {
-          await account.updateName(user.fullName);
-        }
+        await account.getSession('current');
+        setIsSignedIn(true);
+        // if (appwriteUser.prefs.avatar !== user?.imageUrl) {
+        //   await account.updatePrefs({
+        //     ...appwriteUser.prefs,
+        //     avatar: user?.imageUrl,
+        //   })
+        // }
+        // if (user && user.fullName && appwriteUser.name !== user.fullName) {
+        //   await account.updateName(user.fullName);
+        // }
         setLoading(false);
         return;
-      } catch (error) {        
-        setUserId(null);
-        setSessionId(null);
-        setError(null);
+      } catch (error) {
+        setError(error as any);
+        setIsSignedIn(false);
         return;
       } finally {
         setLoading(false);
@@ -83,15 +75,13 @@ export function useAuthSyncEffect() {
     void syncUser();
 
     return () => {
-      setUserId(null);
-      setSessionId(null);
       setError(null);
     }
-  }, [isSignedIn, user]);
+  }, []);
 
   return {
-    isLoading: !isLoaded,
-    isAuthenticated: isLoaded && isSignedIn,
+    isLoading: Loading,
+    isAuthenticated: !Loading && isSignedIn,
     error
   }
 }

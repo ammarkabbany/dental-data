@@ -1,26 +1,17 @@
 "use client";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
-import { useSidebar } from "@/hooks/use-sidebar";
-import { useStore } from "@/hooks/use-store";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { DentalToothIcon, Doctor02Icon } from "@hugeicons/core-free-icons";
+import { Doctor02Icon } from "@hugeicons/core-free-icons";
 import { useDashboardData } from "@/hooks/use-dashboard-data";
 import { CubeIcon, FileTextIcon, QuestionMarkIcon } from "@radix-ui/react-icons";
 import RecentCases from "@/components/recent-cases";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
 import {
-  BarChart3,
-  Calendar,
-  FileChartLine,
-  FilePlus,
-  MessageSquare,
   Plus,
   Sparkles,
-  Users,
 } from "lucide-react";
 import { Action, Resource, usePermission } from "@/hooks/use-permissions";
-import { useUser } from "@clerk/nextjs";
 import { StatsCardProps, StatsGrid } from "@/components/stats-grid";
 import { formatNumbers } from "@/lib/format-utils";
 import {
@@ -37,13 +28,14 @@ import { Modals, useModalStore } from "@/store/modal-store";
 import { MaterialCreateModal } from "@/components/materials/create-material-modal";
 import { DoctorCreateModal } from "@/components/doctors/create-doctor-modal";
 import useTeamStore from "@/store/team-store";
+import { useAuth } from "@/providers/auth-provider";
 
 export default function DashboardPage() {
-  const { user } = useUser();
-  const {userRole} = useTeamStore();
+  const { user } = useAuth();
+  const { userRole } = useTeamStore();
   const { data, isLoading } = useDashboardData();
   const { checkPermission } = usePermission(userRole);
-  const {openModal} = useModalStore();
+  const { openModal } = useModalStore();
 
   // const sidebar = useStore(useSidebar, (x) => x);
   const containerVariants = {
@@ -148,7 +140,7 @@ export default function DashboardPage() {
               <div className="flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-blue-200" />
                 <h1 className="text-lg font-bold">
-                  Welcome back, {user?.fullName}
+                  Welcome back, {user?.name}
                 </h1>
               </div>
               <p className="mt-1 text-blue-100">
@@ -204,7 +196,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Action Cards */}
-        <motion.div 
+        <motion.div
           className="grid gap-4 grid-cols-1 md:grid-cols-3 lg:grid-cols-3"
           initial="hidden"
           animate="visible"

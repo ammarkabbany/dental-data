@@ -1,6 +1,5 @@
 "use client";
 import React, { createContext, useContext, useEffect } from "react";
-import { useUser } from "@clerk/nextjs"; // Assuming you're using Clerk
 import { Team } from "@/types"; // Adjust the import based on your structure
 import { useAuth } from "./auth-provider";
 import { Models } from "appwrite";
@@ -21,15 +20,14 @@ const TeamContext = createContext<TeamContextType | undefined>(undefined);
 export const TeamProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { isAuthenticated, isLoading: isUserLoading } = useAuth();
-  const { user } = useUser();
+  const { isAuthenticated, isLoading: isUserLoading, user } = useAuth();
 
   // const [currentTeam, setCurrentTeam] = useState<Team | null>(null);
   // const [appwriteTeam, setAppwriteTeam] =
   //   useState<Models.Team<Models.Preferences> | null>(null);
   // const [userRole, setUserRole] = useState<string | null>(null);
   // const [loading, setLoading] = useState<boolean>(true);
-  const {data, isLoading, refetch} = useTeamData();
+  const { data, isLoading, refetch } = useTeamData();
 
   // async function loadCurrentTeam() {
   //   if (!user) {

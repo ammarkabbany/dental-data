@@ -1,17 +1,13 @@
 "use client";
 import AdminPanelLayout from "@/components/admin-panel/admin-panel-layout";
 import { useQueryClient } from "@tanstack/react-query";
-import { Case, Doctor } from "@/types";
+import { Case } from "@/types";
 import { useRealtimeUpdates } from "@/hooks/use-realtime-updates";
 import {
   CASES_COLLECTION_ID,
-  DOCTORS_COLLECTION_ID,
-  MATERIALS_COLLECTION_ID,
   TEMPLATES_COLLECTION_ID,
 } from "@/lib/constants";
 import DataFetcher from "@/components/data-fetcher";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
-import { ContentLayout } from "@/components/admin-panel/content-layout";
 import RedirectToAuth from "@/components/auth/custom-auth-redirect";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import { useTeam } from "@/providers/team-provider";
@@ -23,7 +19,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const queryClient = useQueryClient();
-  const {currentTeam, isLoading, isAuthenticated} = useTeam();
+  const { currentTeam, isLoading, isAuthenticated } = useTeam();
 
   // Handle real-time updates
   useRealtimeUpdates(CASES_COLLECTION_ID, (payload) => {
@@ -33,7 +29,7 @@ export default function DashboardLayout({
     if (events.includes("databases.*.collections.*.documents.*.create")) {
       queryClient.setQueryData(['cases'], (oldData: any[]) => [caseData, ...oldData]);
     }
-      else if (
+    else if (
       events.includes("databases.*.collections.*.documents.*.update")
     ) {
       // Update the existing case in the cached data
@@ -44,7 +40,7 @@ export default function DashboardLayout({
     else if (
       events.includes("databases.*.collections.*.documents.*.delete")
     ) {
-    //   // Remove the deleted case from the cached data
+      //   // Remove the deleted case from the cached data
       queryClient.setQueryData(["cases"], (oldData: any[]) =>
         oldData.filter((c) => c.$id !== caseData.$id)
       );
@@ -60,7 +56,7 @@ export default function DashboardLayout({
       <div className="flex items-center justify-center min-h-screen">
         <LoadingSpinner />
       </div>
-    ); 
+    );
   }
   if (!currentTeam && isAuthenticated) {
     return <RedirectToOnboarding />;
@@ -68,18 +64,18 @@ export default function DashboardLayout({
 
   return (
     <>
-      <SignedIn>
+      {isAuthenticated ? (
         <AdminPanelLayout>
           <DataFetcher />
           {children}
         </AdminPanelLayout>
-      </SignedIn>
-      <SignedOut>
+      ) : (
         <div className="flex items-center justify-center min-h-screen">
           <LoadingSpinner />
           <RedirectToAuth />
         </div>
-      </SignedOut>
+      )
+      }
     </>
   );
 }

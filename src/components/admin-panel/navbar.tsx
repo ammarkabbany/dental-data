@@ -1,10 +1,8 @@
 import { UserNav } from "@/components/admin-panel/user-nav";
 import { SheetMenu } from "@/components/admin-panel/sheet-menu";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Notification03Icon } from "@hugeicons/core-free-icons";
-import { SignedIn } from "@clerk/nextjs";
 import { MobileNotSupportedWarning } from "../layout/mobile-warning";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useAuth } from "@/providers/auth-provider";
 
 interface NavbarProps {
   title: string;
@@ -12,6 +10,7 @@ interface NavbarProps {
 
 export function Navbar({ title }: NavbarProps) {
   const isMobile = useIsMobile();
+  const { isAuthenticated } = useAuth();
   return (
     <header className="sticky border-b top-0 z-40 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
       <div className="mx-4 sm:mx-8 flex h-14 items-center">
@@ -24,9 +23,9 @@ export function Navbar({ title }: NavbarProps) {
           {/* <div>
             <HugeiconsIcon className="size-5" icon={Notification03Icon} />
           </div> */}
-          <SignedIn>
+          {isAuthenticated &&
             <UserNav />
-          </SignedIn>
+          }
         </div>
       </div>
       {isMobile && <MobileNotSupportedWarning />}

@@ -4,10 +4,11 @@ import { User } from "@/types";
 export const getCurrent = async (): Promise<User | null> => {
   try {
     const user = await account.get();
+    const prefAvatar = user.prefs.avatar;
     const avatar = avatars.getInitials(user.name, 50, 50, "7c68fe");
     return {
-     ...user,
-      avatar,
+      ...user,
+      avatar: prefAvatar ?? avatar,
     };
   } catch (error) {
     return null;
@@ -24,7 +25,7 @@ export const getCurrent = async (): Promise<User | null> => {
 // export const authorizeClerk = async () => {
 //   const cookieStore = await cookies();
 //   const user = await currentUser();
-  
+
 //   const {account} = await createSessionClient();
 //   const cookie = cookieStore.get(AUTH_COOKIE);
 
@@ -53,7 +54,7 @@ export const getCurrent = async (): Promise<User | null> => {
 //   try {
 //     const { account, users } = await createAdminClient();
 //     const hasUser = (await users.list([Query.equal('$id', user.id)])).total > 0;
-    
+
 //     if (hasUser) {
 //       const session = await users.createSession(user.id);
 //       cookieStore.set(AUTH_COOKIE, session.secret, {

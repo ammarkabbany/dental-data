@@ -1,15 +1,14 @@
 'use client';
 
 import { createContext, ReactNode, useContext, useState, useEffect } from 'react';
-import { useAuth as useClerkAuth } from '@clerk/nextjs';
 import * as React from 'react';
 import { useAuthSyncEffect } from '@/features/auth/hooks/auth-sync';
 import { account } from '@/lib/appwrite/client';
 import { getCurrent } from '@/features/auth/queries';
 import { useQueryClient } from '@tanstack/react-query';
-import { OAuthProvider } from 'appwrite';
 import { NEXT_URL } from '@/lib/constants';
 import { User } from '@/types';
+import { redirect, RedirectType } from 'next/navigation';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -30,15 +29,14 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const { isAuthenticated, isLoading, error } = useAuthSyncEffect();
-  const { signOut } = useClerkAuth();
+  const { isAuthenticated, isLoading } = useAuthSyncEffect();
   const [user, setUser] = useState<User | null>(null);
   const [userLoading, setUserLoading] = useState<boolean>(false);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const queryClient = useQueryClient();
 
   const handleLogin = (uri: string = "/") => {
-    account.createOAuth2Session(OAuthProvider.Oidc, `${NEXT_URL}${uri}`, `${NEXT_URL}`)
+    redirect(`${NEXT_URL}/login?redirect=${encodeURIComponent(uri)}`);
   }
 
   // Fetch user data when authenticated
@@ -69,31 +67,32 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       // Clear Appwrite session
       try {
-        await account.deleteSession("current"); 
+        await account.deleteSession("current");
       } catch (error) {
-        
-      }      
+        console.error('Error deleting session:', error);
+        return;
+      }
       // Clear local storage items
       window.localStorage.removeItem('favoriteTemplates');
       window.localStorage.removeItem('recentTemplates');
-      
+
       // Clear React Query cache
       queryClient.clear();
-      
-      // Sign out from Clerk
-      await signOut();
-      
+
       // Reset user state
       setUser(null);
+      setIsAdmin(false);
+      setUserLoading(false);
+      redirect(`${NEXT_URL}/login`, RedirectType.replace);
     } catch (error) {
       console.error('Error during logout:', error);
     }
   };
 
   return (
-    <AuthContext.Provider 
+    <AuthContext.Provider
       value={{
-        isAuthenticated,
+        isAuthenticated: isAuthenticated && !!user,
         isLoading: isLoading || userLoading,
         user,
         isAdmin,
