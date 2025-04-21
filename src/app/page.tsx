@@ -24,7 +24,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import Logo from "@/components/logo";
 import Header from "@/components/layout/Header";
-import { NEXT_URL } from "@/lib/constants";
 import { useAuth } from "@/providers/auth-provider";
 
 export default function Homepage() {

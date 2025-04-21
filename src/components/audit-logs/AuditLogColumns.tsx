@@ -1,6 +1,7 @@
 import { type ColumnDef } from "@tanstack/react-table";
-import { AuditLogEntry, Team } from "@/types";
+import { AuditLogEntry } from "@/types";
 import { UserAvatar } from "@/components/user-avatar";
+import { Badge } from "../ui/badge";
 
 export const getAuditLogsColumns = (): ColumnDef<AuditLogEntry>[] => [
   {
@@ -17,14 +18,14 @@ export const getAuditLogsColumns = (): ColumnDef<AuditLogEntry>[] => [
         </div>
       );
     },
-    size: 100,
+    size: 200,
   },
   {
-    accessorKey: "timestamp",
-    header: "Timestamp",
+    accessorKey: "resourceId",
+    header: "Resource ID",
     cell: ({ row }) => {
-      const createdAt = row.getValue("timestamp") as number;
-      return <div>{new Date(createdAt).toLocaleString()}</div>;
+      const resourceId = row.getValue("resourceId") as string;
+      return <div className="">{resourceId}</div>;
     },
     size: 150,
   },
@@ -33,7 +34,15 @@ export const getAuditLogsColumns = (): ColumnDef<AuditLogEntry>[] => [
     header: "Action",
     cell: ({ row }) => {
       const action = row.getValue("action") as string;
-      return <div className="capitalize">{action}</div>;
+      return <Badge
+        variant={
+          action === "DELETE" ? "destructive"
+          : action === "UPDATE" ? "warning"
+          : action === "CREATE" ? "success"
+          : "secondary"}
+        className="capitalize">
+        {action}
+      </Badge>;
     },
     size: 100,
   },
@@ -47,12 +56,12 @@ export const getAuditLogsColumns = (): ColumnDef<AuditLogEntry>[] => [
     size: 100,
   },
   {
-    accessorKey: "resourceId",
-    header: "Resource ID",
+    accessorKey: "timestamp",
+    header: "Timestamp",
     cell: ({ row }) => {
-      const resourceId = row.getValue("resourceId") as string;
-      return <div className="">{resourceId}</div>;
+      const createdAt = row.getValue("timestamp") as number;
+      return <div>{new Date(createdAt).toLocaleString()}</div>;
     },
-    size: 100,
+    size: 200,
   },
 ];

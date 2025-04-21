@@ -397,7 +397,7 @@ export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
     mutate(
       {
         data: values,
-        oldDue: selectedCase.due,
+        oldCase: selectedCase,
         caseId: selectedCase.$id,
       },
       {

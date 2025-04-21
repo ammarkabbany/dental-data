@@ -12,11 +12,12 @@ export const getAppwriteTeam = async (teamId?: string) => {
 
 export const getAppwriteMembership = async (teamId: string, userId: string) => {
   try {
-    const membership = await teams.listMemberships(teamId, [
+    const membershipList = await teams.listMemberships(teamId, [
       Query.equal("userId", userId),
     ]);
-    return membership.memberships[0];
+    return membershipList.memberships[0];
   } catch (error) {
     console.log(error)
+    return null;
   }
 }

@@ -13,7 +13,7 @@ export const useGetLogs = () => {
         DATABASE_ID,
         AUDIT_LOGS_COLLECTION_ID,
         [
-          Query.limit(9999),
+          Query.limit(100),
           Query.orderDesc("timestamp"),
           Query.select([
             "$id",
@@ -62,7 +62,7 @@ export const usePrefetchLogs = () => {
           DATABASE_ID,
           AUDIT_LOGS_COLLECTION_ID,
           [
-            Query.limit(9999),
+            Query.limit(100),
             Query.orderDesc("timestamp"),
             Query.select([
               "$id",
