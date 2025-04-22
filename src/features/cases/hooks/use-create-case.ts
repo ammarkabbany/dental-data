@@ -15,6 +15,7 @@ export const useCreateCase = () => {
       toast.success('Case created successfully')
     },
     onError: (error) => {
+      toast.error(error.message);
       console.error('Error creating case:', error)
     },
   })

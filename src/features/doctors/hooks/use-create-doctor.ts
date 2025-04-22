@@ -21,7 +21,7 @@ export const useCreateDoctor = () => {
       toast.success('Doctor created successfully')
     },
     onError: (error) => {
-      console.error('Error updating doctor:', error)
+      toast.error(error.message)
     },
   })
 }

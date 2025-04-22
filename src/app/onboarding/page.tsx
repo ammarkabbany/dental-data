@@ -51,7 +51,7 @@ export default function OnboardingPage() {
         <div className="hidden lg:flex flex-1 relative bg-muted">
           <Image
             src="/dental-data.png"
-            alt="Dental Data"
+            alt="DentaAuto"
             fill
             className="object-cover"
             priority

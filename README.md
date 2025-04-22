@@ -1,4 +1,4 @@
-# Dental Data
+# DentaAuto
 
 A comprehensive dental practice management system.
 

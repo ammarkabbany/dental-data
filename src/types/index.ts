@@ -165,7 +165,7 @@ export type AuditLogAction =
   | (string); // fallback to any custom string
 
 /**
- * Represents a single audit log entry for tracking user actions in the dental data app.
+ * Represents a single audit log entry for tracking user actions in the DentaAuto app.
  * This type is used to log actions performed by users on various resources.
  * It includes information about the user, the action taken, the resource affected,
  * and any additional metadata related to the action.

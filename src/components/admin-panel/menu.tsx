@@ -8,6 +8,7 @@ import {
   LayoutDashboard,
   Layers,
   ShieldUser,
+  Logs,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -21,6 +22,7 @@ import { useRef } from "react";
 import { TeamSwitcher } from "../team-switcher";
 import { useAuth } from "@/providers/auth-provider";
 import useTeamStore from "@/store/team-store";
+import { CubeIcon } from "@radix-ui/react-icons";
 
 interface MenuProps {
   isOpen: boolean | undefined;
@@ -84,10 +86,19 @@ export function Menu({ isOpen }: MenuProps) {
                 onClick={() => navigate("/dashboard/doctors")}
               />
             )}
+            {permission.checkPermission("materials", "create") && (
+              <NavItem
+                icon={CubeIcon}
+                comingSoon
+                label="Materials"
+                active={isActive("materials")}
+                onClick={() => navigate("/dashboard#")}
+              />
+            )}
 
             {/* <Separator className="my-3" /> */}
 
-            {/* <h3 className="px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Utilities</h3> */}
+            <h3 className="px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Utilities</h3>
             <NavItem
               icon={Layers}
               label="Templates"

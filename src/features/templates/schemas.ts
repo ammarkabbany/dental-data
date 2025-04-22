@@ -6,9 +6,9 @@ import {z} from 'zod'
 // })
 
 export const createTemplateSchema = z.object({
-  name: z.string().min(4, "Name cannot be shortar than 4 characters").max(32, "Max name length is 32").optional(),
+  name: z.string().min(4, "Name cannot be shortar than 4 characters").max(32, "Max name length is 32"),
   doctor: z.string().optional(),
   material: z.string().optional(),
   shade: z.string().optional(),
   note: z.string().optional(),
-})
+});

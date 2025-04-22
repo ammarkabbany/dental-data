@@ -5,8 +5,8 @@ import {
   createSessionClient,
 } from "@/lib/appwrite/appwrite";
 import { CASES_COLLECTION_ID, DATABASE_ID } from "@/lib/constants";
-import { Case, Doctor } from "@/types";
-import { ExecutionMethod, ID, Permission, Query, Role } from "node-appwrite";
+import { Case } from "@/types";
+import { ID, Permission, Query, Role } from "node-appwrite";
 import {
   GetDoctorById,
   UpdateDoctor,
@@ -14,6 +14,7 @@ import {
 } from "../doctors/actions";
 import { getTeamById, updateTeam } from "../team/teamService";
 import { LogAuditEvent } from "../logs/actions";
+import { isBefore } from "date-fns";
 
 export const CreateCase = async (
   teamId: Case["teamId"],
@@ -21,6 +22,18 @@ export const CreateCase = async (
   data: Partial<Case>
 ): Promise<void> => {
   const { databases } = await createAdminClient();
+
+  // pick the team first to check for limits
+  const team = await getTeamById(teamId, [
+    Query.select(["casesUsed", "maxCases", "planExpiresAt"]),
+  ]);
+
+  if (isBefore(new Date(team?.planExpiresAt || 0), new Date())) {
+    throw new Error('Your plan expired. Renew to add new cases.')
+  }
+  if (team.casesUsed >= team.maxCases) {
+    throw new Error('Case limit reached! Please upgrade your plan to add more cases.')
+  }
 
   const document = await databases.createDocument<Case>(
     DATABASE_ID,
@@ -53,9 +66,6 @@ export const CreateCase = async (
     });
   }
   // update team
-  const team = await getTeamById(document.teamId, [
-    Query.select(["casesUsed"]),
-  ]);
   if (team) {
     await updateTeam(document.teamId, {
       casesUsed: Math.max(0, (team.casesUsed || 0) + 1),
@@ -197,12 +207,12 @@ export const DeleteCase = async (
   }
 
   // Update team
-  const team = await getTeamById(teamId, [Query.select(["casesUsed"])]);
-  if (team) {
-    await updateTeam(teamId, {
-      casesUsed: Math.max(0, (team.casesUsed || 0) - ids.length),
-    });
-  }
+  // const team = await getTeamById(teamId, [Query.select(["casesUsed"])]);
+  // if (team) {
+  //   await updateTeam(teamId, {
+  //     casesUsed: Math.max(0, (team.casesUsed || 0) - ids.length),
+  //   });
+  // }
 
   // return await functions.createExecution(
   //   process.env.NEXT_DOCUMENT_UPDATE_FUNCTION_ID!,

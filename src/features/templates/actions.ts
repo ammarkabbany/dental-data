@@ -4,12 +4,23 @@ import { createAdminClient, createSessionClient } from "@/lib/appwrite/appwrite"
 import { TEMPLATES_COLLECTION_ID, DATABASE_ID } from "@/lib/constants";
 import { Template } from "@/types";
 import { ID, Permission, Query, Role } from "node-appwrite";
+import { getTeamById } from "../team/teamService";
+import { isBefore } from "date-fns";
 
 export const CreateTemplate = async (
   teamId: Template["teamId"],
   data: Partial<Template>
 ): Promise<Template | null> => {
   const { databases } = await createAdminClient();
+
+  // pick the team first to check for limits
+  const team = await getTeamById(teamId, [
+    Query.select(["planExpiresAt"]),
+  ]);
+
+  if (isBefore(new Date(team.planExpiresAt || 0), new Date())) {
+    throw new Error('Your plan expired. Renew to add new templates.')
+  }
 
   const document = await databases.createDocument<Template>(
     DATABASE_ID,

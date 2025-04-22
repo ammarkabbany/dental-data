@@ -215,7 +215,7 @@ export const getColumns = (
                 </Tooltip> */}
               </>
             )}
-            <Tooltip delayDuration={100}>
+            {/* <Tooltip delayDuration={100}>
               <TooltipTrigger asChild>
                 <Button
                   size={"icon"}
@@ -226,7 +226,7 @@ export const getColumns = (
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="top">Edit Doctor</TooltipContent>
-            </Tooltip>
+            </Tooltip> */}
           </div>
         </TooltipProvider>
       );

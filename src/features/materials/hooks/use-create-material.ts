@@ -21,7 +21,7 @@ export const useCreateMaterial = () => {
       toast.success('Material created successfully')
     },
     onError: (error) => {
-      console.error('Error updating doctor:', error)
+      toast.error(error.message)
     },
   })
 }

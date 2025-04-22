@@ -15,7 +15,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
     <div className="flex flex-col min-h-screen w-full items-center justify-center bg-background">
       <Link href={"/"} className="absolute top-0 sm:left-0 flex items-center">
         <Logo src="/old-fav.ico" />
-        <h1 className="text-2xl font-bold">Dental Data</h1>
+        <h1 className="text-2xl font-bold">DentaAuto</h1>
       </Link>
       {children}
     </div>

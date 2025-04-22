@@ -319,7 +319,7 @@ export default function Homepage() {
                     Workflow
                   </Badge>
                   <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-                    How Dental Data Works
+                    How DentaAuto Works
                   </h2>
                   <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed dark:text-gray-400">
                     Our intuitive platform makes managing your dental lab simple
@@ -605,8 +605,8 @@ export default function Homepage() {
                     answer: "We've designed our migration process to be as smooth as possible. Our team will work with you to import your existing data, and we provide comprehensive training to ensure your team is comfortable with the new system. Most labs are up and running within a few days."
                   },
                   {
-                    question: "Can Dental Data integrate with our accounting software?",
-                    answer: "Yes, Dental Data integrates with popular accounting software including QuickBooks, Xero, and Sage. We also offer an API for custom integrations with other systems you may be using."
+                    question: "Can DentaAuto integrate with our accounting software?",
+                    answer: "Yes, DentaAuto integrates with popular accounting software including QuickBooks, Xero, and Sage. We also offer an API for custom integrations with other systems you may be using."
                   },
                   {
                     question: "Is my data secure?",
@@ -618,11 +618,11 @@ export default function Homepage() {
                   },
                   {
                     question: "Can I customize the system to match our workflow?",
-                    answer: "Yes, Dental Data is highly customizable. You can configure case workflows, create custom fields, set up automation rules, and design reports that match your specific needs. Enterprise customers also receive custom development services."
+                    answer: "Yes, DentaAuto is highly customizable. You can configure case workflows, create custom fields, set up automation rules, and design reports that match your specific needs. Enterprise customers also receive custom development services."
                   },
                   {
                     question: "Do you offer a free trial?",
-                    answer: "Yes, we offer a 14-day free trial with no credit card required. You'll get full access to all features so you can thoroughly evaluate if Dental Data is right for your lab."
+                    answer: "Yes, we offer a 14-day free trial with no credit card required. You'll get full access to all features so you can thoroughly evaluate if DentaAuto is right for your lab."
                   }
                 ].map((faq, index) => (
                   <AccordionItem key={index} value={`item-${index}`} className="overflow-hidden">
@@ -657,7 +657,7 @@ export default function Homepage() {
                     Ready to transform your dental lab?
                   </h2>
                   <p className="max-w-[700px] md:text-xl/relaxed mx-auto">
-                    Join hundreds of dental labs already using Dental Data to
+                    Join hundreds of dental labs already using DentaAuto to
                     streamline their operations
                   </p>
                 </div>
@@ -701,7 +701,7 @@ export default function Homepage() {
               <div className="space-y-4">
                 <div className="flex items-center gap-2">
                   <Logo src="/old-fav.ico" className="size-16" />
-                  <span className="text-xl font-bold">Dental Data</span>
+                  <span className="text-xl font-bold tracking-wide">DentaAuto</span>
                 </div>
                 <p className="text-sm text-muted-foreground">
                   Comprehensive dental lab management software designed by lab
@@ -797,7 +797,7 @@ export default function Homepage() {
             </div>
             <div className="mt-8 border-t pt-8 flex flex-col sm:flex-row justify-between items-center">
               <p className="text-sm text-muted-foreground">
-                © 2025 Dental Data. All rights reserved.
+                © 2025 DentaAuto. All rights reserved.
               </p>
               <div className="flex items-center gap-4 mt-4 sm:mt-0">
                 <Link
