@@ -1,9 +1,12 @@
-"use server"
+"use server";
 import { createAdminClient } from "@/lib/appwrite/appwrite";
-import { DATABASE_ID, TEAM_MEMBERS_COLLECTION_ID, TEAMS_COLLECTION_ID } from "@/lib/constants";
+import {
+  DATABASE_ID,
+  TEAM_MEMBERS_COLLECTION_ID,
+  TEAMS_COLLECTION_ID,
+} from "@/lib/constants";
 import { Team, TeamMember } from "@/types";
 import { ID, Permission, Query, Role } from "node-appwrite";
-
 
 // getById: async (id: string): Promise<Team | undefined> => {
 //   return undefined;
@@ -16,7 +19,7 @@ const getUserTeams = async (userId: string): Promise<Team[]> => {
     [
       Query.equal("userId", userId),
       Query.select(["$id", "teamId", "userId", "role"]),
-    ]
+    ],
   );
   const teamIds = memberships.documents.map((m) => m.teamId);
   const teams = await databases.listDocuments<Team>(DATABASE_ID, "teams", [
@@ -33,14 +36,14 @@ const getUserTeams = async (userId: string): Promise<Team[]> => {
     ]),
   ]);
   return teams.documents;
-}
+};
 
 async function getTeamMembership(teamId: string, userId: string) {
   const { databases } = await createAdminClient();
   const members = await databases.listDocuments<TeamMember>(
     DATABASE_ID,
     TEAM_MEMBERS_COLLECTION_ID,
-    [Query.equal("teamId", teamId), Query.equal("userId", userId)]
+    [Query.equal("teamId", teamId), Query.equal("userId", userId)],
   );
 
   return members.documents.length > 0 ? members.documents[0] : null;
@@ -56,7 +59,7 @@ async function addTeamMember(teamId: string, userId: string, role: string) {
       userId,
       teamId,
       role,
-    }
+    },
   );
 }
 
@@ -73,10 +76,7 @@ async function createTeam(name: string, userId: string) {
       maxCases: 500,
       planExpiresAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
     },
-    [
-      Permission.read(Role.team(id)),
-      Permission.write(Role.team(id, 'owner')),
-    ]
+    [Permission.read(Role.team(id)), Permission.write(Role.team(id, "owner"))],
   );
 
   // Add creator as team owner
@@ -85,14 +85,16 @@ async function createTeam(name: string, userId: string) {
   return team;
 }
 
-async function updateTeam(teamId: string, updates: { name?: string, currency?: string }) {
+async function updateTeam(
+  teamId: string,
+  updates: { name?: string; currency?: string },
+) {
   const { databases, teams } = await createAdminClient();
   const appwriteTeam = await teams.get(teamId);
 
+  console.log(updates);
+
   if (updates.name) {
-    if (appwriteTeam.name === updates.name) {
-      return;
-    }
     await databases.updateDocument<Team>(
       DATABASE_ID,
       TEAMS_COLLECTION_ID,
@@ -104,16 +106,25 @@ async function updateTeam(teamId: string, updates: { name?: string, currency?: s
     await teams.updateName(teamId, updates.name);
   }
   if (updates.currency) {
-    if (appwriteTeam.prefs?.currency === updates.currency) {
-      return;
-    }
-    await teams.updatePrefs(teamId, { ...appwriteTeam.prefs, currency: updates.currency });
+    console.log("Updating currency");
+    await teams.updatePrefs(teamId, {
+      ...appwriteTeam.prefs,
+      currency: updates.currency,
+    });
   }
 }
 
-async function getTeamById(teamId: string, queries: string[] = []): Promise<Team> {
+async function getTeamById(
+  teamId: string,
+  queries: string[] = [],
+): Promise<Team> {
   const { databases } = await createAdminClient();
-  const team = await databases.getDocument<Team>(DATABASE_ID, TEAMS_COLLECTION_ID, teamId, queries);
+  const team = await databases.getDocument<Team>(
+    DATABASE_ID,
+    TEAMS_COLLECTION_ID,
+    teamId,
+    queries,
+  );
   return team;
 }
 
@@ -124,4 +135,4 @@ export {
   createTeam,
   updateTeam,
   getTeamById,
-}
+};
