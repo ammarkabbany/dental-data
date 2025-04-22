@@ -85,15 +85,30 @@ async function createTeam(name: string, userId: string) {
   return team;
 }
 
-async function updateTeam(teamId: string, updates: Partial<Team>) {
-  const { databases } = await createAdminClient();
-  const team = await databases.updateDocument<Team>(
-    DATABASE_ID,
-    TEAMS_COLLECTION_ID,
-    teamId,
-    updates
-  );
-  return team;
+async function updateTeam(teamId: string, updates: { name?: string, currency?: string }) {
+  const { databases, teams } = await createAdminClient();
+  const appwriteTeam = await teams.get(teamId);
+
+  if (updates.name) {
+    if (appwriteTeam.name === updates.name) {
+      return;
+    }
+    await databases.updateDocument<Team>(
+      DATABASE_ID,
+      TEAMS_COLLECTION_ID,
+      teamId,
+      {
+        name: updates.name,
+      },
+    );
+    await teams.updateName(teamId, updates.name);
+  }
+  if (updates.currency) {
+    if (appwriteTeam.prefs?.currency === updates.currency) {
+      return;
+    }
+    await teams.updatePrefs(teamId, { ...appwriteTeam.prefs, currency: updates.currency });
+  }
 }
 
 async function getTeamById(teamId: string, queries: string[] = []): Promise<Team> {

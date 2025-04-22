@@ -7,18 +7,21 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePermission } from "@/hooks/use-permissions";
 import { ArrowRight, Bell, CreditCard, Settings } from "lucide-react";
 import PlanBillingPage from "./billing-tab";
-import NotificationsTab from "./notifications-tab";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
 import useTeamStore from "@/store/team-store";
 import RedirectToAuth from "@/components/auth/custom-auth-redirect";
 import RedirectToOnboarding from "@/components/auth/custom-onboard-redirect";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import { useTeam } from "@/providers/team-provider";
+import { useUpdateTeam } from "@/features/team/hooks/use-update-team";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 
 export default function TeamPage() {
   const { userRole, appwriteTeam, isAuthenticated, currentTeam, isLoading } = useTeam();
@@ -26,8 +29,30 @@ export default function TeamPage() {
   const canUpdate = usePermission(userRole).checkPermission('team', 'update');
   const [activeTab, setActiveTab] = useState("general");
   const [teamName, setTeamName] = useState(membership?.teamName || "");
-  const [currency, setCurrency] = useState(appwriteTeam?.prefs.currency || "USD");
-  const [isSaving, setIsSaving] = useState(false);
+  const [currency, setCurrency] = useState(appwriteTeam?.prefs?.currency as string || "USD");
+
+  const { mutate, isPending } = useUpdateTeam()
+
+  const updateTeamSettingsSchema = z.object({
+    name: z.string().min(4, "Team name must be at least 4 characters long"),
+    currency: z.string().min(3, "Currency is required"),
+  });
+
+  const form = useForm<z.infer<typeof updateTeamSettingsSchema>>({
+    resolver: zodResolver(updateTeamSettingsSchema),
+    defaultValues: {
+      name: teamName,
+      currency: currency,
+    }
+  });
+
+  const handleSave = async (values: z.infer<typeof updateTeamSettingsSchema>) => {
+    if (!currentTeam) {
+      return;
+    }
+
+    mutate({ teamId: currentTeam.$id, updates: values });
+  };
 
 
   if (isLoading) {
@@ -73,16 +98,6 @@ export default function TeamPage() {
     }
   };
 
-  const handleSave = (type: string) => {
-    setIsSaving(true);
-
-    // Simulate API call
-    setTimeout(() => {
-      setIsSaving(false);
-      toast.success(`${type} settings saved successfully`);
-    }, 1000);
-  };
-
   return (
     <main className="bg-gradient-to-b from-background to-muted/30 min-h-screen">
       <Header />
@@ -122,14 +137,14 @@ export default function TeamPage() {
                   <CreditCard className="size-4 flex-shrink-0" />
                   Billing
                 </TabsTrigger>
-                <TabsTrigger
+                {/* <TabsTrigger
                   value="notifications"
                   onClick={() => setActiveTab("notifications")}
                   className="w-full h-11 justify-start gap-3 px-3 py-2 rounded-md data-[state=active]:bg-primary/10 data-[state=active]:text-primary"
                 >
                   <Bell className="size-4 flex-shrink-0" />
                   Notifications
-                </TabsTrigger>
+                </TabsTrigger> */}
               </TabsList>
             </CardContent>
           </Card>
@@ -152,47 +167,62 @@ export default function TeamPage() {
                   >
                     <motion.div variants={itemVariants}>
                       <div className="space-y-6">
-                        <div className="space-y-2">
-                          <Label htmlFor="teamName" className="text-base">Team Name</Label>
-                          <Input
-                            id="teamName"
-                            value={teamName}
-                            onChange={(e) => setTeamName(e.target.value)}
-                            placeholder="Enter team name"
-                            disabled={!canUpdate}
-                            className="max-w-md"
-                          />
-                          <p className="text-sm text-muted-foreground">
-                            This name will be displayed across the platform
-                          </p>
-                        </div>
+                        <Form {...form}>
+                          <form onSubmit={form.handleSubmit(handleSave)}>
+                            <FormField
+                              control={form.control}
+                              name="name"
+                              render={({ field }) => (
+                                <FormItem className="max-w-md">
+                                  <FormLabel>Name</FormLabel>
+                                  <FormControl>
+                                    <Input {...field} variant={"outline"} placeholder="Enter name" />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
 
-                        <div className="space-y-2">
-                          <Label htmlFor="currency" className="text-base">Default Currency</Label>
-                          <Select
-                            value={currency}
-                            onValueChange={setCurrency}
-                            disabled={!canUpdate}
-                          >
-                            <SelectTrigger className="max-w-md">
-                              <SelectValue placeholder="Select currency" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectGroup>
-                                <SelectLabel>Currencies</SelectLabel>
-                                <SelectItem value="EGP">Egyptian Pound (EGP)</SelectItem>
-                                <SelectItem value="USD">US Dollar (USD)</SelectItem>
-                                <SelectItem value="EUR">Euro (EUR)</SelectItem>
-                                <SelectItem value="GBP">British Pound (GBP)</SelectItem>
-                                <SelectItem value="SAR">Saudi Riyal (SAR)</SelectItem>
-                                <SelectItem value="AED">UAE Dirham (AED)</SelectItem>
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                          <p className="text-sm text-muted-foreground">
-                            Currency used for displaying financial information
-                          </p>
-                        </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="currency" className="text-base">Currency</Label>
+                              <FormField
+                                control={form.control}
+                                name="currency"
+                                render={({ field }) => (
+                                  <FormItem className="max-w-xs">
+                                    <Select
+                                      onValueChange={(value) => {
+                                        field.onChange(value);
+                                        setCurrency(value);
+                                      }}
+                                      defaultValue={field.value}
+                                    >
+                                      <FormControl>
+                                        <SelectTrigger id="currency" className="w-full">
+                                          <SelectValue placeholder="Select currency" />
+                                        </SelectTrigger>
+                                      </FormControl>
+                                      <SelectContent>
+                                        <SelectGroup>
+                                          <SelectLabel>Available currencies</SelectLabel>
+                                          <SelectItem value="USD">USD</SelectItem>
+                                          <SelectItem value="EUR">EUR</SelectItem>
+                                          <SelectItem value="GBP">GBP</SelectItem>
+                                          <SelectItem value="EGP">EGP</SelectItem>
+                                          <SelectItem value="AED">AED</SelectItem>
+                                          <SelectItem value="AUD">AUD</SelectItem>
+                                          <SelectItem value="CAD">CAD</SelectItem>
+                                        </SelectGroup>
+                                      </SelectContent>
+                                    </Select>
+                                  </FormItem>
+                                )}
+                              <p className="text-sm text-muted-foreground">
+                                Currency used for displaying financial information
+                              </p>
+                            </div>
+                          </form>
+                        </Form>
 
                         <div className="space-y-2 pt-4 border-t">
                           <div className="flex items-center justify-between">
@@ -223,11 +253,10 @@ export default function TeamPage() {
                         <div className="mt-8 flex justify-end">
                           <Button
                             variant="default"
-                            onClick={() => handleSave('General')}
-                            disabled={isSaving}
+                            disabled={isPending}
                           >
-                            {isSaving ? 'Saving...' : 'Save general settings'}
-                            {!isSaving && <ArrowRight className="ml-2 h-4 w-4" />}
+                            {isPending ? 'Saving...' : 'Save general settings'}
+                            {!isPending && <ArrowRight className="ml-2 h-4 w-4" />}
                           </Button>
                         </div>
                       )}
@@ -248,7 +277,7 @@ export default function TeamPage() {
                 </CardContent>
               </TabsContent>
 
-              <TabsContent value="notifications" className="m-0">
+              {/* <TabsContent value="notifications" className="m-0">
                 <CardHeader className="border-b pb-6">
                   <CardTitle className="text-xl font-medium">Notification Settings</CardTitle>
                   <CardDescription className="mt-1.5">
@@ -262,7 +291,7 @@ export default function TeamPage() {
                     handleSave={handleSave}
                   />
                 </CardContent>
-              </TabsContent>
+              </TabsContent> */}
             </Card>
           </div>
         </Tabs>
