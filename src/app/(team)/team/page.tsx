@@ -154,11 +154,11 @@ export default function TeamPage() {
                 <p className="text-xs text-muted-foreground mt-2">
                   {plan?.$id === "free"
                     ? "Upgrade for more features"
-                    : "Pro Plan"}
+                    : "Premium"}
                 </p>
                 {canUpdate && (
                   <Button variant="link" size="sm" className="mt-2 p-0 h-auto text-primary" asChild>
-                    <Link href="/team/billing">Upgrade now</Link>
+                    <Link href="#">Upgrade now</Link>
                   </Button>
                 )}
               </CardContent>
@@ -212,7 +212,7 @@ export default function TeamPage() {
                 </p>
                 {canUpdate && (
                   <Button variant="link" size="sm" className="mt-2 p-0 h-auto text-primary" asChild>
-                    <Link href="/team/members">Invite members</Link>
+                    <Link href="#">Invite members</Link>
                   </Button>
                 )}
               </CardContent>
