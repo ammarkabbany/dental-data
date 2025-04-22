@@ -25,6 +25,7 @@ import { Badge } from "@/components/ui/badge";
 import Logo from "@/components/logo";
 import Header from "@/components/layout/Header";
 import { useAuth } from "@/providers/auth-provider";
+import { InstagramLogoIcon } from "@radix-ui/react-icons";
 
 export default function Homepage() {
   const { handleLogin, isAuthenticated, isLoading } = useAuth();
@@ -96,7 +97,7 @@ export default function Homepage() {
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center justify-center">
+                {/* <div className="flex items-center justify-center">
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -104,15 +105,7 @@ export default function Homepage() {
                     className="relative w-full aspect-video overflow-hidden rounded-xl border bg-gradient-to-b from-background/10 to-background/50 p-1 shadow-xl"
                   >
                     <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-purple-500/20 opacity-80" />
-                    {/* <Image
-                    src="https://picsum.photos/600/400"
-                    alt="Dashboard Preview"
-                    width={600}
-                    height={400}
-                    className="rounded-lg object-cover border shadow-md"
-                    unoptimized
-                  /> */}
-
+                    
                     <div className="absolute bottom-4 right-4">
                       <Badge
                         variant="secondary"
@@ -122,7 +115,7 @@ export default function Homepage() {
                       </Badge>
                     </div>
                   </motion.div>
-                </div>
+                </div> */}
               </div>
             </div>
           </section>
@@ -252,31 +245,31 @@ export default function Homepage() {
                     icon: <Users className="h-10 w-10 text-primary" />,
                     title: "Doctor Management",
                     description:
-                      "Keep track of all your doctors and their preferences, ensuring personalized service every time.",
+                      "Easily manage your doctors and their cases with our intuitive dashboard.",
                   },
                   {
                     icon: <Database className="h-10 w-10 text-primary" />,
-                    title: "Case Tracking",
+                    title: "Case Management",
                     description:
-                      "Monitor each case from receipt to delivery with detailed status updates and notifications.",
+                      "Easily create, and manage cases from start to finish with our intuitive dashboard.",
                   },
                   {
-                    icon: <Package className="h-10 w-10 text-primary" />,
-                    title: "Inventory Control",
+                    icon: <Check className="h-10 w-10 text-primary" />,
+                    title: "Automated Notifications",
                     description:
-                      "Maintain optimal stock levels with automated alerts and reordering based on your usage patterns.",
+                      "Stay updated with automated notifications for case status changes and updates.",
                   },
                   {
                     icon: <BarChart3 className="h-10 w-10 text-primary" />,
                     title: "Analytics Dashboard",
                     description:
-                      "Gain insights with comprehensive reporting on productivity, revenue, and business growth.",
+                      "Gain insights into your lab's performance with our analytics dashboard.",
                   },
                   {
                     icon: <Clock className="h-10 w-10 text-primary" />,
                     title: "Real-time Updates",
                     description:
-                      "Access the latest information across all devices with our cloud-based synchronization.",
+                      "Recieve real-time updates from your team, ensuring everyone is on the same page.",
                   },
                   {
                     icon: <Shield className="h-10 w-10 text-primary" />,
@@ -343,9 +336,9 @@ export default function Homepage() {
                   },
                   {
                     step: "03",
-                    title: "Deliver with confidence",
+                    title: "Export reports",
                     description:
-                      "Complete quality checks, generate delivery notes, and manage billing all in one place.",
+                      "Generate detailed reports and statements for your doctors, ensuring invoicing is a breeze.",
                   },
                 ].map((item, index) => (
                   <motion.div
@@ -717,15 +710,6 @@ export default function Homepage() {
                   >
                     Features
                   </li>
-                  {/* <li onClick={() => handleClickScroll('pricing')} className="text-muted-foreground cursor-pointer hover:text-foreground transition-colors">Pricing</li> */}
-                  <li>
-                    <Link
-                      href="#"
-                      className="text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      Case Studies
-                    </Link>
-                  </li>
                 </ul>
               </div>
               <div className="space-y-4">
@@ -737,14 +721,6 @@ export default function Homepage() {
                       className="text-muted-foreground hover:text-foreground transition-colors"
                     >
                       About Us
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="#"
-                      className="text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      Blog
                     </Link>
                   </li>
                   <li>
@@ -821,27 +797,7 @@ export default function Homepage() {
                   <span className="sr-only">Facebook</span>
                 </Link>
                 <Link
-                  href="#"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-5 w-5"
-                  >
-                    <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
-                  </svg>
-                  <span className="sr-only">Twitter</span>
-                </Link>
-                <Link
-                  href="#"
+                  href="https://www.linkedin.com/company/crox-team/"
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <svg
@@ -861,6 +817,12 @@ export default function Homepage() {
                     <circle cx="4" cy="4" r="2"></circle>
                   </svg>
                   <span className="sr-only">LinkedIn</span>
+                </Link>
+                <Link
+                  href="https://instagram.com/croxteamco/"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <InstagramLogoIcon className="size-5" />
                 </Link>
               </div>
             </div>
