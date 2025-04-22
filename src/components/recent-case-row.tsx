@@ -1,13 +1,12 @@
 import { Case } from "@/types";
 import { UserAvatar } from "./user-avatar";
 import { formatCurrency } from "@/lib/format-utils";
-import { useGetUserInfo } from "@/features/auth/hooks/use-get-userinfo";
 import { usePermission } from "@/hooks/use-permissions";
 import useTeamStore from "@/store/team-store";
 import { useDoctorsStore } from "@/store/doctors-store";
 
 export const RecentCaseRow = ({ caseItem }: { caseItem: Partial<Case> }) => {
-  const { data: user } = useGetUserInfo(caseItem.userId || "");
+  // const { data: user } = useGetUserInfo(caseItem.userId || "");
   const {userRole, currentAppwriteTeam: appwriteTeam} = useTeamStore();
   const canViewDue = usePermission(userRole).canViewDue()
   const {getDoctorById} = useDoctorsStore();
@@ -23,8 +22,8 @@ export const RecentCaseRow = ({ caseItem }: { caseItem: Partial<Case> }) => {
                     {new Date(caseItem.dueDate).toLocaleDateString()}
                   </td> */}
       <td className="whitespace-nowrap py-3 flex items-center gap-x-2">
-        <UserAvatar className="bg-white" image={user?.avatar || "?"} name={user?.name || ""} />
-        {user?.name}
+        <UserAvatar className="bg-white" image={caseItem.user?.avatar || "?"} name={caseItem.user?.name || ""} />
+        {caseItem.user?.name}
       </td>
       {canViewDue && <td className="py-4 whitespace-nowrap">
         {formatCurrency(caseItem.due || 0, appwriteTeam?.prefs.currency)}

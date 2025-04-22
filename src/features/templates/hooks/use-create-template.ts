@@ -21,7 +21,7 @@ export const useCreateTemplate = () => {
       toast.success('Template created successfully')
     },
     onError: (error) => {
-      console.error('Error creating template:', error)
+      toast.error(error.message)
     },
   })
 }

@@ -1,4 +1,4 @@
-# Dental Data (TBD)
+# DentaAuto (TBD)
 
 ## Routes
 

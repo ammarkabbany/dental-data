@@ -5,23 +5,35 @@ import {
   createSessionClient,
 } from "@/lib/appwrite/appwrite";
 import { CASES_COLLECTION_ID, DATABASE_ID } from "@/lib/constants";
-import { Case, Doctor } from "@/types";
+import { Case } from "@/types";
+import { ID, Permission, Query, Role } from "node-appwrite";
 import {
-  ExecutionMethod,
-  ID,
-  Permission,
-  Query,
-  Role,
-} from "node-appwrite";
-import { GetDoctorById, UpdateDoctor, UpdateDoctorDue } from "../doctors/actions";
+  GetDoctorById,
+  UpdateDoctor,
+  UpdateDoctorDue,
+} from "../doctors/actions";
 import { getTeamById, updateTeam } from "../team/teamService";
+import { LogAuditEvent } from "../logs/actions";
+import { isBefore } from "date-fns";
 
 export const CreateCase = async (
   teamId: Case["teamId"],
   userId: Case["userId"],
   data: Partial<Case>
-): Promise<Case | null> => {
+): Promise<void> => {
   const { databases } = await createAdminClient();
+
+  // pick the team first to check for limits
+  const team = await getTeamById(teamId, [
+    Query.select(["casesUsed", "maxCases", "planExpiresAt"]),
+  ]);
+
+  if (isBefore(new Date(team?.planExpiresAt || 0), new Date())) {
+    throw new Error('Your plan expired. Renew to add new cases.')
+  }
+  if (team.casesUsed >= team.maxCases) {
+    throw new Error('Case limit reached! Please upgrade your plan to add more cases.')
+  }
 
   const document = await databases.createDocument<Case>(
     DATABASE_ID,
@@ -43,40 +55,42 @@ export const CreateCase = async (
     ]
   );
   // update doctor
-  const doctor = await GetDoctorById(document.doctorId,
-    [Query.select([
-      '$id',
-      'due',
-      'totalCases',
-    ])]
-  );
+  const doctor = await GetDoctorById(document.doctorId, [
+    Query.select(["$id", "due", "totalCases"]),
+  ]);
   if (doctor) {
     const due = document.due;
     await UpdateDoctor(doctor.$id, {
       due: Math.max(0, doctor.due + due),
       totalCases: Math.max(0, doctor.totalCases + 1),
-    })
+    });
   }
   // update team
-  const team = await getTeamById(document.teamId, [
-    Query.select([
-      'casesUsed',
-    ])
-  ]);
   if (team) {
     await updateTeam(document.teamId, {
       casesUsed: Math.max(0, (team.casesUsed || 0) + 1),
-    })
+    });
   }
 
-  return document;
+  await LogAuditEvent({
+    userId: document.userId,
+    teamId: document.teamId,
+    action: "CREATE",
+    resource: "CASE",
+    resourceId: document.$id,
+    changes: {
+      after: document,
+      before: undefined,
+    },
+    timestamp: new Date().toISOString(),
+  });
 };
 
 export const UpdateCase = async (
   id: Case["$id"],
   teamId: Case["teamId"] | undefined,
   data: Partial<Case>,
-  oldDue: number
+  oldCase: Case
 ): Promise<Case | null> => {
   const { databases } = await createAdminClient();
 
@@ -96,18 +110,32 @@ export const UpdateCase = async (
   // update doctor
   const doctorId = updatedDocument.doctorId;
   const newDue = updatedDocument.due || 0;
+  const oldDue = oldCase.due || 0;
 
   let result: number = 0;
   if (newDue < oldDue) {
     // Decreased due (removed tooth or demoted material)
     result = -(oldDue - newDue);
   } else if (newDue > oldDue) {
-    // Increased due (added tooth or promoted material) 
+    // Increased due (added tooth or promoted material)
     result = newDue - oldDue;
   }
   if (doctorId) {
     await UpdateDoctorDue(doctorId, result);
   }
+
+  await LogAuditEvent({
+    userId: updatedDocument.userId,
+    teamId: teamId,
+    action: "UPDATE",
+    resource: "CASE",
+    resourceId: updatedDocument.$id,
+    changes: {
+      after: updatedDocument,
+      before: oldCase,
+    },
+    timestamp: new Date().toISOString(),
+  });
 
   return updatedDocument;
 };
@@ -122,53 +150,69 @@ export const DeleteCase = async (
     [key: string]: any;
   } = {};
 
-      const promises = ids.map(async (documentId) => {
-        const document = await GetCaseById(documentId);
-        const doctorId = document.doctorId;
-      
-        // Delete the document
-        await databases.deleteDocument(DATABASE_ID, CASES_COLLECTION_ID, documentId);
-      
-        // Prepare the doctor update if it doesn't exist yet
-        if (!doctorUpdates[doctorId]) {
-          doctorUpdates[doctorId] = {
-            due: 0,
-            totalCases: 0,
-          };
-        }
-      
-        // Accumulate the due and total cases for the doctor
-        doctorUpdates[doctorId].due += document.due || 0;
-        doctorUpdates[doctorId].totalCases += 1; // Increment for each document being deleted
-      });
-      
-      // Wait for all deletions to complete
-      await Promise.all(promises);
-      
-      // Now update each doctor with the accumulated values
-      for (const [doctorId, updateData] of Object.entries(doctorUpdates)) {
-        const doctor = await GetDoctorById(doctorId);
-        if (doctor) {
-          const doctorData = {
-            due: Math.max((doctor.due || 0) - updateData.due, 0),
-            totalCases: Math.max(0, (doctor.totalCases || 0) - updateData.totalCases),
-          };
-          await UpdateDoctor(doctorId, doctorData);
-        }
-      }
+  const promises = ids.map(async (documentId) => {
+    const document = await GetCaseById(documentId);
+    const doctorId = document.doctorId;
 
-      // Update team
-      const team = await getTeamById(teamId, [
-        Query.select([
-          'casesUsed',
-        ])
-      ]);
-      if (team) {
-        await updateTeam(teamId, {
-          casesUsed: Math.max(0, (team.casesUsed || 0) - ids.length),
-        })
-      }
-      
+    // Delete the document
+    await databases.deleteDocument(
+      DATABASE_ID,
+      CASES_COLLECTION_ID,
+      documentId
+    );
+
+    // Log the deletion
+    await LogAuditEvent({
+      userId: document.userId,
+      teamId: document.teamId,
+      action: "DELETE",
+      resource: "CASE",
+      resourceId: document.$id,
+      changes: {
+        before: document,
+        after: {},
+      },
+      timestamp: new Date().toISOString(),
+    });
+
+    // Prepare the doctor update if it doesn't exist yet
+    if (!doctorUpdates[doctorId]) {
+      doctorUpdates[doctorId] = {
+        due: 0,
+        totalCases: 0,
+      };
+    }
+
+    // Accumulate the due and total cases for the doctor
+    doctorUpdates[doctorId].due += document.due || 0;
+    doctorUpdates[doctorId].totalCases += 1; // Increment for each document being deleted
+  });
+
+  // Wait for all deletions to complete
+  await Promise.all(promises);
+
+  // Now update each doctor with the accumulated values
+  for (const [doctorId, updateData] of Object.entries(doctorUpdates)) {
+    const doctor = await GetDoctorById(doctorId);
+    if (doctor) {
+      const doctorData = {
+        due: Math.max((doctor.due || 0) - updateData.due, 0),
+        totalCases: Math.max(
+          0,
+          (doctor.totalCases || 0) - updateData.totalCases
+        ),
+      };
+      await UpdateDoctor(doctorId, doctorData);
+    }
+  }
+
+  // Update team
+  // const team = await getTeamById(teamId, [Query.select(["casesUsed"])]);
+  // if (team) {
+  //   await updateTeam(teamId, {
+  //     casesUsed: Math.max(0, (team.casesUsed || 0) - ids.length),
+  //   });
+  // }
 
   // return await functions.createExecution(
   //   process.env.NEXT_DOCUMENT_UPDATE_FUNCTION_ID!,

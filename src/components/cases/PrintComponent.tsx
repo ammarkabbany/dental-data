@@ -178,7 +178,7 @@ const PrintComponent = ({selectedCases, options = defaultOptions}: PrintComponen
         setTimeout(resolve, 0);
       }),
     contentRef: componentRef,
-    documentTitle: "Dental Data",
+    documentTitle: "DentaAuto",
     onCancel: () => {
       setShowComponent(false);
       closeModal('print')

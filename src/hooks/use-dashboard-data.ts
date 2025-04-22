@@ -1,3 +1,4 @@
+import { getUserInfo } from "@/features/auth/actions";
 import { databases } from "@/lib/appwrite/client";
 import {
   CASES_COLLECTION_ID,
@@ -110,6 +111,24 @@ async function getDashboardData() {
   //     }
   // })}
 
+  const userIds = [...new Set(cases.documents.map((row) => row.userId))];
+
+  const userInfos = await Promise.all(
+    userIds.map((userId) => getUserInfo(userId))
+  );
+  const userInfoMap = userInfos.reduce(
+    (acc, info, index) => {
+      acc[userIds[index]] = info;
+      return acc;
+    },
+    {} as Record<string, (typeof userInfos)[number]>
+  );
+
+  cases.documents = cases.documents.map((caseItem) => ({
+    ...caseItem,
+    user: userInfoMap[caseItem.userId] || null,
+  }));
+
   const doctorsCount = await databases.listDocuments<Doctor>(
     DATABASE_ID,
     DOCTORS_COLLECTION_ID,
@@ -139,7 +158,7 @@ export function useDashboardData() {
 
 export function usePrefetchDashboardData() {
   const queryClient = useQueryClient();
-  
+
   return async () => {
     await queryClient.prefetchQuery({
       queryKey: ["dashboard"],

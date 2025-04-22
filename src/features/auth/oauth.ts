@@ -13,7 +13,8 @@ export async function signUpWithGoogle() {
 
 	const redirectUrl = await account.createOAuth2Token(
 		OAuthProvider.Google,
-		`${origin}/auth/oauth?provider=google`,
+		// `${origin}/auth/oauth?provider=google`,
+		`${origin}/`,
 		`${origin}/auth/register`,
 	);
 

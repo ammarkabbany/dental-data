@@ -1,7 +1,6 @@
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-
 
 interface UserAvatarProps {
   image?: string;
@@ -12,10 +11,15 @@ interface UserAvatarProps {
 export const UserAvatar = ({ image, name, className }: UserAvatarProps) => {
   if (image && image !== "?") {
     return (
-      <div className={cn("size-10 rounded-full relative overflow-hidden ring ring-offset-0", className)}>
-        <Image src={image} alt={name} sizes="24" fill className="object-cover" />
-      </div>
-    )
+      <Avatar
+        className={cn(
+          "size-10 rounded-full relative overflow-hidden ring ring-offset-0",
+          className
+        )}
+      >
+        <AvatarImage src={image} />
+      </Avatar>
+    );
   }
 
   return (
@@ -24,5 +28,5 @@ export const UserAvatar = ({ image, name, className }: UserAvatarProps) => {
         {image === "?" ? "?" : name[0]}
       </AvatarFallback>
     </Avatar>
-  )
-}
+  );
+};

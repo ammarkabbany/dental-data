@@ -27,14 +27,19 @@ import GithubIcon from "@/components/icons/github";
 import Link from "next/link";
 import { LockKeyholeIcon, Mail } from "lucide-react";
 import { useLogin } from "@/features/auth/hooks/use-login";
-import { signUpWithGoogle } from "@/features/auth/oauth";
 import { account } from "@/lib/appwrite/client";
 import { OAuthProvider } from "appwrite";
 import { NEXT_URL } from "@/lib/constants";
+import { useAuth } from "@/providers/auth-provider";
+import LoadingSpinner from "@/components/ui/loading-spinner";
+import { redirect } from "next/navigation";
+import { useRedirectUrl } from "@/features/auth/hooks/use-redirect-url";
 
 export default function LoginPage() {
+  const { isLoading, isAuthenticated } = useAuth();
+  const redirectUrl = useRedirectUrl();
 
-  const {mutate, isPending, error} = useLogin();
+  const { mutate, isPending, error } = useLogin();
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -44,12 +49,21 @@ export default function LoginPage() {
     },
   });
 
+  if (isLoading) {
+    return <main className="bg-gradient-to-b from-background to-muted/30">
+      <div className="flex items-center justify-center min-h-screen">
+        <LoadingSpinner />
+      </div>
+    </main>
+  }
+  if (isAuthenticated) redirect("/");
+
   const onSubmit = (values: z.infer<typeof loginSchema>) => {
-    mutate({data: values})
+    mutate({ data: values })
   };
 
   return (
-    <Card className="max-w-md w-full">
+    <Card className="max-w-md w-full rounded-none sm:rounded-xl">
       <CardHeader className="p-7 flex items-center justify-center">
         <CardTitle className="text-xl">Login</CardTitle>
         <CardDescription>Sign in to your account</CardDescription>
@@ -66,8 +80,8 @@ export default function LoginPage() {
                     <FormLabel>Email</FormLabel>
                     <FormControl>
                       <Input
-                      {...field} 
-                      placeholder="Enter email" 
+                        {...field}
+                        placeholder="Enter email"
                       >
                         <Input.Group>
                           <Input.LeftIcon>
@@ -88,8 +102,8 @@ export default function LoginPage() {
                     <FormLabel>Password</FormLabel>
                     <FormControl>
                       <Input
-                      type="password"
-                      {...field} placeholder="Enter password"
+                        type="password"
+                        {...field} placeholder="Enter password"
                       >
                         <Input.Group>
                           <Input.LeftIcon>
@@ -124,7 +138,7 @@ export default function LoginPage() {
         </h3>
         <div className="">
           <Button
-            onClick={() => account.createOAuth2Session(OAuthProvider.Google, `${NEXT_URL}/auth/oauth`, `${NEXT_URL}?authStatus=failed`)}
+            onClick={() => account.createOAuth2Session(OAuthProvider.Google, `${NEXT_URL}${redirectUrl}`, `${NEXT_URL}?authStatus=failed`)}
             className="items-center w-full"
             variant="secondary"
             disabled={isPending}
@@ -147,7 +161,7 @@ export default function LoginPage() {
         <p className="text-sm text-gray-600">
           Don&apos;t have an account?{" "}
           {/* ${params.size > 0 && "?"+encodeURIComponent(params.get("redirect"))} */}
-          <Link aria-disabled={isPending} href={`/auth/register`} className="text-blue-500 hover:underline">
+          <Link aria-disabled={isPending} href={`/sign-up`} className="text-blue-500 hover:underline">
             Sign up
           </Link>
         </p>

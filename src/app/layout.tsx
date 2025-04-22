@@ -7,7 +7,6 @@ import { AuthProvider } from "@/providers/auth-provider";
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from "@vercel/analytics/next"
 import { Toaster } from "@/components/ui/sonner";
-import { ClerkProvider } from "@clerk/nextjs";
 import { TeamProvider } from "@/providers/team-provider";
 
 const geist = Geist({
@@ -23,7 +22,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Dental Data | Dental Lab Management",
+  title: "DentaAuto | Dental Lab Management",
   description: "Comprehensive management system for dental labs",
 };
 
@@ -39,10 +38,9 @@ export default function RootLayout({
       className={`${geist.variable} antialiased`}
     >
       <body>
-        <ClerkProvider>
-          <QueryProvider>
-            <AuthProvider>
-              <TeamProvider>
+        <QueryProvider>
+          <AuthProvider>
+            <TeamProvider>
               <ThemeProvider
                 attribute="class"
                 defaultTheme="dark"
@@ -54,10 +52,9 @@ export default function RootLayout({
                 <SpeedInsights />
                 {children}
               </ThemeProvider>
-              </TeamProvider>
-            </AuthProvider>
-          </QueryProvider>
-        </ClerkProvider>
+            </TeamProvider>
+          </AuthProvider>
+        </QueryProvider>
       </body>
     </html>
   );

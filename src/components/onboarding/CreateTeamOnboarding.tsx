@@ -6,30 +6,27 @@ import { Button } from '../ui/button';
 import { motion } from 'framer-motion';
 import { CheckCircle, ArrowRight } from 'lucide-react';
 import { useCreateTeam } from '@/features/team/hooks/use-create-team';
-import { useAuth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
+import { useAuth } from '@/providers/auth-provider';
 
 const StepIndicator = ({ currentStep }: { currentStep: number }) => (
   <div className="flex items-center justify-center gap-3 mb-8">
-    <div className={`flex items-center justify-center w-8 h-8 rounded-full ${
-      currentStep >= 1 ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
-    }`}>
+    <div className={`flex items-center justify-center w-8 h-8 rounded-full ${currentStep >= 1 ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
+      }`}>
       {currentStep > 1 ? <CheckCircle className="w-5 h-5" /> : '1'}
     </div>
     <div className="h-1 w-8 bg-muted">
       <div className={`h-full bg-primary transition-all ${currentStep > 1 ? 'w-full' : 'w-0'}`} />
     </div>
-    <div className={`flex items-center justify-center w-8 h-8 rounded-full ${
-      currentStep >= 2 ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
-    }`}>
+    <div className={`flex items-center justify-center w-8 h-8 rounded-full ${currentStep >= 2 ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
+      }`}>
       {currentStep > 2 ? <CheckCircle className="w-5 h-5" /> : '2'}
     </div>
     <div className="h-1 w-8 bg-muted">
       <div className={`h-full bg-primary transition-all ${currentStep > 2 ? 'w-full' : 'w-0'}`} />
     </div>
-    <div className={`flex items-center justify-center w-8 h-8 rounded-full ${
-      currentStep >= 3 ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
-    }`}>
+    <div className={`flex items-center justify-center w-8 h-8 rounded-full ${currentStep >= 3 ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
+      }`}>
       {currentStep > 3 ? <CheckCircle className="w-5 h-5" /> : '3'}
     </div>
   </div>
@@ -73,12 +70,12 @@ const IntroductionStep = ({ onNext }: { onNext: () => void }) => (
   </motion.div>
 );
 
-const CreateTeamStep = ({ 
-  teamName, 
-  setTeamName, 
+const CreateTeamStep = ({
+  teamName,
+  setTeamName,
   onSubmit,
   isPending
-}: { 
+}: {
   teamName: string;
   setTeamName: (name: string) => void;
   onSubmit: () => void;
@@ -132,7 +129,7 @@ const SuccessStep = () => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }} 
+      exit={{ opacity: 0, y: -20 }}
     >
       <CardHeader className="space-y-2">
         <h2 className="text-3xl font-bold text-center">Team Created</h2>
@@ -149,17 +146,17 @@ const SuccessStep = () => {
 }
 
 export function CreateTeamOnboarding() {
-  const {userId} = useAuth();
+  const { user } = useAuth();
   const [teamName, setTeamName] = useState('');
   const [step, setStep] = useState(1);
 
-  const {mutate, isPending} = useCreateTeam();
+  const { mutate, isPending } = useCreateTeam();
 
   const handleCreateTeam = async () => {
-    if (!userId) return;
+    if (!user) return;
     mutate({
       name: teamName,
-      userId
+      userId: user.$id
     }, {
       onSuccess: () => {
         setStep(3);
@@ -178,11 +175,11 @@ export function CreateTeamOnboarding() {
           <StepIndicator currentStep={step} />
           {step === 1 && <IntroductionStep onNext={() => setStep(2)} />}
           {step === 2 && (
-          <CreateTeamStep
-            teamName={teamName}
-            setTeamName={setTeamName}
-            onSubmit={handleCreateTeam}
-            isPending={isPending}
+            <CreateTeamStep
+              teamName={teamName}
+              setTeamName={setTeamName}
+              onSubmit={handleCreateTeam}
+              isPending={isPending}
             />
           )}
           {step === 3 && <SuccessStep />}

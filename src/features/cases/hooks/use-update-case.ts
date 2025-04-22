@@ -9,11 +9,11 @@ export const useUpdateCase = () => {
   const queryClient = useQueryClient();
   const {membership} = useTeamStore();
   return useMutation({
-    mutationFn: async ({data, oldDue, caseId}: {data: Partial<Case>, oldDue: number, caseId: Case['$id']}) => {
+    mutationFn: async ({data, oldCase, caseId}: {data: Partial<Case>, oldCase: Case, caseId: Case['$id']}) => {
       if (!membership) {
         throw new Error('User is not a member of a team')
       }
-      const Case = await UpdateCase(caseId, membership.teamId, data, oldDue)
+      const Case = await UpdateCase(caseId, membership.teamId, data, oldCase)
       return Case;
     },
     onSuccess: (data) => {

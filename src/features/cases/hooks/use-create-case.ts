@@ -8,14 +8,14 @@ export const useCreateCase = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({data, teamId, userId}: {data: Partial<Case>, teamId: string, userId: string}) => {
-      const Case = await CreateCase(teamId, userId, data)
-      return Case;
+      await CreateCase(teamId, userId, data)
     },
     onSuccess: (data) => {
       // queryClient.setQueryData(['cases'], (oldData: any[]) => [data, ...oldData]);
       toast.success('Case created successfully')
     },
     onError: (error) => {
+      toast.error(error.message);
       console.error('Error creating case:', error)
     },
   })

@@ -1,6 +1,6 @@
 "use client";
 
-import { Badge, Bell, FileText, FlaskConical, Settings, Users } from "lucide-react";
+import { FileText, FlaskConical, Settings, Users } from "lucide-react";
 
 import {
   Tooltip,
@@ -19,11 +19,9 @@ import { useAuth } from "@/providers/auth-provider";
 import { UserAvatar } from "../user-avatar";
 import { shortenString } from "@/lib/format-utils";
 import Link from "next/link";
-import { useUser } from "@clerk/nextjs";
 
 export function UserNav() {
-  const {logOut} = useAuth();
-  const {user} = useUser();
+  const { logOut, user } = useAuth();
 
   return (
     <DropdownMenu>
@@ -31,7 +29,7 @@ export function UserNav() {
         <Tooltip delayDuration={100}>
           <TooltipTrigger asChild>
             <DropdownMenuTrigger className="hover:opacity-80 transition bg-white rounded-full">
-              <UserAvatar className="size-9" name={user?.username || ""} image={user?.imageUrl} />
+              <UserAvatar className="size-9" name={user?.name || ""} image={user?.avatar} />
             </DropdownMenuTrigger>
           </TooltipTrigger>
           <TooltipContent side="bottom">Profile</TooltipContent>
@@ -44,10 +42,10 @@ export function UserNav() {
         forceMount
       >
         <div className="flex items-center gap-3 p-2">
-          <UserAvatar className="bg-white size-9" name={user?.username || ""} image={user?.imageUrl} />
+          <UserAvatar className="bg-white size-9" name={user?.name || ""} image={user?.avatar} />
           <div className="flex flex-col space-y-0.5">
-            <p className="text-sm font-medium leading-none text-white">{user?.fullName}</p>
-            <p className="text-xs leading-none">{shortenString(user?.primaryEmailAddress?.emailAddress, 25)}</p>
+            <p className="text-sm font-medium leading-none text-white">{user?.name}</p>
+            <p className="text-xs leading-none">{shortenString(user?.email, 25)}</p>
             {/* <div className="flex items-center gap-1">
                     <span className="h-2 w-2 rounded-full bg-green-500"></span>
                     <p className="text-xs">Online</p>
@@ -67,14 +65,14 @@ export function UserNav() {
         </DropdownMenuItem>
         <DropdownMenuItem className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm transition" asChild>
           <Link href={'/account'}>
-          <Settings className="h-4 w-4" />
-          Settings</Link>
+            <Settings className="h-4 w-4" />
+            Settings</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator className="my-1" />
         <DropdownMenuItem className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm transition" asChild>
           <Link href={'/team'}>
-          <FlaskConical className="h-4 w-4" />
-          Lab Settings</Link>
+            <FlaskConical className="h-4 w-4" />
+            Lab Settings</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator className="my-1" />
         <DropdownMenuItem onClick={logOut} className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm transition">

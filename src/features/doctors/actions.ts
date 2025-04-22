@@ -9,12 +9,23 @@ import { generateShortUniqueId } from "@/lib/utils";
 import { Doctor } from "@/types";
 import { cookies } from "next/headers";
 import { ID, Permission, Query, Role } from "node-appwrite";
+import { getTeamById } from "../team/teamService";
+import { isBefore } from "date-fns";
 
 export const CreateDoctor = async (
   teamId: string,
   data: Partial<Doctor>
 ): Promise<Doctor | null> => {
   const { databases } = await createAdminClient();
+
+  // pick the team first to check for limits
+  const team = await getTeamById(teamId, [
+    Query.select(["planExpiresAt"]),
+  ]);
+
+  if (isBefore(new Date(team.planExpiresAt || 0), new Date())) {
+    throw new Error('Your plan expired. Renew to add new doctors.')
+  }
 
   const doctor = await databases.createDocument<Doctor>(
     DATABASE_ID,

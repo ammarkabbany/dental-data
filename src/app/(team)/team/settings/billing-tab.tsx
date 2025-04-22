@@ -71,7 +71,7 @@ export default function PlanBillingPage() {
     doc.addImage(image, "JPEG", 14, 14, 20, 20); // Adjust position and size as needed
 
     // Move text down to avoid overlapping the image
-    doc.text("Dental Data", 40, 20); // Move right to prevent overlap
+    doc.text("DentaAuto", 40, 20); // Move right to prevent overlap
     doc.setFontSize(10);
     doc.text("6th Of October, Giza, Egypt", 40, 30);
     doc.text("Email: ammarss750@gmail.com | Phone: +20 114 298 2292", 40, 36);
