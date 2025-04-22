@@ -85,7 +85,17 @@ async function createTeam(name: string, userId: string) {
   return team;
 }
 
-async function updateTeam(
+async function updateTeam(teamId: string, updates: Partial<Team>) {
+  const { databases } = await createAdminClient();
+  const team = await databases.updateDocument<Team>(
+    DATABASE_ID,
+    TEAMS_COLLECTION_ID,
+    teamId,
+    updates
+  );
+  return team;
+}
+async function updateTeamSettings(
   teamId: string,
   updates: { name?: string; currency?: string },
 ) {
@@ -134,5 +144,6 @@ export {
   addTeamMember,
   createTeam,
   updateTeam,
+  updateTeamSettings,
   getTeamById,
 };
