@@ -1,5 +1,5 @@
 "use client"
-import { CloudDownloadIcon, Pdf01Icon } from "@hugeicons/core-free-icons";
+import { Pdf01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -10,8 +10,7 @@ import autoTable from "jspdf-autotable";
 import { useGetBillingPlan } from "@/features/team/hooks/use-get-billing-plan";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
-import { Check, CreditCard, Download } from "lucide-react";
-import LoadingSpinner from "@/components/ui/loading-spinner";
+import { Check, Download } from "lucide-react";
 
 export default function PlanBillingPage() {
   const {data: plan, isLoading} = useGetBillingPlan();
@@ -183,11 +182,11 @@ export default function PlanBillingPage() {
         </div>
         
         <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {plan && (
+          {plan && plans.filter(p => p.name === plan.name).map(planItem => ( 
             <motion.div key={plan.$id} variants={itemVariants} className="h-full">
-              <PlanCard {...plans.find(p => p.name === plan.name) as PlanCardProps} />
+              <PlanCard {...planItem} />
             </motion.div>
-          )}
+          ))}
         </div>
       </motion.div>
       
