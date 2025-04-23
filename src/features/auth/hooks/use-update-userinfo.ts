@@ -13,32 +13,26 @@ export const useUpdateUserInfo = () => {
     }: {
       updates: { name: string; image?: string | File };
     }) => {
+      let uploadedImageUrl: string | undefined;
       try {
-        if (updates.image) {
-          if (updates.image instanceof File) {
-            // Upload new image
-            const file = await storage.createFile(
-              AVATARS_BUCKET_ID,
-              ID.unique(),
-              updates.image
-            );
-            
-            // Get preview URL using Appwrite's helper
-            const preview = storage.getFilePreview(AVATARS_BUCKET_ID, file.$id);
-            
-            // Update user preferences with avatar
-            await account.updatePrefs({ 
-              ...user?.prefs, 
-              avatar: preview 
-            });
-          }
-        } else if (user?.prefs.avatar) {
-          // Handle avatar removal
-          await account.updatePrefs({ 
-            ...user?.prefs, 
-            avatar: undefined 
-          });
+        if (updates.image instanceof File) {
+          // Upload new image
+          const file = await storage.createFile(
+            AVATARS_BUCKET_ID,
+            ID.unique(),
+            updates.image
+          );
+          
+          // Get preview URL using Appwrite's helper
+          const preview = storage.getFilePreview(AVATARS_BUCKET_ID, file.$id);
+          uploadedImageUrl = preview
+        } else {
+          uploadedImageUrl = updates.image
         }
+        await account.updatePrefs({ 
+          ...user?.prefs,
+          avatar: uploadedImageUrl || undefined
+        });
 
         await account.updateName(updates.name);
       } catch (error) {

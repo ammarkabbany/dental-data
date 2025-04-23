@@ -12,7 +12,7 @@ import {
 } from "./ui/dropdown-menu";
 import { Check, ChevronsUpDown, PlusIcon, Users2 } from "lucide-react";
 import useTeamStore from "@/store/team-store";
-import { UserAvatar } from "./user-avatar";
+import { TeamAvatar } from "./team-avatar";
 
 export function TeamSwitcher() {
   const {membership} = useTeamStore();
@@ -25,7 +25,7 @@ export function TeamSwitcher() {
         >
           <div className="flex aspect-square size-8 items-center justify-center rounded-md overflow-hidden bg-sidebar-primary text-sidebar-primary-foreground">
             {membership && (
-              <UserAvatar name={membership.teamName} />
+              <TeamAvatar name={membership.teamName} />
             )}
           </div>
           <div className="grid flex-1 text-left text-base leading-tight">
@@ -57,7 +57,7 @@ export function TeamSwitcher() {
               >
                 <div className="flex size-8 items-center justify-center rounded-md overflow-hidden">
                   {membership && (
-                    <UserAvatar name={membership.teamName} />
+                    <TeamAvatar name={membership.teamName} />
                   )}
                   <Check className="absolute right-2" />
                 </div>

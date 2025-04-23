@@ -17,7 +17,7 @@ import { useAuth } from "@/providers/auth-provider";
 import { useUpdateUserInfo } from "@/features/auth/hooks/use-update-userinfo";
 import { useRef } from "react";
 import Image from "next/image";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function AccountGeneralSettingsForm() {
   const { user, refreshUser } = useAuth();
@@ -25,7 +25,7 @@ export default function AccountGeneralSettingsForm() {
   // const canUpdate = usePermission(userRole).checkPermission("team", "update");
   const inputRef = useRef<HTMLInputElement>(null);
   const updateAccountSettings = z.object({
-    name: z.string().min(4, "Name must be at least 4 characters long"),
+    name: z.string().min(4, "Name must be at least 4 characters long").max(32, "Name must be at most 32 characters long"),
     image: z
       .union([
         z.instanceof(File),
@@ -38,7 +38,7 @@ export default function AccountGeneralSettingsForm() {
     resolver: zodResolver(updateAccountSettings),
     defaultValues: {
       name: user?.name || "",
-      image: user?.avatar,
+      image: user?.prefs?.avatar || "",
     },
   });
 
@@ -48,7 +48,7 @@ export default function AccountGeneralSettingsForm() {
     }
     const finalValues = {
       ...values,
-      image: values.image instanceof File ? values.image : "",
+      image: values.image instanceof File ? values.image : (values.image ?? ""),
     };
 
     mutate(
@@ -89,6 +89,7 @@ export default function AccountGeneralSettingsForm() {
                             ? URL.createObjectURL(field.value)
                             : field.value
                         }
+                        unoptimized
                       />
                     </div>
                   ) : (
@@ -99,7 +100,7 @@ export default function AccountGeneralSettingsForm() {
                     </Avatar>
                   )}
                   <div className="flex flex-col">
-                    <p className="text-sm">Workspace Icon</p>
+                    <p className="text-sm">Profile Picture</p>
                     <p className="text-muted-foreground text-sm">
                       JPG, PNG, SVG or JPEG, max 1mb
                     </p>
@@ -130,7 +131,7 @@ export default function AccountGeneralSettingsForm() {
                         size={"sm"}
                         className="mt-2 w-fit"
                         onClick={() => {
-                          field.onChange(null);
+                          field.onChange("");  // Change from null to empty string
                           if (inputRef.current) {
                             inputRef.current.value = "";
                           }
@@ -144,6 +145,7 @@ export default function AccountGeneralSettingsForm() {
               </div>
             )}
           />
+           <div className="space-y-2">
           <FormField
             control={form.control}
             name="name"
@@ -164,6 +166,10 @@ export default function AccountGeneralSettingsForm() {
               </FormItem>
             )}
           />
+          <p className="text-sm text-muted-foreground">
+            This will be visible to other team members.
+          </p>
+          </div>
 
           {/* <div className="space-y-2 pt-4 border-t">
             <div className="flex items-center justify-between">
@@ -192,10 +198,7 @@ export default function AccountGeneralSettingsForm() {
         </div>
 
         <div className="mt-8 flex justify-end">
-          <Button
-            variant="default"
-            disabled={isPending}
-          >
+          <Button variant="default" disabled={isPending}>
             {isPending ? "Saving..." : "Save settings"}
             {!isPending && <ArrowRight className="ml-2 h-4 w-4" />}
           </Button>
