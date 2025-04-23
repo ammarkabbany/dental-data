@@ -21,7 +21,7 @@ export const RecentCaseRow = ({ caseItem }: { caseItem: Partial<Case> }) => {
       {/* <td className="px-6 py-4 whitespace-nowrap text-gray-500">
                     {new Date(caseItem.dueDate).toLocaleDateString()}
                   </td> */}
-      <td className="whitespace-nowrap py-3 flex items-center gap-x-2">
+      <td className="whitespace-nowrap py-3 px-6 md:px-0 flex items-center gap-x-2">
         <UserAvatar className="bg-white" image={caseItem.user?.avatar || "?"} name={caseItem.user?.name || ""} />
         {caseItem.user?.name}
       </td>

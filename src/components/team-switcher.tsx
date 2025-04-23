@@ -10,8 +10,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { ChevronsUpDown, PlusIcon, Users2 } from "lucide-react";
+import { Check, ChevronsUpDown, PlusIcon, Users2 } from "lucide-react";
 import useTeamStore from "@/store/team-store";
+import { TeamAvatar } from "./team-avatar";
 
 export function TeamSwitcher() {
   const {membership} = useTeamStore();
@@ -24,13 +25,7 @@ export function TeamSwitcher() {
         >
           <div className="flex aspect-square size-8 items-center justify-center rounded-md overflow-hidden bg-sidebar-primary text-sidebar-primary-foreground">
             {membership && (
-              // <Image
-              //   src={activeTeam.logo}
-              //   width={36}
-              //   height={36}
-              //   alt={activeTeam.name}
-              // />
-              <Users2 className="size-5" />
+              <TeamAvatar name={membership.teamName} />
             )}
           </div>
           <div className="grid flex-1 text-left text-base leading-tight">
@@ -58,12 +53,13 @@ export function TeamSwitcher() {
               <DropdownMenuItem
                 key={membership.teamId}
                 // onClick={() => setActiveTeam(team)}
-                className="gap-2 p-2"
+                className="gap-2 p-2  bg-accent"
               >
-                <div className="flex size-6 items-center justify-center rounded-md overflow-hidden">
+                <div className="flex size-8 items-center justify-center rounded-md overflow-hidden">
                   {membership && (
-                    <Users2 className="size-5" />
+                    <TeamAvatar name={membership.teamName} />
                   )}
+                  <Check className="absolute right-2" />
                 </div>
                 {membership.teamName}
               </DropdownMenuItem>

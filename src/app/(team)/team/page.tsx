@@ -16,6 +16,7 @@ import { useTeam } from "@/providers/team-provider";
 import RedirectToAuth from "@/components/auth/custom-auth-redirect";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import RedirectToOnboarding from "@/components/auth/custom-onboard-redirect";
+import { UserAvatar } from "@/components/user-avatar";
 
 export default function TeamPage() {
   const { isLoading, isAuthenticated } = useTeam();
@@ -90,7 +91,8 @@ export default function TeamPage() {
         >
           <Card className="bg-card shadow-md overflow-hidden">
             <CardHeader className="pb-2 flex flex-row items-center justify-between">
-              <CardTitle className="text-2xl font-bold">
+              <CardTitle className="text-2xl font-bold flex items-center gap-4">
+                <UserAvatar name={currentTeam.name} className="size-12" imgClassName="bg-purple-700 text-xl" />
                 {currentTeam.name}
               </CardTitle>
               <Button

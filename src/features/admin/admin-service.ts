@@ -13,9 +13,8 @@ import { createAdminClient } from "@/lib/appwrite/appwrite";
 import { Case, Doctor, Material, Team, TeamMember } from "@/types";
 import { getUserInfo } from "../auth/actions";
 
-const { databases, users, teams } = await createAdminClient();
-
 export async function getAdminStats() {
+  const {databases, users, teams} = await createAdminClient();
   const cases = await databases.listDocuments(
     DATABASE_ID,
     CASES_COLLECTION_ID,
@@ -46,6 +45,7 @@ export async function getAdminStats() {
 }
 
 export async function getUsers() {
+  const {databases, users} = await createAdminClient();
   const userList = await users.list([Query.limit(100)]);
 
   for (let user of userList.users) {
@@ -78,6 +78,7 @@ export async function getUsers() {
 }
 
 export const getAllTeams = async () => {
+  const {databases} = await createAdminClient();
   const teams = await databases.listDocuments<Team>(
     DATABASE_ID,
     TEAMS_COLLECTION_ID,
@@ -87,10 +88,26 @@ export const getAllTeams = async () => {
 };
 
 export const getAllCases = async () => {
+  const {databases, users} = await createAdminClient();
   const cases = await databases.listDocuments<Case>(
     DATABASE_ID,
     CASES_COLLECTION_ID,
-    [Query.limit(9999)]
+    [
+      Query.limit(9999),
+      Query.orderDesc("date"),
+      Query.select([
+        "$id",
+        "doctorId",
+        "patient",
+        "date",
+        "userId",
+        "teamId",
+        "data",
+        "materialId",
+        "invoice",
+        "due"
+      ])
+    ]
   );
   const doctorIds = [...new Set(cases.documents.map((c) => c.doctorId))];
 
@@ -105,8 +122,13 @@ export const getAllCases = async () => {
       ]
     );
 
+    const doctorsMap = doctors.documents.reduce((acc, doctor) => {
+      acc[doctor.$id] = doctor;
+      return acc;
+    }, {} as Record<string, Doctor>);
+
     cases.documents.forEach((c) => {
-      const doctor = doctors.documents.find((d) => d.$id === c.doctorId);
+      const doctor = doctorsMap[c.doctorId];
       if (doctor) {
         c.doctor = doctor;
       }
@@ -125,8 +147,13 @@ export const getAllCases = async () => {
       ]
     );
 
+    const materialsMap = materials.documents.reduce((acc, material) => {
+      acc[material.$id] = material;
+      return acc;
+    })
+
     cases.documents.forEach((c) => {
-      const material = materials.documents.find((m) => m.$id === c.materialId);
+      const material = materialsMap[c.materialId];
       if (material) {
         c.material = material;
       }

@@ -63,7 +63,7 @@ export default function RecentCases({ cases }: RecentCasesProps) {
                 <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Doctor
                 </th>
-                <th className="py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                <th className="py-3 px-6 md:px-0 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   User
                 </th>
                 {canViewDue && <th className=" text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">

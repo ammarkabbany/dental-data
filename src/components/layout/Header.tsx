@@ -15,8 +15,8 @@ export default function Header({ children }: { children?: React.ReactNode }) {
       <div className="container flex h-16 items-center justify-between mx-auto px-4 md:px-6">
         <div className="flex items-center gap-x-8">
           <Link href={"/"} className="flex items-center gap-2 select-none">
-            <Logo src="/old-fav.ico" className="size-16 mt-1" h={64} w={64} />
-            <span className="text-xl font-bold tracking-wide">DentaAuto</span>
+            <Logo src="/old-fav.ico" className="size-18 mt-1" h={72} w={72} />
+            <span className="text-2xl font-bold tracking-wide -translate-x-2">DentaAuto</span>
           </Link>
           {children}
         </div>

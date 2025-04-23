@@ -29,7 +29,7 @@ export function UserNav() {
         <Tooltip delayDuration={100}>
           <TooltipTrigger asChild>
             <DropdownMenuTrigger className="hover:opacity-80 transition bg-white rounded-full">
-              <UserAvatar className="size-9" name={user?.name || ""} image={user?.avatar} />
+              <UserAvatar className="size-10" name={user?.name || ""} image={user?.avatar} />
             </DropdownMenuTrigger>
           </TooltipTrigger>
           <TooltipContent side="bottom">Profile</TooltipContent>

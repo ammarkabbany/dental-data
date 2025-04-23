@@ -1,5 +1,5 @@
 "use client"
-import { CloudDownloadIcon, Pdf01Icon } from "@hugeicons/core-free-icons";
+import { Pdf01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -10,8 +10,7 @@ import autoTable from "jspdf-autotable";
 import { useGetBillingPlan } from "@/features/team/hooks/use-get-billing-plan";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
-import { Check, CreditCard, Download } from "lucide-react";
-import LoadingSpinner from "@/components/ui/loading-spinner";
+import { Check, Download } from "lucide-react";
 
 export default function PlanBillingPage() {
   const {data: plan, isLoading} = useGetBillingPlan();
@@ -74,7 +73,7 @@ export default function PlanBillingPage() {
     doc.text("DentaAuto", 40, 20); // Move right to prevent overlap
     doc.setFontSize(10);
     doc.text("6th Of October, Giza, Egypt", 40, 30);
-    doc.text("Email: ammarss750@gmail.com | Phone: +20 114 298 2292", 40, 36);
+    doc.text("Email: croxteamco@gmail.com | Phone: +20 114 298 2292", 40, 36);
 
     // Invoice Title
     doc.setFontSize(18);
@@ -183,8 +182,8 @@ export default function PlanBillingPage() {
         </div>
         
         <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {plans.map((planItem, index) => (
-            <motion.div key={index} variants={itemVariants} className="h-full">
+          {plan && plans.filter(p => p.name === plan.name).map(planItem => ( 
+            <motion.div key={plan.$id} variants={itemVariants} className="h-full">
               <PlanCard {...planItem} />
             </motion.div>
           ))}
@@ -194,10 +193,10 @@ export default function PlanBillingPage() {
       <motion.div variants={itemVariants} className="space-y-4 pt-4 border-t border-border">
         <div className="flex items-center justify-between">
           <h3 className="font-bold text-xl">Billing history</h3>
-          <Button variant="outline" size="sm" className="gap-2">
+          {/* <Button variant="outline" size="sm" className="gap-2">
             <CreditCard className="size-4" />
             Manage payment methods
-          </Button>
+          </Button> */}
         </div>
         
         <Card className="border-0 shadow-sm">
@@ -289,7 +288,7 @@ const PlanCard = ({ name, desc, price, features, isCurrent, upgradeOrDowngrade }
           ))}
         </ul>
       </CardContent>
-      <CardFooter className="pt-2 pb-4 mt-auto">
+      {/* <CardFooter className="pt-2 pb-4 mt-auto">
         {!isCurrent && (
           <Button
             variant={upgradeOrDowngrade ? "default" : "outline"}
@@ -308,7 +307,7 @@ const PlanCard = ({ name, desc, price, features, isCurrent, upgradeOrDowngrade }
             Manage Subscription
           </Button>
         )}
-      </CardFooter>
+      </CardFooter> */}
     </Card>
   )
 }
