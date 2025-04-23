@@ -53,9 +53,9 @@ export function Sidebar() {
               DentaFlow
             </h1>
           </Link> */}
-          <Link href={"/"} className="flex items-center select-none">
-            <Logo src="/old-fav.ico" className="size-16 mt-1" w={64} h={64} />
-            <span className="text-xl font-bold tracking-wide">DentaAuto</span>
+          <Link href={"/"} className="flex items-center select-none mt-2">
+            <Logo src="/old-fav.ico" className="size-18" w={72} h={72} />
+            <span className="text-2xl font-bold tracking-wide -translate-x-2">DentaAuto</span>
           </Link>
         </Button>
         <Menu isOpen={getOpenState()} />

@@ -102,8 +102,6 @@ async function updateTeamSettings(
   const { databases, teams } = await createAdminClient();
   const appwriteTeam = await teams.get(teamId);
 
-  console.log(updates);
-
   if (updates.name) {
     await databases.updateDocument<Team>(
       DATABASE_ID,
@@ -116,7 +114,6 @@ async function updateTeamSettings(
     await teams.updateName(teamId, updates.name);
   }
   if (updates.currency) {
-    console.log("Updating currency");
     await teams.updatePrefs(teamId, {
       ...appwriteTeam.prefs,
       currency: updates.currency,

@@ -1,10 +1,8 @@
 "use client";
 import Header from "@/components/layout/Header";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { usePermission } from "@/hooks/use-permissions";
-import { ArrowRight, Bell, CreditCard, Settings } from "lucide-react";
-import PlanBillingPage from "./billing-tab";
-import { useEffect, useState } from "react";
+import { CreditCard, Settings } from "lucide-react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import {
   Card,
@@ -13,18 +11,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import useTeamStore from "@/store/team-store";
 import RedirectToAuth from "@/components/auth/custom-auth-redirect";
-import RedirectToOnboarding from "@/components/auth/custom-onboard-redirect";
 import LoadingSpinner from "@/components/ui/loading-spinner";
-import { useTeam } from "@/providers/team-provider";
-import GeneralSettingsForm from "./general-settings-form";
+import AccountGeneralSettingsForm from "./account-general-settings-form";
+import { useAuth } from "@/providers/auth-provider";
 
 export default function TeamPage() {
-  const { userRole, appwriteTeam, isAuthenticated, currentTeam, isLoading } =
-    useTeam();
+  const { isAuthenticated, isLoading } =
+    useAuth();
   const [activeTab, setActiveTab] = useState("general");
 
   if (isLoading) {
@@ -40,15 +34,6 @@ export default function TeamPage() {
 
   if (!isAuthenticated) {
     return <RedirectToAuth />;
-  }
-
-  if (!currentTeam) {
-    return (
-      <main className="bg-gradient-to-b from-background to-muted/30 min-h-screen">
-        <Header />
-        <RedirectToOnboarding />
-      </main>
-    );
   }
 
   // Animation variants
@@ -84,9 +69,9 @@ export default function TeamPage() {
           transition={{ duration: 0.3 }}
           className="mb-8"
         >
-          <h1 className="text-3xl font-bold">Team Settings</h1>
-          <p className="text-muted-foreground mt-1">
-            Manage your team preferences and configuration
+          <h1 className="text-3xl font-bold">Account Settings</h1>
+          <p className="text-muted-foreground mt-1 max-w-lg">
+            Manage your account settings and preferences
           </p>
         </motion.div>
 
@@ -107,22 +92,6 @@ export default function TeamPage() {
                   <Settings className="size-4 flex-shrink-0" />
                   General
                 </TabsTrigger>
-                <TabsTrigger
-                  value="billing"
-                  onClick={() => setActiveTab("billing")}
-                  className="w-full h-11 justify-start gap-3 px-3 py-2 rounded-md data-[state=active]:bg-primary/10 data-[state=active]:text-primary"
-                >
-                  <CreditCard className="size-4 flex-shrink-0" />
-                  Billing
-                </TabsTrigger>
-                {/* <TabsTrigger
-                  value="notifications"
-                  onClick={() => setActiveTab("notifications")}
-                  className="w-full h-11 justify-start gap-3 px-3 py-2 rounded-md data-[state=active]:bg-primary/10 data-[state=active]:text-primary"
-                >
-                  <Bell className="size-4 flex-shrink-0" />
-                  Notifications
-                </TabsTrigger> */}
               </TabsList>
             </CardContent>
           </Card>
@@ -135,7 +104,7 @@ export default function TeamPage() {
                     General Settings
                   </CardTitle>
                   <CardDescription className="mt-1.5">
-                    Manage your team&apos;s basic information and preferences
+                    Manage your account&apos;s basic information and preferences
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="p-6">
@@ -146,23 +115,9 @@ export default function TeamPage() {
                     className="space-y-8"
                   >
                     <motion.div variants={itemVariants}>
-                      <GeneralSettingsForm />
+                      <AccountGeneralSettingsForm />
                     </motion.div>
                   </motion.div>
-                </CardContent>
-              </TabsContent>
-
-              <TabsContent value="billing" className="m-0">
-                <CardHeader className="border-b pb-6">
-                  <CardTitle className="text-xl font-medium">
-                    Billing Settings
-                  </CardTitle>
-                  <CardDescription className="mt-1.5">
-                    Manage your team&apos;s billing information and subscription
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="p-6">
-                  <PlanBillingPage />
                 </CardContent>
               </TabsContent>
 

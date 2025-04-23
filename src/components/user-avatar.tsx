@@ -6,9 +6,10 @@ interface UserAvatarProps {
   image?: string;
   name: string;
   className?: string;
+  imgClassName?: string;
 }
 
-export const UserAvatar = ({ image, name, className }: UserAvatarProps) => {
+export const UserAvatar = ({ image, name, className, imgClassName }: UserAvatarProps) => {
   if (image && image !== "?") {
     return (
       <Avatar
@@ -17,14 +18,14 @@ export const UserAvatar = ({ image, name, className }: UserAvatarProps) => {
           className
         )}
       >
-        <AvatarImage src={image} />
+        <AvatarImage src={image} className={imgClassName} />
       </Avatar>
     );
   }
 
   return (
     <Avatar className={cn("size-10 rounded-full", className)}>
-      <AvatarFallback className="bg-blue-600 font-semibold text-sm uppercase rounded-md">
+      <AvatarFallback className={cn("bg-blue-600 font-semibold text-sm uppercase rounded-md", imgClassName)}>
         {image === "?" ? "?" : name[0]}
       </AvatarFallback>
     </Avatar>

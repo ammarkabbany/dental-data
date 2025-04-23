@@ -1,6 +1,7 @@
 export const AUTH_COOKIE = 'dd_session_jwt'
 
 export const NEXT_URL = process.env.NEXT_PUBLIC_NEXT_URL as string;
+export const API_ENDPOINT = process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT as string;
 export const DATABASE_ID = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID as string
 export const TEAMS_COLLECTION_ID = process.env.NEXT_PUBLIC_TEAMS_COLLECTION_ID as string
 export const TEAM_MEMBERS_COLLECTION_ID = process.env.NEXT_PUBLIC_TEAM_MEMBERS_COLLECTION_ID as string
@@ -11,3 +12,5 @@ export const MATERIALS_COLLECTION_ID = process.env.NEXT_PUBLIC_MATERIALS_COLLECT
 export const TEMPLATES_COLLECTION_ID = process.env.NEXT_PUBLIC_TEMPLATES_COLLECTION_ID as string
 export const PLANS_COLLECTION_ID = process.env.NEXT_PUBLIC_PLANS_COLLECTION_ID as string
 export const AUDIT_LOGS_COLLECTION_ID = process.env.NEXT_PUBLIC_AUDIT_LOGS_COLLECTION_ID as string
+
+export const AVATARS_BUCKET_ID = process.env.NEXT_PUBLIC_AVATARS_BUCKET_ID as string
