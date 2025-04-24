@@ -5,17 +5,21 @@ import {
   createSessionClient,
 } from "@/lib/appwrite/appwrite";
 import { AUTH_COOKIE, DATABASE_ID, DOCTORS_COLLECTION_ID } from "@/lib/constants";
-import { generateShortUniqueId } from "@/lib/utils";
 import { Doctor } from "@/types";
 import { cookies } from "next/headers";
 import { ID, Permission, Query, Role } from "node-appwrite";
 import { getTeamById } from "../team/teamService";
 import { isBefore } from "date-fns";
+import { LogAuditEvent } from "../logs/actions";
 
 export const CreateDoctor = async (
+  userId: string,
   teamId: string,
   data: Partial<Doctor>
-): Promise<Doctor | null> => {
+): Promise<{
+  success: boolean;
+  message: string;
+}> => {
   const { databases } = await createAdminClient();
 
   // pick the team first to check for limits
@@ -27,6 +31,7 @@ export const CreateDoctor = async (
     throw new Error('Your plan expired. Renew to add new doctors.')
   }
 
+  try {
   const doctor = await databases.createDocument<Doctor>(
     DATABASE_ID,
     DOCTORS_COLLECTION_ID,
@@ -42,7 +47,28 @@ export const CreateDoctor = async (
     ]
   );
 
-  return doctor;
+  await LogAuditEvent({
+    userId: userId,
+    teamId: teamId,
+    action: "CREATE",
+    resource: "DOCTOR",
+    resourceId: doctor.$id,
+    changes: {
+      after: doctor,
+      before: undefined,
+    },
+    timestamp: new Date().toISOString(),
+  });
+  return {
+    success: true,
+    message: "Doctor created successfully",
+  };
+  } catch (error) {
+    return {
+      success: false,
+      message: "An error occurred",
+    };
+  }
 };
 
 export const UpdateDoctor = async (

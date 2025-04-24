@@ -26,17 +26,17 @@ export default function PlanBillingPage() {
     },
     {
       name: 'Starter',
-      desc: '5000 cases, Up to 5 team members.',
-      price: 15,
-      features: ['5,000 cases', 'Up to 5 team members', 'Priority support', 'Advanced analytics'],
+      desc: '5000 cases, Up to 3 team members.',
+      price: 14.99,
+      features: ['5,000 cases', 'Up to 3 team members', 'Priority support', 'Advanced analytics'],
       isCurrent: plan?.$id === "starter",
       upgradeOrDowngrade: plan?.$id === "free"
     },
     {
       name: 'Pro',
-      desc: '25K cases, Up to 15 team members.',
-      price: 30,
-      features: ['25,000 cases', 'Up to 15 team members', 'Premium support', 'Advanced analytics', 'Custom integrations'],
+      desc: '25K cases, Up to 5 team members.',
+      price: 29.99,
+      features: ['25,000 cases', 'Up to 5 team members', 'Premium support', 'Advanced analytics', 'Custom integrations'],
       isCurrent: plan?.$id === "pro",
       upgradeOrDowngrade: plan?.$id === "free" || plan?.$id === "starter"
     },
@@ -182,11 +182,36 @@ export default function PlanBillingPage() {
         </div>
         
         <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {plan && plans.filter(p => p.name === plan.name).map(planItem => ( 
-            <motion.div key={plan.$id} variants={itemVariants} className="h-full">
-              <PlanCard {...planItem} />
+          {isLoading ? (
+            // Loading skeleton
+            <motion.div variants={itemVariants} className="h-full">
+              <Card className="border animate-pulse">
+                <CardHeader className="pb-4">
+                  <div className="h-6 w-24 bg-muted rounded" />
+                  <div className="h-4 w-32 bg-muted rounded mt-2" />
+                </CardHeader>
+                <CardContent className="pb-4">
+                  <div className="space-y-2">
+                    {[1, 2, 3].map((i) => (
+                      <div key={i} className="flex items-center gap-2">
+                        <div className="h-4 w-4 bg-muted rounded" />
+                        <div className="h-4 w-32 bg-muted rounded" />
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
             </motion.div>
-          ))}
+          ) : (
+            // Show only the current plan
+            plans
+              .filter(planItem => planItem.isCurrent)
+              .map((planItem, index) => (
+                <motion.div key={index} variants={itemVariants} className="h-full">
+                  <PlanCard {...planItem} />
+                </motion.div>
+              ))
+          )}
         </div>
       </motion.div>
       

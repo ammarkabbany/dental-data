@@ -81,7 +81,7 @@ export default function DashboardPage() {
       //   value: "0%",
       //   trend: "down",
       // },
-      href: "#",
+      href: "/dashboard/materials",
       icon: <CubeIcon className="size-6" />,
     },
     {

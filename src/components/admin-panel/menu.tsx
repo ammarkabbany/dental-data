@@ -89,10 +89,9 @@ export function Menu({ isOpen }: MenuProps) {
             {permission.checkPermission("materials", "create") && (
               <NavItem
                 icon={CubeIcon}
-                comingSoon
                 label="Materials"
                 active={isActive("materials")}
-                onClick={() => navigate("/dashboard#")}
+                onClick={() => navigate("/dashboard/materials")}
               />
             )}
 

@@ -132,11 +132,23 @@ export default function TeamPage() {
                   value={(currentTeam.casesUsed / currentTeam.maxCases) * 100}
                   className="mt-2 h-2"
                 />
-                <p className="text-xs text-muted-foreground mt-2">
-                  {remainingCases > 0
-                    ? `${remainingCases} cases remaining`
-                    : "Limit reached"}
-                </p>
+                <div className="flex items-center justify-between">
+                  <p className="text-xs text-muted-foreground mt-2">
+                    {remainingCases > 0
+                      ? `${remainingCases} cases remaining`
+                      : "Limit reached"}
+                  </p>
+                  {remainingCases <= 0 && canUpdate && (
+                    <Button 
+                      variant="link" 
+                      size="sm" 
+                      className="mt-2 p-0 h-auto text-primary" 
+                      asChild
+                    >
+                      <Link href="/team/settings/billing">Buy more cases</Link>
+                    </Button>
+                  )}
+                </div>
               </CardContent>
             </Card>
           </motion.div>
@@ -185,12 +197,24 @@ export default function TeamPage() {
                   value={progress}
                   className="mt-2 h-2"
                 />
-                <p className="text-xs text-muted-foreground mt-2">
-                  <span className={hasExpired ? "text-red-500 font-medium" : ""}>
-                    {hasExpired ? "Expired" : "Renews"}
-                  </span>{" "}
-                  on {subscriptionEnd.toLocaleDateString()}
-                </p>
+                <div className="flex items-center justify-between">
+                  <p className="text-xs text-muted-foreground mt-2">
+                    <span className={hasExpired ? "text-red-500 font-medium" : ""}>
+                      {hasExpired ? "Expired" : "Renews"}
+                    </span>{" "}
+                    on {subscriptionEnd.toLocaleDateString()}
+                  </p>
+                  {hasExpired && canUpdate && (
+                    <Button 
+                      variant="link" 
+                      size="sm" 
+                      className="mt-2 p-0 h-auto text-primary" 
+                      asChild
+                    >
+                      <Link href="/team/settings/billing">Renew plan</Link>
+                    </Button>
+                  )}
+                </div>
               </CardContent>
             </Card>
           </motion.div>

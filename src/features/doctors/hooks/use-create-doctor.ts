@@ -13,15 +13,17 @@ export const useCreateDoctor = () => {
       if (!membership) {
         throw new Error('User is not a member of a team')
       }
-      const doctor = await CreateDoctor(membership.teamId, data)
-      return doctor;
+      const res = await CreateDoctor(membership.userId ,membership.teamId, data)
+      if (!res.success) {
+        throw new Error(res.message)
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ['doctors']})
       toast.success('Doctor created successfully')
     },
-    onError: (error) => {
-      toast.error(error.message)
-    },
+    // onError: (error) => {
+    //   toast.error(error.message)
+    // },
   })
 }

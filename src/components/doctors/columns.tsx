@@ -163,7 +163,7 @@ export const getColumns = (
         </Badge>
       );
     },
-    size: 50,
+    size: 75,
   },
   {
     accessorKey: "due",
@@ -176,7 +176,7 @@ export const getColumns = (
 
       return <div>{formatted}</div>;
     },
-    size: 50,
+    size: 100,
   },
   {
     accessorKey: "actions",
@@ -231,7 +231,7 @@ export const getColumns = (
         </TooltipProvider>
       );
     },
-    size: 50,
+    size: 75,
     enableSorting: false,
     enableHiding: false,
   },
