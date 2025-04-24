@@ -16,7 +16,10 @@ export const CreateDoctor = async (
   userId: string,
   teamId: string,
   data: Partial<Doctor>
-): Promise<Doctor | null> => {
+): Promise<{
+  success: boolean;
+  message: string;
+}> => {
   const { databases } = await createAdminClient();
 
   // pick the team first to check for limits
@@ -28,6 +31,7 @@ export const CreateDoctor = async (
     throw new Error('Your plan expired. Renew to add new doctors.')
   }
 
+  try {
   const doctor = await databases.createDocument<Doctor>(
     DATABASE_ID,
     DOCTORS_COLLECTION_ID,
@@ -55,8 +59,16 @@ export const CreateDoctor = async (
     },
     timestamp: new Date().toISOString(),
   });
-
-  return doctor;
+  return {
+    success: true,
+    message: "Doctor created successfully",
+  };
+  } catch (error) {
+    return {
+      success: false,
+      message: "An error occurred",
+    };
+  }
 };
 
 export const UpdateDoctor = async (

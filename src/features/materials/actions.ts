@@ -6,7 +6,7 @@ import {
 } from "@/lib/appwrite/appwrite";
 import { DATABASE_ID, MATERIALS_COLLECTION_ID } from "@/lib/constants";
 import { Material } from "@/types";
-import { ID, Permission, Query, Role } from "node-appwrite";
+import { AppwriteException, ID, Permission, Query, Role } from "node-appwrite";
 import { getTeamById } from "../team/teamService";
 import { isBefore } from "date-fns";
 import { LogAuditEvent } from "../logs/actions";
@@ -15,7 +15,10 @@ export const CreateMaterial = async (
   userId: string,
   teamId: string,
   data: Partial<Material>
-): Promise<Material | null> => {
+): Promise<{
+  success: boolean;
+  message: string;
+}> => {
   const { databases } = await createAdminClient();
 
   // pick the team first to check for limits
@@ -25,35 +28,44 @@ export const CreateMaterial = async (
     throw new Error("Your plan expired. Renew to add new materials.");
   }
 
-  const material = await databases.createDocument<Material>(
-    DATABASE_ID,
-    MATERIALS_COLLECTION_ID,
-    ID.unique(),
-    {
-      teamId,
-      ...data,
-    },
-    [
-      Permission.read(Role.team(teamId)),
-      Permission.write(Role.team(teamId, "owner")),
-      Permission.write(Role.team(teamId, "admin")),
-    ]
-  );
-
-  await LogAuditEvent({
-    userId: userId,
-    teamId: teamId,
-    action: "CREATE",
-    resource: "MATERIAL",
-    resourceId: material.$id,
-    changes: {
-      after: material,
-      before: undefined,
-    },
-    timestamp: new Date().toISOString(),
-  });
-
-  return material;
+  try {
+    const material = await databases.createDocument<Material>(
+      DATABASE_ID,
+      MATERIALS_COLLECTION_ID,
+      ID.unique(),
+      {
+        teamId,
+        ...data,
+      },
+      [
+        Permission.read(Role.team(teamId)),
+        Permission.write(Role.team(teamId, "owner")),
+        Permission.write(Role.team(teamId, "admin")),
+      ]
+    );
+  
+    await LogAuditEvent({
+      userId: userId,
+      teamId: teamId,
+      action: "CREATE",
+      resource: "MATERIAL",
+      resourceId: material.$id,
+      changes: {
+        after: material,
+        before: undefined,
+      },
+      timestamp: new Date().toISOString(),
+    });
+    return {
+      success: true,
+      message: "Material created successfully",
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: "An error occurred",
+    };
+  }
 };
 
 export const GetMaterials = async (): Promise<Material[]> => {

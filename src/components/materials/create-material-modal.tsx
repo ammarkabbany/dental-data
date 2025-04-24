@@ -68,7 +68,7 @@ export const MaterialCreateModal = () => {
                     <FormItem>
                       <FormLabel>Name</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="Enter name" />
+                        <Input maxLength={20} {...field} placeholder="Enter name" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

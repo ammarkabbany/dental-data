@@ -30,17 +30,20 @@ import { useDoctorsStore } from "@/store/doctors-store";
 import { useMaterialsStore } from "@/store/material-store";
 
 export const CreateCaseForm = () => {
-  const {membership, userRole} = useTeamStore();
+  const { membership, userRole } = useTeamStore();
   const canViewDue = usePermission(userRole).canViewDue();
   const router = useRouter();
 
   const templateParams = useTemplateParams();
 
-  const {getDoctorById, doctors} = useDoctorsStore();
-  const {getMaterialById, materials} = useMaterialsStore();
+  const { getDoctorById, doctors } = useDoctorsStore();
+  const { getMaterialById, materials } = useMaterialsStore();
 
-  const { addRecentTemplate, applyTemplate: storeCurrentTemplate, currentTemplate } =
-    useTemplatesStore();
+  const {
+    addRecentTemplate,
+    applyTemplate: storeCurrentTemplate,
+    currentTemplate,
+  } = useTemplatesStore();
 
   const [showSidebar, setShowSidebar] = useState(false);
   const [teethData, setTeethData] = useState<Tooth[]>([]);
@@ -408,28 +411,28 @@ export const CreateCaseForm = () => {
             addRecentTemplate(currentTemplate.$id);
           }
           handleResetTeeth();
-          form.resetField('patient')
-          form.resetField('shade')
-          form.resetField('invoice')
-          form.resetField('note')
+          form.resetField("patient");
+          form.resetField("shade");
+          form.resetField("invoice");
+          form.resetField("note");
         },
       }
     );
   };
 
   const handleResetTeeth = () => {
-    form.resetField('data')
-    form.resetField('data.lower')
-    form.setValue('data.lower.left', [])
-    form.setValue('data.lower.right', [])
-    form.resetField('data.upper')
-    form.setValue('data.upper.left', [])
-    form.setValue('data.upper.right', [])
-    form.resetField('due')
+    form.resetField("data");
+    form.resetField("data.lower");
+    form.setValue("data.lower.left", []);
+    form.setValue("data.lower.right", []);
+    form.resetField("data.upper");
+    form.setValue("data.upper.left", []);
+    form.setValue("data.upper.right", []);
+    form.resetField("due");
     setTeethData([]);
     setLastCheckedTooth(undefined);
     setCheckedTeeth([]);
-  }
+  };
 
   const applyTemplate = (template: Template | undefined) => {
     if (!template) return;
@@ -458,7 +461,10 @@ export const CreateCaseForm = () => {
       </div>
       <div className="flex-1 px-2 3xl:px-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 lg:space-y-6">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4 lg:space-y-6"
+          >
             <div className="grid md:grid-cols-2 gap-4 lg:gap-8">
               <div className="space-y-4 lg:space-y-6">
                 <div className="bg-card/50 p-4 lg:p-6 rounded-lg border shadow-sm space-y-4 lg:space-y-6">
@@ -621,19 +627,39 @@ export const CreateCaseForm = () => {
                 </div>
               </div>
               <div className="bg-card/50 p-4 border rounded-lg relative min-w-[360px]">
-                {!form.getValues().materialId && (
-                  <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-10 flex items-center justify-center flex-col gap-2 rounded-lg">
-                    <AlertCircle className="w-8 h-8 text-muted-foreground" />
-                    <p className="text-muted-foreground font-medium">Please select a material</p>
-                  </div>
-                )}
-                <TeethFormData
-                  data={teethData}
-                  checkedTeeth={checkedTeeth}
-                  materials={materials || []}
-                  handleChangeToothMaterial={handleChangeToothMaterial}
-                  handleCheckTeeth={handleCheckTeeth}
-                  resetTeeth={handleResetTeeth}
+                <FormField
+                  control={form.control}
+                  name="data"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="z-50">
+                        Dental Chart
+                      </FormLabel>
+                      <FormControl>
+                        <div>
+                          {!form.getValues().materialId && (
+                            <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-10 flex items-center justify-center flex-col gap-2 rounded-lg">
+                              <AlertCircle className="w-8 h-8 text-muted-foreground" />
+                              <p className="text-muted-foreground font-medium">
+                                Please select a material
+                              </p>
+                            </div>
+                          )}
+                          <TeethFormData
+                            data={teethData}
+                            checkedTeeth={checkedTeeth}
+                            materials={materials || []}
+                            handleChangeToothMaterial={
+                              handleChangeToothMaterial
+                            }
+                            handleCheckTeeth={handleCheckTeeth}
+                            resetTeeth={handleResetTeeth}
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage className="z-50" />
+                    </FormItem>
+                  )}
                 />
               </div>
             </div>

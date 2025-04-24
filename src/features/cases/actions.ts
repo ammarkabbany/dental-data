@@ -20,7 +20,10 @@ export const CreateCase = async (
   teamId: Case["teamId"],
   userId: Case["userId"],
   data: Partial<Case>
-): Promise<void> => {
+): Promise<{
+  success: boolean;
+  message?: string;
+}> => {
   const { databases } = await createAdminClient();
 
   // pick the team first to check for limits
@@ -29,10 +32,16 @@ export const CreateCase = async (
   ]);
 
   if (isBefore(new Date(team?.planExpiresAt || 0), new Date())) {
-    throw new Error('Your plan expired. Renew to add new cases.')
+    return {
+      success: false,
+      message: 'Your plan expired. Renew to add new cases.',
+    };
   }
   if (team.casesUsed >= team.maxCases) {
-    throw new Error('Case limit reached! Please upgrade your plan to add more cases.')
+    return {
+      success: false,
+      message: "Case limit reached! Please upgrade your plan to add more cases.",
+    };
   }
 
   const document = await databases.createDocument<Case>(
@@ -84,6 +93,11 @@ export const CreateCase = async (
     },
     timestamp: new Date().toISOString(),
   });
+
+  return {
+    success: true,
+    message: "Case created successfully.",
+  };
 };
 
 export const UpdateCase = async (

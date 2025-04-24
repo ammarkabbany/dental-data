@@ -13,15 +13,17 @@ export const useCreateMaterial = () => {
       if (!membership) {
         throw new Error('You are not a member of a team')
       }
-      const doctor = await CreateMaterial(membership.userId, membership.teamId, data)
-      return doctor;
+      const res = await CreateMaterial(membership.userId, membership.teamId, data)
+      if (!res.success) {
+        throw new Error(res.message)
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ['materials']})
       toast.success('Material created successfully')
     },
-    onError: (error) => {
-      toast.error(error.message)
-    },
+    // onError: (error) => {
+    //   toast.error(error.message)
+    // },
   })
 }
