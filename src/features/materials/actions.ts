@@ -1,25 +1,28 @@
 "use server";
 
-import { createAdminClient, createSessionClient } from "@/lib/appwrite/appwrite";
+import {
+  createAdminClient,
+  createSessionClient,
+} from "@/lib/appwrite/appwrite";
 import { DATABASE_ID, MATERIALS_COLLECTION_ID } from "@/lib/constants";
 import { Material } from "@/types";
 import { ID, Permission, Query, Role } from "node-appwrite";
 import { getTeamById } from "../team/teamService";
 import { isBefore } from "date-fns";
+import { LogAuditEvent } from "../logs/actions";
 
 export const CreateMaterial = async (
+  userId: string,
   teamId: string,
   data: Partial<Material>
 ): Promise<Material | null> => {
   const { databases } = await createAdminClient();
 
   // pick the team first to check for limits
-  const team = await getTeamById(teamId, [
-    Query.select(["planExpiresAt"]),
-  ]);
+  const team = await getTeamById(teamId, [Query.select(["planExpiresAt"])]);
 
   if (isBefore(new Date(team.planExpiresAt || 0), new Date())) {
-    throw new Error('Your plan expired. Renew to add new materials.')
+    throw new Error("Your plan expired. Renew to add new materials.");
   }
 
   const material = await databases.createDocument<Material>(
@@ -32,10 +35,23 @@ export const CreateMaterial = async (
     },
     [
       Permission.read(Role.team(teamId)),
-      Permission.write(Role.team(teamId, 'owner')),
-      Permission.write(Role.team(teamId, 'admin'))
+      Permission.write(Role.team(teamId, "owner")),
+      Permission.write(Role.team(teamId, "admin")),
     ]
   );
+
+  await LogAuditEvent({
+    userId: userId,
+    teamId: teamId,
+    action: "CREATE",
+    resource: "MATERIAL",
+    resourceId: material.$id,
+    changes: {
+      after: material,
+      before: undefined,
+    },
+    timestamp: new Date().toISOString(),
+  });
 
   return material;
 };

@@ -5,14 +5,15 @@ import {
   createSessionClient,
 } from "@/lib/appwrite/appwrite";
 import { AUTH_COOKIE, DATABASE_ID, DOCTORS_COLLECTION_ID } from "@/lib/constants";
-import { generateShortUniqueId } from "@/lib/utils";
 import { Doctor } from "@/types";
 import { cookies } from "next/headers";
 import { ID, Permission, Query, Role } from "node-appwrite";
 import { getTeamById } from "../team/teamService";
 import { isBefore } from "date-fns";
+import { LogAuditEvent } from "../logs/actions";
 
 export const CreateDoctor = async (
+  userId: string,
   teamId: string,
   data: Partial<Doctor>
 ): Promise<Doctor | null> => {
@@ -41,6 +42,19 @@ export const CreateDoctor = async (
       Permission.write(Role.team(teamId, "admin")),
     ]
   );
+
+  await LogAuditEvent({
+    userId: userId,
+    teamId: teamId,
+    action: "CREATE",
+    resource: "DOCTOR",
+    resourceId: doctor.$id,
+    changes: {
+      after: doctor,
+      before: undefined,
+    },
+    timestamp: new Date().toISOString(),
+  });
 
   return doctor;
 };

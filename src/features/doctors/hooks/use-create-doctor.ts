@@ -13,7 +13,7 @@ export const useCreateDoctor = () => {
       if (!membership) {
         throw new Error('User is not a member of a team')
       }
-      const doctor = await CreateDoctor(membership.teamId, data)
+      const doctor = await CreateDoctor(membership.userId ,membership.teamId, data)
       return doctor;
     },
     onSuccess: () => {

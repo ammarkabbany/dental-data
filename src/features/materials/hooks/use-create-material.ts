@@ -13,7 +13,7 @@ export const useCreateMaterial = () => {
       if (!membership) {
         throw new Error('You are not a member of a team')
       }
-      const doctor = await CreateMaterial(membership.teamId, data)
+      const doctor = await CreateMaterial(membership.userId, membership.teamId, data)
       return doctor;
     },
     onSuccess: () => {

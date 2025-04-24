@@ -1,27 +1,28 @@
 "use client"
 import { ContentLayout } from "@/components/admin-panel/content-layout";
-import { DoctorCreateModal } from "@/components/doctors/create-doctor-modal";
-import { DoctorsDataTable } from "@/components/doctors/data-table";
 import { Button } from "@/components/ui/button";
 import { usePermission } from "@/hooks/use-permissions";
 import { Modals, useModalStore } from "@/store/modal-store";
-import { Add01Icon, Doctor02Icon, UserIcon } from "@hugeicons/core-free-icons";
+import { Add01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { motion, AnimatePresence } from "framer-motion";
 import useTeamStore from "@/store/team-store";
-import { useDoctorsStore } from "@/store/doctors-store";
+import { useMaterialsStore } from "@/store/material-store";
+import { MaterialCreateModal } from "@/components/materials/create-material-modal";
+import { CubeIcon } from "@radix-ui/react-icons";
+import { MaterialsDataTable } from "@/components/materials/DataTable/materials-data-table";
 
-export default function DoctorsPage() {
+export default function MaterialsPage() {
   const {openModal} = useModalStore();
   const {userRole} = useTeamStore();
-  const canCreate = usePermission(userRole).checkPermission('doctors', 'create');
-  const {doctors} = useDoctorsStore();
-  const showEmptyState = (!doctors || doctors.length === 0);
+  const canCreate = usePermission(userRole).checkPermission('materials', 'create');
+  const {materials} = useMaterialsStore();
+  const showEmptyState = (!materials || materials.length === 0);
 
   return (
     <>
-      <DoctorCreateModal />
-      <ContentLayout title="Doctors">
+      <MaterialCreateModal />
+      <ContentLayout title="materials">
         <motion.div 
           className="flex justify-between items-center mb-8"
           initial={{ opacity: 0, y: -20 }}
@@ -29,18 +30,18 @@ export default function DoctorsPage() {
           transition={{ duration: 0.3 }}
         >
           <div className="space-y-1">
-            <h2 className="text-lg font-semibold">Doctor Management</h2>
+            <h2 className="text-lg font-semibold">Material Management</h2>
             <p className="text-sm text-muted-foreground">
-              Add, edit, and manage your dental lab&apos;s doctors
+              Add, edit, and manage your dental lab&apos;s materials
             </p>
           </div>
           {canCreate && (
             <Button 
               className="transition" 
-              onClick={() => openModal(Modals.CREATE_DOCTOR_MODAL)}
+              onClick={() => openModal(Modals.CREATE_MATERIAL_MODAL)}
             >
               <HugeiconsIcon icon={Add01Icon} className="mr-2" /> 
-              Add Doctor
+              Add Material
             </Button>
           )}
         </motion.div>
@@ -66,19 +67,19 @@ export default function DoctorsPage() {
               className="text-center py-12"
             >
               <div className="mx-auto w-fit p-4 rounded-full bg-muted mb-4">
-                <HugeiconsIcon icon={Doctor02Icon} className="w-8 h-8 text-muted-foreground" />
+                <CubeIcon className="w-8 h-8 text-muted-foreground" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">No Doctors Yet</h3>
+              <h3 className="text-lg font-semibold mb-2">No Materials Yet</h3>
               <p className="text-muted-foreground mb-6 max-w-sm mx-auto">
-                Start by adding doctors to your dental lab to manage cases and workflows efficiently.
+                Start by adding materials to your dental lab to manage cases and workflows efficiently.
               </p>
               {canCreate && (
                 <Button 
-                  onClick={() => openModal(Modals.CREATE_DOCTOR_MODAL)}
+                  onClick={() => openModal(Modals.CREATE_MATERIAL_MODAL)}
                   className="transition-transform"
                 >
                   <HugeiconsIcon icon={Add01Icon} className="mr-2" />
-                  Add Your First Doctor
+                  Add Your First Material
                 </Button>
               )}
             </motion.div>
@@ -89,7 +90,7 @@ export default function DoctorsPage() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              <DoctorsDataTable data={doctors || []} />
+              <MaterialsDataTable data={materials || []} />
             </motion.div>
           )}
         </AnimatePresence>
