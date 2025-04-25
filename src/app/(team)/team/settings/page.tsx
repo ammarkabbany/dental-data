@@ -1,10 +1,9 @@
 "use client";
 import Header from "@/components/layout/Header";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { usePermission } from "@/hooks/use-permissions";
-import { ArrowRight, Bell, CreditCard, Settings } from "lucide-react";
-import PlanBillingPage from "./billing-tab";
-import { useEffect, useState } from "react";
+import { CreditCard, Settings } from "lucide-react";
+import PlanBillingPage from "../billing/billing-tab";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import {
   Card,
@@ -13,9 +12,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import useTeamStore from "@/store/team-store";
 import RedirectToAuth from "@/components/auth/custom-auth-redirect";
 import RedirectToOnboarding from "@/components/auth/custom-onboard-redirect";
 import LoadingSpinner from "@/components/ui/loading-spinner";
@@ -23,7 +19,7 @@ import { useTeam } from "@/providers/team-provider";
 import GeneralSettingsForm from "./general-settings-form";
 
 export default function TeamPage() {
-  const { userRole, appwriteTeam, isAuthenticated, currentTeam, isLoading } =
+  const { isAuthenticated, currentTeam, isLoading } =
     useTeam();
   const [activeTab, setActiveTab] = useState("general");
 
@@ -107,14 +103,14 @@ export default function TeamPage() {
                   <Settings className="size-4 flex-shrink-0" />
                   General
                 </TabsTrigger>
-                <TabsTrigger
+                {/* <TabsTrigger
                   value="billing"
                   onClick={() => setActiveTab("billing")}
                   className="w-full h-11 justify-start gap-3 px-3 py-2 rounded-md data-[state=active]:bg-primary/10 data-[state=active]:text-primary"
                 >
                   <CreditCard className="size-4 flex-shrink-0" />
                   Billing
-                </TabsTrigger>
+                </TabsTrigger> */}
                 {/* <TabsTrigger
                   value="notifications"
                   onClick={() => setActiveTab("notifications")}
@@ -152,7 +148,7 @@ export default function TeamPage() {
                 </CardContent>
               </TabsContent>
 
-              <TabsContent value="billing" className="m-0">
+              {/* <TabsContent value="billing" className="m-0">
                 <CardHeader className="border-b pb-6">
                   <CardTitle className="text-xl font-medium">
                     Billing Settings
@@ -164,7 +160,7 @@ export default function TeamPage() {
                 <CardContent className="p-6">
                   <PlanBillingPage />
                 </CardContent>
-              </TabsContent>
+              </TabsContent> */}
 
               {/* <TabsContent value="notifications" className="m-0">
                 <CardHeader className="border-b pb-6">

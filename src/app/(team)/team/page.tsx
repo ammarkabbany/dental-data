@@ -145,7 +145,7 @@ export default function TeamPage() {
                       className="mt-2 p-0 h-auto text-primary" 
                       asChild
                     >
-                      <Link href="/team/settings/billing">Buy more cases</Link>
+                      <Link href="/team/billing">Upgrade</Link>
                     </Button>
                   )}
                 </div>
@@ -172,7 +172,7 @@ export default function TeamPage() {
                 </p>
                 {canUpdate && (
                   <Button variant="link" size="sm" className="mt-2 p-0 h-auto text-primary" asChild>
-                    <Link href="#">Upgrade now</Link>
+                    <Link href="/team/billing">Upgrade now</Link>
                   </Button>
                 )}
               </CardContent>
@@ -200,7 +200,7 @@ export default function TeamPage() {
                 <div className="flex items-center justify-between">
                   <p className="text-xs text-muted-foreground mt-2">
                     <span className={hasExpired ? "text-red-500 font-medium" : ""}>
-                      {hasExpired ? "Expired" : "Renews"}
+                      {hasExpired ? "Expired" : "Expires"}
                     </span>{" "}
                     on {subscriptionEnd.toLocaleDateString()}
                   </p>
@@ -211,7 +211,7 @@ export default function TeamPage() {
                       className="mt-2 p-0 h-auto text-primary" 
                       asChild
                     >
-                      <Link href="/team/settings/billing">Renew plan</Link>
+                      <Link href="/team/billing">Renew plan</Link>
                     </Button>
                   )}
                 </div>

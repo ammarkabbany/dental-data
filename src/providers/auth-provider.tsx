@@ -83,7 +83,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(null);
       setIsAdmin(false);
       setUserLoading(false);
-      redirect(`${NEXT_URL}/login`, RedirectType.replace);
+      window.location.replace(`${NEXT_URL}/login`)
     } catch (error) {
       console.error('Error during logout:', error);
     }
