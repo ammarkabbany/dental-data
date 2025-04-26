@@ -2,10 +2,11 @@
 import { createAdminClient } from "@/lib/appwrite/appwrite";
 import {
   DATABASE_ID,
+  PLANS_COLLECTION_ID,
   TEAM_MEMBERS_COLLECTION_ID,
   TEAMS_COLLECTION_ID,
 } from "@/lib/constants";
-import { Team, TeamMember } from "@/types";
+import { BillingPlan, Team, TeamMember } from "@/types";
 import { ID, Permission, Query, Role } from "node-appwrite";
 
 // getById: async (id: string): Promise<Team | undefined> => {
@@ -66,6 +67,11 @@ async function addTeamMember(teamId: string, userId: string, role: string) {
 async function createTeam(name: string, userId: string) {
   const { databases } = await createAdminClient();
   const id = ID.unique();
+  const freePlan = await databases.getDocument<BillingPlan>(
+    DATABASE_ID,
+    PLANS_COLLECTION_ID,
+    "free",
+  )
   const team = await databases.createDocument<Team>(
     DATABASE_ID,
     TEAMS_COLLECTION_ID,
@@ -73,7 +79,7 @@ async function createTeam(name: string, userId: string) {
     {
       name,
       ownerId: userId,
-      maxCases: 500,
+      maxCases: freePlan.maxCases,
       planExpiresAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
     },
     [Permission.read(Role.team(id)), Permission.write(Role.team(id, "owner"))],

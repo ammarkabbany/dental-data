@@ -33,12 +33,13 @@ import LoadingSpinner from "@/components/ui/loading-spinner";
 import { useAuth } from "@/providers/auth-provider";
 import { redirect } from "next/navigation";
 import { useRedirectUrl } from "@/features/auth/hooks/use-redirect-url";
+import EmailOTPCard from "@/components/auth/otp-confirmation-card";
 
 export default function RegisterPage() {
   const { isLoading, isAuthenticated } = useAuth();
   const redirectUrl = useRedirectUrl();
 
-  const { mutate, isPending, error } = useRegister();
+  const { mutate, isPending, error, isSuccess, data } = useRegister();
 
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
@@ -57,6 +58,10 @@ export default function RegisterPage() {
     </main>
   }
   if (isAuthenticated) redirect("/");
+
+  if (isSuccess) {
+    return <EmailOTPCard userId={data.userId} />
+  }
 
   const onSubmit = (values: z.infer<typeof registerSchema>) => {
     mutate({ data: values })

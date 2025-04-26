@@ -17,11 +17,15 @@ import RedirectToAuth from "@/components/auth/custom-auth-redirect";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import RedirectToOnboarding from "@/components/auth/custom-onboard-redirect";
 import { UserAvatar } from "@/components/user-avatar";
+import { CheckoutDialog } from "./billing/checkout-dialog";
+import { useState } from "react";
 
 export default function TeamPage() {
   const { isLoading, isAuthenticated } = useTeam();
   const { userRole, currentAppwriteTeam: appwriteTeam, currentTeam } = useTeamStore();
   const canUpdate = usePermission(userRole).checkPermission('team', 'update');
+
+  const [showRenewDialog, setShowRenewDialog] = useState(false);
 
   const {
     data: plan,
@@ -49,7 +53,7 @@ export default function TeamPage() {
   }
 
   const subscriptionEnd = new Date(currentTeam.planExpiresAt);
-  const totalDays = 30; // Assuming monthly subscription
+  const totalDays = plan?.$id === "free" ? 14 : 30;
   const daysLeft = Math.ceil(
     (subscriptionEnd.getTime() - Date.now()) / (1000 * 60 * 60 * 24)
   );
@@ -139,10 +143,10 @@ export default function TeamPage() {
                       : "Limit reached"}
                   </p>
                   {remainingCases <= 0 && canUpdate && (
-                    <Button 
-                      variant="link" 
-                      size="sm" 
-                      className="mt-2 p-0 h-auto text-primary" 
+                    <Button
+                      variant="link"
+                      size="sm"
+                      className="mt-2 p-0 h-auto text-primary"
                       asChild
                     >
                       <Link href="/team/billing">Upgrade</Link>
@@ -205,13 +209,13 @@ export default function TeamPage() {
                     on {subscriptionEnd.toLocaleDateString()}
                   </p>
                   {hasExpired && canUpdate && (
-                    <Button 
-                      variant="link" 
-                      size="sm" 
-                      className="mt-2 p-0 h-auto text-primary" 
-                      asChild
+                    <Button
+                      variant="link"
+                      size="sm"
+                      className="mt-2 p-0 h-auto text-primary"
+                      onClick={() => setShowRenewDialog(true)}
                     >
-                      <Link href="/team/billing">Renew plan</Link>
+                      Renew plan
                     </Button>
                   )}
                 </div>
@@ -236,7 +240,7 @@ export default function TeamPage() {
                 <p className="text-xs text-muted-foreground mt-2">
                   Limited to {plan?.maxTeamMembers} member{plan?.maxTeamMembers !== 1 ? 's' : ''}
                 </p>
-                {canUpdate && (
+                {canUpdate && plan && plan.maxTeamMembers > 1 && (
                   <Button variant="link" size="sm" className="mt-2 p-0 h-auto text-primary" asChild>
                     <Link href="#">Invite members</Link>
                   </Button>
@@ -246,6 +250,13 @@ export default function TeamPage() {
           </motion.div>
         </motion.div>
       </div>
+
+      {plan && <CheckoutDialog
+        isOpen={showRenewDialog}
+        onClose={() => setShowRenewDialog(false)}
+        planName={plan.name}
+        price={plan.price}
+      />}
     </main>
   );
 }

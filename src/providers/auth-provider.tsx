@@ -76,14 +76,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       window.localStorage.removeItem('favoriteTemplates');
       window.localStorage.removeItem('recentTemplates');
 
-      // Clear React Query cache
-      queryClient.clear();
-
       // Reset user state
       setUser(null);
       setIsAdmin(false);
       setUserLoading(false);
       window.location.replace(`${NEXT_URL}/login`)
+
+      // Clear React Query cache
+      queryClient.clear();
     } catch (error) {
       console.error('Error during logout:', error);
     }
