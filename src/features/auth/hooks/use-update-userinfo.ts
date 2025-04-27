@@ -1,5 +1,5 @@
 import { account, storage } from "@/lib/appwrite/client";
-import { API_ENDPOINT, AVATARS_BUCKET_ID } from "@/lib/constants";
+import { AVATARS_BUCKET_ID } from "@/lib/constants";
 import { useAuth } from "@/providers/auth-provider";
 import { useMutation } from "@tanstack/react-query";
 import { ID } from "node-appwrite";

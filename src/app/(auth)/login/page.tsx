@@ -34,12 +34,13 @@ import { useAuth } from "@/providers/auth-provider";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import { redirect } from "next/navigation";
 import { useRedirectUrl } from "@/features/auth/hooks/use-redirect-url";
+import EmailOTPCard from "@/components/auth/otp-confirmation-card";
 
 export default function LoginPage() {
   const { isLoading, isAuthenticated } = useAuth();
   const redirectUrl = useRedirectUrl();
 
-  const { mutate, isPending, error } = useLogin();
+  const { mutate, isPending, isError, error } = useLogin();
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -57,6 +58,12 @@ export default function LoginPage() {
     </main>
   }
   if (isAuthenticated) redirect("/");
+
+  if (isError) {
+    if (error.message === 'email-not-verified') {
+      return <EmailOTPCard userId={error.cause as string} />
+    }
+  }
 
   const onSubmit = (values: z.infer<typeof loginSchema>) => {
     mutate({ data: values })

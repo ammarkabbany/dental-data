@@ -21,10 +21,12 @@ export default function OnboardingPage() {
   }
 
   if (!isAuthenticated) {
-    <div className="flex items-center justify-center min-h-screen">
-      <LoadingSpinner />
-      <RedirectToAuth />
-    </div>
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <LoadingSpinner />
+        <RedirectToAuth />
+      </div>
+    );
   }
 
   if (currentTeam) {

@@ -10,15 +10,14 @@ export const useRegister = () => {
     mutationFn: async (
       { data }: { data: { name: string; email: string; password: string } }
     ) => {
-      await account.create(ID.unique(), data.email, data.password, data.name);
-      const session = await account.createEmailPasswordSession(data.email, data.password);
-      // const jwt = await account.createJWT();
-      // Cookies.set(AUTH_COOKIE, jwt.jwt, {expires: 30})
-      return session;
+      const user = await account.create(ID.unique(), data.email, data.password, data.name);
+      await account.createEmailToken(user.$id, data.email);
+      return { userId: user.$id };
+      // const session = await account.createEmailPasswordSession(data.email, data.password);
     },
-    onSuccess: () => {
-      window.location.replace(redirectUrl ?? '/');
-    }
+    // onSuccess: () => {
+    //   window.location.replace(redirectUrl ?? '/');
+    // }
   })
 
   return mutation;
