@@ -80,10 +80,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(null);
       setIsAdmin(false);
       setUserLoading(false);
-      window.location.replace(`${NEXT_URL}/login`)
-
       // Clear React Query cache
       queryClient.clear();
+
+      window.location.replace(`${NEXT_URL}/login`)
     } catch (error) {
       console.error('Error during logout:', error);
     }
