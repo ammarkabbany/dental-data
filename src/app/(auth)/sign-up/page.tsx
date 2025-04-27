@@ -165,7 +165,7 @@ export default function RegisterPage() {
         </h3>
         <div className="">
           <Button
-            onClick={() => account.createOAuth2Session(OAuthProvider.Google, `${NEXT_URL}${redirectUrl}`, `${NEXT_URL}?authStatus=failed`)}
+            onClick={() => account.createOAuth2Session(OAuthProvider.Google, `${NEXT_URL}${redirectUrl ?? "/"}`, `${NEXT_URL}?authStatus=failed`)}
             className="items-center w-full"
             variant="secondary"
             disabled={isPending}
