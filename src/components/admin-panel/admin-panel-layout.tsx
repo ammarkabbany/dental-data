@@ -22,7 +22,7 @@ export default function AdminPanelLayout({
           // min-h-[calc(100vh_-_56px)]
           // bg-[#0a0a0f] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]
           "min-h-dvh relative bg-background transition-[margin-left] ease-in-out duration-300",
-          !settings.disabled && (!getOpenState() ? "lg:ml-[90px]" : "lg:ml-64")
+          !settings.disabled && (!getOpenState() ? "lg:ml-[90px]" : "lg:ml-72")
         )}
       >
         {children}

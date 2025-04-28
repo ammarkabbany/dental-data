@@ -23,6 +23,7 @@ import { TeamSwitcher } from "../team-switcher";
 import { useAuth } from "@/providers/auth-provider";
 import useTeamStore from "@/store/team-store";
 import { CubeIcon } from "@radix-ui/react-icons";
+import { PremiumUpgradeCard } from "../premium-upgrade-card";
 
 interface MenuProps {
   isOpen: boolean | undefined;
@@ -31,7 +32,7 @@ interface MenuProps {
 export function Menu({ isOpen }: MenuProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { membership } = useTeamStore();
+  const { membership, currentTeam } = useTeamStore();
   const { isAuthenticated, isAdmin } = useAuth();
   const menuList = getMenuList(pathname);
   const isActive = (href: string) => pathname.endsWith(href);
@@ -124,6 +125,9 @@ export function Menu({ isOpen }: MenuProps) {
         /> */}
           </>
         )}
+      </div>
+      <div className="mt-24">
+        {currentTeam?.planId === "free" && <PremiumUpgradeCard />}
       </div>
     </ScrollArea>
   );
