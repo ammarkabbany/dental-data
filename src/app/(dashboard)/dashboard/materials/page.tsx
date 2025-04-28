@@ -22,7 +22,7 @@ export default function MaterialsPage() {
   return (
     <>
       <MaterialCreateModal />
-      <ContentLayout title="materials">
+      <ContentLayout title="Materials">
         <motion.div 
           className="flex justify-between items-center mb-8"
           initial={{ opacity: 0, y: -20 }}

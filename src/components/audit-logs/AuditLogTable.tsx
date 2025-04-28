@@ -1,5 +1,3 @@
-// components/audit-log/AuditLogTable.tsx
-
 'use client';
 
 import { useState } from 'react';
@@ -67,7 +65,7 @@ export function AuditLogTable({ data = [] }: { data?: AuditLogEntry[] }) {
           type="scroll"
         >
           <Table className="table-fixed border-separate border-spacing-0 [&_tr:not(:last-child)_td]:border-b">
-            <TableHeader className="sticky top-0 bg-accent !rounded-full">
+            <TableHeader className="sticky z-50 top-0 bg-accent !rounded-full">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {

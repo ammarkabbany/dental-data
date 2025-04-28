@@ -47,6 +47,12 @@ export default function Homepage() {
             >
               Features
             </div>
+            <div
+              onClick={() => handleClickScroll("workflow")}
+              className="text-sm cursor-pointer font-medium hover:text-primary transition-colors"
+            >
+              Workflow
+            </div>
             {/* <div onClick={() => handleClickScroll('pricing')} className="text-sm cursor-pointer font-medium hover:text-primary transition-colors">Pricing</div> */}
           </nav>
         </Header>
@@ -76,7 +82,7 @@ export default function Homepage() {
                         <Link href={"/dashboard"}>Go to Dashboard</Link>
                       </Button>
                       : <>
-                        <Button onClick={() => handleLogin()} size="lg" className="gap-1.5 group">
+                        <Button onClick={() => handleLogin('/onboarding')} size="lg" className="gap-1.5 group">
                           Start Free Trial
                           <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                         </Button>
@@ -304,7 +310,7 @@ export default function Homepage() {
           </section>
 
           {/* How it Works Section */}
-          <section className="py-20 bg-muted/30 w-full">
+          <section id="workflow" className="py-20 bg-muted/30 w-full">
             <div className="container mx-auto px-4 md:px-6">
               <div className="flex flex-col items-center justify-center space-y-4 text-center">
                 <div className="space-y-2">
@@ -665,17 +671,10 @@ export default function Homepage() {
                         size="lg"
                         variant="secondary"
                         className="gap-1.5 group to-secondary hover:from-secondary/80 hover:to-secondary/80"
-                        onClick={() => handleLogin()}
+                        onClick={() => handleLogin('/onboarding')}
                       >
                         Start Your Free Trial
                         <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                      </Button>
-                      <Button
-                        size="lg"
-                        variant="outline"
-                        className="bg-primary-foreground/10 hover:bg-primary-foreground/20 border-primary-foreground/20"
-                      >
-                        Schedule a Demo
                       </Button>
                     </>
                   }
@@ -710,27 +709,33 @@ export default function Homepage() {
                   >
                     Features
                   </li>
+                  <li
+                    onClick={() => handleClickScroll("workflow")}
+                    className="text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
+                  >
+                    Workflow
+                  </li>
                 </ul>
               </div>
               <div className="space-y-4">
                 <h4 className="text-sm font-semibold">Company</h4>
                 <ul className="space-y-2 text-sm">
-                  <li>
+                  {/* <li>
                     <Link
                       href="#"
                       className="text-muted-foreground hover:text-foreground transition-colors"
                     >
                       About Us
                     </Link>
-                  </li>
-                  <li>
+                  </li> */}
+                  {/* <li>
                     <Link
                       href="#"
                       className="text-muted-foreground hover:text-foreground transition-colors"
                     >
                       Careers
                     </Link>
-                  </li>
+                  </li> */}
                   <li>
                     <Link
                       href="#"
@@ -776,26 +781,6 @@ export default function Homepage() {
                 © 2025 DentaAuto. All rights reserved.
               </p>
               <div className="flex items-center gap-4 mt-4 sm:mt-0">
-                <Link
-                  href="#"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-5 w-5"
-                  >
-                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-                  </svg>
-                  <span className="sr-only">Facebook</span>
-                </Link>
                 <Link
                   href="https://www.linkedin.com/company/crox-team/"
                   className="text-muted-foreground hover:text-foreground transition-colors"

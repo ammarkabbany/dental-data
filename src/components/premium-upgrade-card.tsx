@@ -18,7 +18,7 @@ export function PremiumUpgradeCard() {
             <h3 className="text-base font-semibold">Upgrade Now</h3>
           </div>
 
-          <div className="space-y-2 py-4">
+          {/* <div className="space-y-2 py-4">
             <div className="flex items-center gap-2 text-sm">
               <Sparkles className="h-4 w-4 text-yellow-300" />
               <span>
@@ -35,13 +35,13 @@ export function PremiumUpgradeCard() {
               <Sparkles className="h-4 w-4 text-yellow-300" />
               <span>Advanced analytics</span>
             </div>
-          </div>
+          </div> */}
 
         </CardContent>
 
         <CardFooter className="">
-          <Button className="w-full bg-white font-medium text-purple-700 hover:bg-white/90">
-            <span>Upgrade</span>
+          <Button className="w-full bg-white font-medium text-purple-700 hover:bg-white/90 cursor-pointer">
+            <span>Get Premium</span>
             <Zap className="ml-1.5 h-3.5 w-3.5" />
           </Button>
         </CardFooter>

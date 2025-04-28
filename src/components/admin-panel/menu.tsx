@@ -45,91 +45,92 @@ export function Menu({ isOpen }: MenuProps) {
   const sidebarRef = useRef<HTMLDivElement>(null);
 
   return (
-    <ScrollArea ref={sidebarRef} className="[&>div>div[style]]:!block relative">
-      <div className="space-y-1">
-        <TeamSwitcher />
-        <Separator className="my-2" />
-        <h3 className="px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-          Dashboard
-        </h3>
-        <NavItem
-          icon={LayoutDashboard}
-          label="Overview"
-          active={isActive("dashboard")}
-          onClick={() => navigate("/dashboard")}
-        />
-        {isAuthenticated && (
-          <>
-            {isAdmin && (
+    <div className="relative h-full no-scrollbar overflow-y-auto flex flex-col gap-y-8">
+      <ScrollArea
+        ref={sidebarRef}
+        className="[&>div>div[style]]:!block relative"
+      >
+        <div className="space-y-1">
+          <TeamSwitcher />
+          <Separator className="my-2" />
+          <h3 className="px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Dashboard
+          </h3>
+          <NavItem
+            icon={LayoutDashboard}
+            label="Overview"
+            active={isActive("dashboard")}
+            onClick={() => navigate("/dashboard")}
+          />
+          {isAuthenticated && (
+            <>
+              {isAdmin && (
+                <NavItem
+                  icon={ShieldUser}
+                  label="Admin"
+                  active={isActive("admin")}
+                  onClick={() => navigate("/admin")}
+                />
+              )}
+              <NavItem comingSoon icon={BarChart3} label="Analytics" />
+
+              {/* <Separator className="my-3" /> */}
+
+              {/* <h3 className="px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Lab Management</h3> */}
               <NavItem
-                icon={ShieldUser}
-                label="Admin"
-                active={isActive("admin")}
-                onClick={() => navigate("/admin")}
+                icon={FileText}
+                label="Cases"
+                active={isActive("cases")}
+                onClick={() => navigate("/dashboard/cases")}
               />
-            )}
-            <NavItem comingSoon icon={BarChart3} label="Analytics" />
+              {permission.checkPermission("doctors", "create") && (
+                <NavItem
+                  icon={Users}
+                  label="Doctors"
+                  active={isActive("doctors")}
+                  onClick={() => navigate("/dashboard/doctors")}
+                />
+              )}
+              {permission.checkPermission("materials", "create") && (
+                <NavItem
+                  icon={CubeIcon}
+                  label="Materials"
+                  active={isActive("materials")}
+                  onClick={() => navigate("/dashboard/materials")}
+                />
+              )}
 
-            {/* <Separator className="my-3" /> */}
+              {/* <Separator className="my-3" /> */}
 
-            {/* <h3 className="px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Lab Management</h3> */}
-            <NavItem
-              icon={FileText}
-              label="Cases"
-              active={isActive("cases")}
-              onClick={() => navigate("/dashboard/cases")}
-            />
-            {permission.checkPermission("doctors", "create") && (
+              <h3 className="px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Utilities
+              </h3>
               <NavItem
-                icon={Users}
-                label="Doctors"
-                active={isActive("doctors")}
-                onClick={() => navigate("/dashboard/doctors")}
+                icon={Layers}
+                label="Templates"
+                active={isActive("templates")}
+                onClick={() => navigate("/dashboard/templates")}
               />
-            )}
-            {permission.checkPermission("materials", "create") && (
-              <NavItem
-                icon={CubeIcon}
-                label="Materials"
-                active={isActive("materials")}
-                onClick={() => navigate("/dashboard/materials")}
-              />
-            )}
 
-            {/* <Separator className="my-3" /> */}
+              {permission.canViewDue() && (
+                <>
+                  <NavItem icon={PieChart} label="Reports" disabled />
+                  <NavItem disabled icon={BarChart3} label="Financial" />
+                </>
+              )}
 
-            <h3 className="px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Utilities</h3>
-            <NavItem
-              icon={Layers}
-              label="Templates"
-              active={isActive("templates")}
-              onClick={() => navigate("/dashboard/templates")}
-            />
-
-            {permission.canViewDue() && (
-              <>
-                {/* <Separator className="my-3" /> */}
-
-                {/* <h3 className="px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Reports</h3> */}
-                <NavItem icon={PieChart} label="Reports" disabled />
-                <NavItem disabled icon={BarChart3} label="Financial" />
-              </>
-            )}
-
-            {/* <Separator className="my-3" /> */}
-            {/* <h3 className="px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">other</h3>
+              {/* <Separator className="my-3" /> */}
+              {/* <h3 className="px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">other</h3>
 
         <NavItem
           icon={Settings}
           label="Settings"
         /> */}
-          </>
-        )}
-      </div>
-      <div className="mt-24">
-        {currentTeam?.planId === "free" && <PremiumUpgradeCard />}
-      </div>
-    </ScrollArea>
+            </>
+          )}
+        </div>
+      </ScrollArea>
+    </div>
   );
 }
 
