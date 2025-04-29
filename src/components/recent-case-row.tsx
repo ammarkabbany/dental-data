@@ -4,46 +4,62 @@ import { formatCurrency } from "@/lib/format-utils";
 import { usePermission } from "@/hooks/use-permissions";
 import useTeamStore from "@/store/team-store";
 import { useDoctorsStore } from "@/store/doctors-store";
+import { cn } from "@/lib/utils";
 
-export const RecentCaseRow = ({ caseItem }: { caseItem: Partial<Case> }) => {
-  // const { data: user } = useGetUserInfo(caseItem.userId || "");
-  const {userRole, currentAppwriteTeam: appwriteTeam} = useTeamStore();
-  const canViewDue = usePermission(userRole).canViewDue()
-  const {getDoctorById} = useDoctorsStore();
+interface RecentCaseRowProps {
+  caseItem: Partial<Case>;
+  className?: string;
+}
+
+export const RecentCaseRow = ({ caseItem, className }: RecentCaseRowProps) => {
+  const { userRole, currentAppwriteTeam: appwriteTeam } = useTeamStore();
+  const canViewDue = usePermission(userRole).canViewDue();
+  const { getDoctorById } = useDoctorsStore();
+
+  const statusStyles = {
+    paid: "bg-chart-2/10 text-chart-2 ring-1 ring-chart-2/20",
+    unpaid: "bg-destructive/10 text-destructive ring-1 ring-destructive/20"
+  };
+
   return (
-    <tr key={caseItem.$id} className="hover:bg-current/5">
-      <td className="px-6 py-3 whitespace-nowrap">
-        <div className="font-medium">{caseItem.patient}</div>
+    <tr key={caseItem.$id} className={cn("transition-colors duration-100", className)}>
+      <td className="px-6 py-4 whitespace-nowrap">
+        <div className="font-medium text-card-foreground hover:text-primary transition-colors">
+          {caseItem.patient}
+        </div>
       </td>
-      <td className="px-6 py-3 whitespace-nowrap">
+      <td className="px-6 py-4 whitespace-nowrap text-muted-foreground">
         {getDoctorById(caseItem.doctorId || "")?.name || "N/A"}
       </td>
-      {/* <td className="px-6 py-4 whitespace-nowrap text-gray-500">
-                    {new Date(caseItem.dueDate).toLocaleDateString()}
-                  </td> */}
-      <td className="whitespace-nowrap py-3 px-6 md:px-0 flex items-center gap-x-2">
-        <UserAvatar className="bg-white" image={caseItem.user?.avatar || "?"} name={caseItem.user?.name || ""} />
-        {caseItem.user?.name}
+      <td className="whitespace-nowrap py-4 px-6 md:px-0">
+        <div className="flex items-center gap-x-3">
+          <UserAvatar 
+            className="ring-2 ring-offset-2 ring-offset-background ring-primary/10" 
+            image={caseItem.user?.avatar || "?"} 
+            name={caseItem.user?.name || ""} 
+          />
+          <span className="text-sm text-muted-foreground">
+            {caseItem.user?.name}
+          </span>
+        </div>
       </td>
-      {canViewDue && <td className="py-4 whitespace-nowrap">
-        {formatCurrency(caseItem.due || 0, appwriteTeam?.prefs.currency)}
-      </td>}
-      <td className="px-6 py-3 whitespace-nowrap">
+      {canViewDue && (
+        <td className="py-4 px-6 whitespace-nowrap">
+          <span className="text-sm font-medium text-card-foreground">
+            {formatCurrency(caseItem.due || 0, appwriteTeam?.prefs.currency)}
+          </span>
+        </td>
+      )}
+      <td className="px-6 py-4 whitespace-nowrap">
         <span
-          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-            caseItem.invoice
-              ? "bg-green-100 text-green-800"
-              : "bg-red-100 text-red-800"
-          }`}
+          className={cn(
+            "inline-flex items-center px-3 py-1 rounded-full text-xs font-medium transition-all duration-200",
+            caseItem.invoice ? statusStyles.paid : statusStyles.unpaid
+          )}
         >
           {caseItem.invoice ? "PAID" : "UNPAID"}
         </span>
       </td>
-      {/* <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <Button variant="ghost" size="sm" asChild>
-                      <Link href={`/cases/${caseItem.$id}`}>View</Link>
-                    </Button>
-                  </td> */}
     </tr>
   );
 };

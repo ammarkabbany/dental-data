@@ -56,7 +56,7 @@ export const TemplateCreateModal = () => {
       open={isModalOpen(Modals.CREATE_TEMPLATE_MODAL)}
       onOpenChange={() => closeModal(Modals.CREATE_TEMPLATE_MODAL)}
     >
-      <Card className="w-full h-full border-none shadow-none bg-gradient-to-t from-card to-secondary/40">
+      <Card className="w-full h-full border-none shadow-none bg-gradient-to-t from-card to-accent">
         <CardHeader className="flex">
           <CardTitle className="text-xl font-bold">
             Create new template

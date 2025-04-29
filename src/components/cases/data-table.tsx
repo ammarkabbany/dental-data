@@ -134,7 +134,7 @@ export function CasesDataTable({ data = [] }: DataTableProps) {
           type="scroll"
         >
           <Table className="table-fixed border-separate border-spacing-0 [&_tr:not(:last-child)_td]:border-b">
-            <TableHeader className="sticky top-0 bg-accent !rounded-full">
+            <TableHeader className="sticky z-50 top-0 bg-accent !rounded-full">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
@@ -196,48 +196,6 @@ export function CasesDataTable({ data = [] }: DataTableProps) {
           </Table>
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
-        {/* <Separator /> */}
-        {/* <div className="flex items-center justify-end space-x-2 py-4">
-          <div className="flex-1 text-sm text-muted-foreground">
-            {table.getFilteredSelectedRowModel().rows.length} of{" "}
-            {table.getFilteredRowModel().rows.length} row(s) selected.
-          </div>
-          <div className="flex items-center space-x-2">
-            <Select
-              value={String(table.getState().pagination.pageSize)}
-              onValueChange={(value) => table.setPageSize(parseInt(value))}
-            >
-              <SelectTrigger className="h-[36px] space-x-1">
-                <SelectValue>
-                  {table.getState().pagination.pageSize}
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                {[10, 20, 50, 100].map((value, i) => (
-                  <SelectItem key={i} value={String(value)}>
-                    {value}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-            >
-              Previous
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-            >
-              Next
-            </Button>
-          </div>
-        </div> */}
         <DataTablePagination table={table} />
       </div>
     </div>

@@ -62,7 +62,7 @@ export const TemplateUpdateModal = ({template, trigger}: {template: Template, tr
       onOpenChange={(open) => setDialogOpen(open)}
       trigger={trigger}
     >
-      <Card className="w-full h-full border-none shadow-none bg-gradient-to-t from-card to-secondary/40">
+      <Card className="w-full h-full border-none shadow-none bg-gradient-to-t from-card to-accent">
         <CardHeader className="flex">
           <CardTitle className="text-xl font-bold">
             Update template details
