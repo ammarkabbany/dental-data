@@ -23,7 +23,7 @@ export default function DoctorsPage() {
       <DoctorCreateModal />
       <ContentLayout title="Doctors">
         <motion.div 
-          className="flex justify-between items-center mb-8"
+          className="flex flex-col sm:flex-row justify-between sm:items-center mb-8 gap-y-2"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}

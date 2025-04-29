@@ -1,14 +1,18 @@
 import { type ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal, Calendar, User2, Palette, FileText } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
-import { Case, Doctor, Material, Tooth, ToothCollection } from "@/types";
+import { Case, Tooth, ToothCollection } from "@/types";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { EditCaseModal } from "./edit-case-modal";
 import { Button } from "../ui/button";
+import { cn } from "@/lib/utils";
+import { CubeIcon } from "@radix-ui/react-icons";
 import { useDoctorsStore } from "@/store/doctors-store";
 import { useMaterialsStore } from "@/store/material-store";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { DentalToothIcon, Doctor02Icon } from "@hugeicons/core-free-icons";
 
 export const getColumns = (): ColumnDef<Case>[] => [
   {
@@ -22,15 +26,15 @@ export const getColumns = (): ColumnDef<Case>[] => [
         }
         onCheckedChange={(value: boolean) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
-        // className="size-[18px] !p-0 !m-0 block transition-all duration-200 border-accent-foreground/25"
+        className="translate-y-[2px]"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
-        // className="size-[18px] !p-0 !m-0 block transition-all duration-200 border-accent-foreground/25"
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
+        className="translate-y-[2px]"
       />
     ),
     enableSorting: false,
@@ -38,85 +42,77 @@ export const getColumns = (): ColumnDef<Case>[] => [
   },
   {
     accessorKey: "date",
-    // sortable date
-    header: ({ table }) => (
-      <button
-        className={`${table.getColumn("date")?.getIsSorted() && "text-blue-500"} flex items-center gap-1`}
-        onClick={() => table.getColumn("date")?.toggleSorting()}
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        size="sm"
+        className={cn(
+          "-ml-3 h-8 data-[state=open]:bg-accent",
+          column.getIsSorted() && "text-primary hover:text-primary/75"
+        )}
+        onClick={() => column.toggleSorting()}
       >
-        <span>Date</span>
-        <ArrowUpDown className="size-4" />
-      </button>
+        <Calendar className="mr-2 h-4 w-4" />
+        Date
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
     ),
-    sortingFn: "datetime", // Use built-in datetime sorting
-    filterFn: (row, columnId, filterValue) => {
-      if (filterValue === undefined) {
-        return true; // No filtering if no filter value is set
-      }
-      const rowDate = new Date(row.getValue(columnId));
-      const { from: startDate, to: endDate } = filterValue;
-
-      if (!startDate || !endDate) {
-        return true; // No filtering if date range is not set
-      }
-
-      return rowDate >= new Date(startDate) && rowDate <= new Date(endDate);
-    },
     cell: ({ row }) => {
       const date = new Date(row.getValue("date"));
-      // <Calendar className="size-4" />
-      return <div className="flex items-center gap-2">{date.toLocaleDateString("en-GB")}</div>;
+      return (
+        <div className="flex items-center">
+          <span className="text-muted-foreground">
+            {date.toLocaleDateString("en-GB")}
+          </span>
+        </div>
+      );
     },
     size: 120,
   },
   {
     accessorKey: "doctor",
-    header: "Client",
-    // header: ({ table }) => {
-    //   const currentValue = table.getColumn("doctor")?.getFilterValue() as string;
-    //   return (
-    //     <CustomComboBox
-    //       label="doctor"
-    //       variant={"outline"}
-    //       initValue={currentValue}
-    //       id="cases-table-doctors-c-combobox"
-    //       action={(newValue) => {
-    //         if (newValue === currentValue) {
-    //           table.getColumn("doctor")?.setFilterValue(null);
-    //           return;
-    //         }
-    //         table.getColumn("doctor")?.setFilterValue(newValue);
-    //       }}
-    //       values={useDoctorsStore.getState().doctors}
-    //     />
-    //   );
-    // },
     accessorFn: (row) => {
       const id = row.doctorId;
       const doctor = useDoctorsStore.getState().getDoctorById(id);
       const doctorName = doctor?.name || "Unknown"
       return doctorName.length > 20 ? doctorName.substring(0, 20) + "..." : doctorName;
     },
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        size="sm"
+        className={cn(
+          "-ml-3 h-8 data-[state=open]:bg-accent",
+          column.getIsSorted() && "text-primary hover:text-primary/75"
+        )}
+        onClick={() => column.toggleSorting()}
+      >
+        <HugeiconsIcon icon={Doctor02Icon} className="mr-2 h-4 w-4" />
+        Doctor
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
     cell: ({ row }) => {
       const now = new Date();
       const createdAt = new Date(row.original.$createdAt);
       const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
       const isRecent = createdAt >= fiveMinutesAgo;
       const doctor: string = row.getValue('doctor')
-      return <div className="capitalize flex items-center gap-2">
-        {/* <DoctorIcon h={5} w={5} className="dark:fill-white dark:stroke-white" /> */}
-        {doctor}
-        {isRecent && <Badge className="ml-1" variant="info">New</Badge>}
-      </div>;
+      
+      return (
+        <div className="flex items-center gap-2">
+          <span className="font-medium">{doctor}</span>
+          {isRecent && (
+            <Badge variant="default" className="bg-primary/10 text-primary hover:bg-primary/20">
+              New
+            </Badge>
+          )}
+        </div>
+      );
     },
     size: 180,
-    filterFn: (row, _, filterValue) => {
-      const doctor: string = row.getValue('doctor')
-      return filterValue
-        ? doctor.toLowerCase() === filterValue.toLowerCase()
-        : true;
-    }, // Apply the filter function here
   },
+
   {
     accessorKey: "patient",
     header: "Patient",
@@ -131,7 +127,10 @@ export const getColumns = (): ColumnDef<Case>[] => [
   {
     accessorKey: "data",
     header: () => {
-      return <p className="ml-[65px] capitalize text-sm">Data</p>;
+      return <div className="ml-[60px] inline-flex items-center gap-2">
+        <HugeiconsIcon icon={DentalToothIcon} className="size-4" />
+        Data
+      </div>
     },
     cell: ({ row }) => {
       const caseData: ToothCollection = JSON.parse(row.getValue("data")) || undefined;
@@ -174,6 +173,7 @@ export const getColumns = (): ColumnDef<Case>[] => [
     },
     size: 200,
   },
+
   {
     accessorKey: "material",
     accessorFn: (row) => {
@@ -182,89 +182,82 @@ export const getColumns = (): ColumnDef<Case>[] => [
       const materialName = material?.name || "Unknown"
       return materialName.length > 20 ? materialName.substring(0, 20) + "..." : materialName;
     },
-    header: "Material",
+    header: () => (
+      <div className="flex items-center gap-2">
+        <CubeIcon className="h-4 w-4" />
+        <span>Material</span>
+      </div>
+    ),
     cell: ({ row }) => {
-      // <CubeIcon className="size-4" />
       const material: string = row.getValue('material');
-      return <div className="capitalize flex items-center gap-2">{material}</div>;
+      return (
+        <div className="flex items-center gap-2">
+          <span className="text-muted-foreground">{material}</span>
+        </div>
+      );
     },
     size: 130,
-    maxSize: 150
   },
   {
     accessorKey: "shade",
-    header: "Shade",
-    // <Palette className="size-4" />
-    cell: ({ row }) => <div className="flex items-center gap-2"><Badge variant={"secondary"}>{row.getValue("shade")}</Badge></div>,
+    header: () => (
+      <div className="flex items-center gap-2">
+        <Palette className="h-4 w-4" />
+        <span>Shade</span>
+      </div>
+    ),
+    cell: ({ row }) => (
+      <Badge 
+        variant="secondary" 
+        className="bg-secondary/10 hover:bg-secondary/20"
+      >
+        {row.getValue("shade")}
+      </Badge>
+    ),
     size: 90,
   },
-  // {
-  //   accessorKey: "due",
-  //   header: "Due",
-  //   cell: ({ row }) => {
-  //     const due = parseInt(row.getValue("due"));
-
-  //     // Format the amount as a dollar amount
-  //     const formatted = new Intl.NumberFormat("en-US", {
-  //       style: "currency",
-  //       currency: "EGP",
-  //     }).format(due);
-
-  //     return <div>{formatted}</div>;
-  //   },
-  // },
   {
     accessorKey: "note",
-    header: "Note",
+    header: () => (
+      <div className="flex items-center gap-2">
+        <FileText className="h-4 w-4" />
+        <span>Note</span>
+      </div>
+    ),
     cell: ({ row }) => (
-      <div>{row.getValue("note") ? row.getValue("note") : "N/A"}</div>
+      <span className="text-muted-foreground">
+        {row.getValue("note") || "N/A"}
+      </span>
     ),
     size: 150
   },
   {
     accessorKey: "actions",
-    header: () => <div className="text-start">Actions</div>,
+    header: () => <span className="text-start">Actions</span>,
     cell: ({ row }) => {
       const _case: Case = row.original;
-      return(
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-            <div className="flex">
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
             <Button
               size="icon"
               variant="ghost"
-              className="shadow-none text-muted-foreground/60"
-              aria-label="Edit item"
+              className="h-8 w-8 hover:bg-secondary/20"
             >
-              <MoreHorizontal className="size-5" size={20} aria-hidden="true" />
+              <MoreHorizontal className="h-4 w-4" />
             </Button>
-          </div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuLabel>
-                Actions
-              </DropdownMenuLabel>
-              {/* <Link href={`/dashboard/cases/edit/${row.original.$id}`}> */}
-              {/* <Button variant={"ghost"} className="w-full justify-start">Edit</Button> */}
-              <DropdownMenuItem asChild>
-                <EditCaseModal selectedCase={_case} />
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-[160px]">
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem asChild>
+              <EditCaseModal selectedCase={_case} />
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )
     },
     size: 70,
     enableSorting: false,
     enableHiding: false,
   },
-  // {
-  //   accessorKey: "invoiceStatus",
-  //   id: "invoice",
-  //   header: "Invoice",
-  //   cell: ({ row }) => {
-  //     const invoiceStatus: Case['invoiceStatus'] = row.getValue("invoice");
-  //     const statusVariant = invoiceStatus === "UNPAID"? "destructive" : "success";
-  //     return <Badge variant={statusVariant}>{invoiceStatus}</Badge>;
-  //   },
-  // },
 ];

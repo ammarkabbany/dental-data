@@ -27,7 +27,7 @@ export const getAuditLogsColumns = (): ColumnDef<AuditLogEntry>[] => [
       const resourceId = row.getValue("resourceId") as string;
       return <div className="">{resourceId}</div>;
     },
-    size: 150,
+    size: 180,
   },
   {
     accessorKey: "action",

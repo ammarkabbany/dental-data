@@ -1,4 +1,4 @@
-import { ChevronDown, Search } from "lucide-react";
+import { ChevronDown, Search, Columns, Filter, Trash2, FileDown } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -8,10 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { type Table } from "@tanstack/react-table";
 import { type Case } from "@/types";
-// import { DatePicker } from "../date-picker";
 import * as React from "react";
-// import { CustomComboBox } from "../custom-combobox";
-// import { CasesFiltersPopover } from "./cases-filter-popover";
 import { Label } from "@/components/ui/label";
 import { Input } from "../ui/input";
 import { CasesFiltersPopover } from "./cases-filter-popover";
@@ -24,6 +21,7 @@ import { Badge } from "../ui/badge";
 import { usePermission } from "@/hooks/use-permissions";
 import useTeamStore from "@/store/team-store";
 import { useDoctorsStore } from "@/store/doctors-store";
+import { cn } from "@/lib/utils";
 
 export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
   const [exportOptions, setExportOptions] = React.useState<{
@@ -32,49 +30,55 @@ export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
     showClient: true,
     showShade: true,
   });
-  const {userRole} = useTeamStore();
+  
+  const { userRole } = useTeamStore();
   const { doctors } = useDoctorsStore();
-  const currentDoctorFilterValue = table
-    .getColumn("doctor")
-    ?.getFilterValue() as string;
-  const currentDateFilterValue = table
-    .getColumn("date")
-    ?.getFilterValue() as string;
-  // fucks up the date sorting
+  const currentDoctorFilterValue = table.getColumn("doctor")?.getFilterValue() as string;
+  const currentDateFilterValue = table.getColumn("date")?.getFilterValue() as string;
+  
   const selectedCases = table
     .getSelectedRowModel()
     .rows.map((row) => row.original)
     .sort((a, b) => a.date.localeCompare(b.date));
 
-  const clearFilters = () => {
-    table.resetColumnFilters();
-  };
-
   const filtersCount = Object.values(table.getAllColumns()).filter((column) =>
     column.getIsFiltered()
   ).length;
 
+  const clearFilters = () => table.resetColumnFilters();
+  const canExport = usePermission(userRole).checkPermission("export", "has");
+  const canDelete = usePermission(userRole).checkPermission("cases", "delete");
+
   return (
     <>
       <PrintComponent selectedCases={selectedCases} options={exportOptions} />
-      <div className="flex flex-wrap items-center gap-2 py-4">
-        <div className="flex gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-4 py-4">
+        <div className="flex flex-wrap items-center gap-2">
           <Button
             onClick={() => table.toggleAllRowsSelected()}
             variant="outline"
-            className={`${table.getIsAllRowsSelected() && "bg-secondary"} transition`}
+            className={cn(
+              "transition-all duration-200",
+              table.getIsAllRowsSelected() && "bg-primary text-primary-foreground hover:bg-primary/90"
+            )}
           >
             Select All
           </Button>
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="gap-2 transition">
-                Columns{" "}
-                <Badge>{table.getVisibleFlatColumns().length - 2}</Badge>{" "}
-                <ChevronDown className="size-4" />
+              <Button variant="outline" className="gap-2 transition-all duration-200">
+                <Columns className="h-4 w-4" />
+                <span>Columns</span>
+                <Badge 
+                  variant="default" 
+                  className="ml-1 text-secondary-foreground"
+                >
+                  {table.getVisibleFlatColumns().length - 2}
+                </Badge>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="w-[180px]">
               {table
                 .getAllColumns()
                 .filter((column) => column.getCanHide())
@@ -83,100 +87,89 @@ export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
                     key={column.id}
                     className="capitalize"
                     checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
+                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
                   >
                     {column.id}
                   </DropdownMenuCheckboxItem>
                 ))}
             </DropdownMenuContent>
           </DropdownMenu>
+
+          <CasesFiltersPopover indicator={filtersCount} clearFilters={clearFilters}>
+            <div className="space-y-4">
+              <div className="grid gap-2">
+                <Label className="text-sm font-medium">Patient</Label>
+                <Input
+                  type="search"
+                  placeholder="Search patients..."
+                  value={(table.getColumn("patient")?.getFilterValue() as string) ?? ""}
+                  onChange={(event) =>
+                    table.getColumn("patient")?.setFilterValue(event.target.value)
+                  }
+                  className="h-9"
+                >
+                  <Input.Group>
+                    <Input.LeftIcon>
+                      <Search className="h-4 w-4 text-muted-foreground" />
+                    </Input.LeftIcon>
+                  </Input.Group>
+                </Input>
+              </div>
+
+              <div className="grid gap-2">
+                <Label className="text-sm font-medium">Date Range</Label>
+                <DatePicker
+                  date={currentDateFilterValue}
+                  setDate={(newValue: any) => {
+                    if (newValue === currentDateFilterValue) {
+                      table.getColumn("date")?.setFilterValue(null);
+                      return;
+                    }
+                    table.getColumn("date")?.setFilterValue(newValue);
+                  }}
+                  mode="range"
+                  className="h-9"
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <Label className="text-sm font-medium">Doctor</Label>
+                <CustomComboBox
+                  label="doctor"
+                  value={currentDoctorFilterValue}
+                  action={(newValue) => {
+                    if (newValue === currentDoctorFilterValue) {
+                      table.getColumn("doctor")?.setFilterValue(null);
+                      return;
+                    }
+                    table.getColumn("doctor")?.setFilterValue(newValue);
+                  }}
+                  variant="secondary"
+                  className="h-9"
+                  values={doctors || []}
+                />
+              </div>
+            </div>
+          </CasesFiltersPopover>
         </div>
 
-        {/*  */}
-        <CasesFiltersPopover
-          indicator={filtersCount}
-          clearFilters={clearFilters}
-        >
-          <div className="grid gap-2">
-            <Label>Patient</Label>
-            <Input
-              type="search"
-              variant="default"
-              placeholder="Search"
-              name="patient-search-input"
-              value={
-                (table.getColumn("patient")?.getFilterValue() as string) ?? ""
+        <div className="flex flex-wrap items-center gap-2">
+          {canDelete && selectedCases.length > 0 && (
+            <DeleteCaseModal
+              cases={selectedCases}
+              component={
+                <Button 
+                  variant="destructive"
+                  className="gap-2"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  Delete Selected ({Math.min(selectedCases.length, 100)})
+                </Button>
               }
-              onChange={(event) =>
-                table.getColumn("patient")?.setFilterValue(event.target.value)
-              }
-              className="flex-1"
-            >
-              <Input.Group>
-                <Input.LeftIcon>
-                  <Search className="text-muted-foreground" />
-                </Input.LeftIcon>
-              </Input.Group>
-            </Input>
-          </div>
-          <div className="grid gap-2">
-            <Label>Date</Label>
-            <DatePicker
-              date={currentDateFilterValue}
-              setDate={(newValue: any) => {
-                if (newValue === currentDateFilterValue) {
-                  table.getColumn("date")?.setFilterValue(null);
-                  return;
-                }
-                table.getColumn("date")?.setFilterValue(newValue);
-              }}
-              mode="range"
-              className="flex-1"
             />
-          </div>
-          <div className="grid gap-2">
-            <Label>Doctor</Label>
-            <CustomComboBox
-              label="doctor"
-              value={currentDoctorFilterValue}
-              action={(newValue) => {
-                if (newValue === currentDoctorFilterValue) {
-                  table.getColumn("doctor")?.setFilterValue(null);
-                  return;
-                }
-                table.getColumn("doctor")?.setFilterValue(newValue);
-              }}
-              variant="secondary"
-              className="flex-1"
-              values={doctors || []}
-            />
-          </div>
-        </CasesFiltersPopover>
-        <div className="ml-auto flex flex-wrap gap-2">
-          {/* <Select>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="date">Date</SelectItem>
-              <SelectItem value="$createdAt">Created at</SelectItem>
-            </SelectContent>
-          </Select> */}
-          {usePermission(userRole).checkPermission("cases", "delete") &&
-            table.getSelectedRowModel().rows.length > 0 && (
-              <DeleteCaseModal
-                cases={selectedCases}
-                component={
-                  <Button variant={"destructive"}>
-                    Delete Selected (
-                    {Math.min(table.getSelectedRowModel().rows.length, 100)})
-                  </Button>
-                }
-              />
-            )}
-          {usePermission(userRole).checkPermission("export", "has") && (
+          )}
+          
+          {canExport && (
             <CasesExportDialog
               exportOptions={exportOptions}
               setExportOptions={setExportOptions}
@@ -186,4 +179,4 @@ export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
       </div>
     </>
   );
-}
+};

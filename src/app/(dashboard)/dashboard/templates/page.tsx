@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { TemplateCreateModal } from "@/components/templates/create-template-modal";
 import { TemplateCard } from "@/components/templates/template-card";
@@ -18,9 +18,9 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1
-    }
-  }
+      staggerChildren: 0.1,
+    },
+  },
 };
 
 const itemVariants = {
@@ -28,45 +28,66 @@ const itemVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.3 }
-  }
+    transition: { duration: 0.3 },
+  },
 };
 
 export default function TemplatesPage() {
-  const {data: templates, isLoading} = useGetTemplates();
-  const {userRole} = useTeamStore();
-  const canCreate = usePermission(userRole).checkPermission('templates', 'create');
-  const [searchTerm, setSearchTerm] = React.useState('');
-  const {openModal} = useModalStore();
+  const { data: templates, isLoading } = useGetTemplates();
+  const { userRole } = useTeamStore();
+  const canCreate = usePermission(userRole).checkPermission(
+    "templates",
+    "create"
+  );
+  const [searchTerm, setSearchTerm] = React.useState("");
+  const { openModal } = useModalStore();
 
-  const filteredTemplates = templates?.filter(t => 
+  const filteredTemplates = templates?.filter((t) =>
     searchTerm ? t.name.toLowerCase().includes(searchTerm.toLowerCase()) : true
   );
 
   const showEmptyState = !isLoading && (!templates || templates.length === 0);
-  const showNoResults = !isLoading && filteredTemplates && filteredTemplates.length === 0 && searchTerm;
+  const showNoResults =
+    !isLoading &&
+    filteredTemplates &&
+    filteredTemplates.length === 0 &&
+    searchTerm;
 
   return (
     <>
       <TemplateCreateModal />
       <ContentLayout title="Templates">
+        <motion.div
+          className="flex justify-between items-center mb-8"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <div className="space-y-1">
+            <h2 className="text-lg font-semibold">Case Templates</h2>
+            <p className="text-sm text-muted-foreground">
+              Templates are pre-defined case structures that can be used to
+              create new cases.
+            </p>
+          </div>
+        </motion.div>
         <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
           <SearchInput
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
-            onClear={() => setSearchTerm('')}
+            onClear={() => setSearchTerm("")}
             placeholder="Search templates..."
           />
           {canCreate && (
-            <motion.div 
+            <motion.div
               className="ml-auto"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.2 }}
             >
-              <Button 
-                onClick={() => openModal(Modals.CREATE_TEMPLATE_MODAL)} 
-                variant="default" 
+              <Button
+                onClick={() => openModal(Modals.CREATE_TEMPLATE_MODAL)}
+                variant="default"
                 className="py-2"
               >
                 <PlusIcon className="mr-2" />
@@ -105,10 +126,11 @@ export default function TemplatesPage() {
               </div>
               <h3 className="text-lg font-semibold mb-2">No Templates Yet</h3>
               <p className="text-muted-foreground mb-6 max-w-sm mx-auto">
-                Create your first template to streamline your workflow and standardize your case management.
+                Create your first template to streamline your workflow and
+                standardize your case management.
               </p>
               {canCreate && (
-                <Button 
+                <Button
                   onClick={() => openModal(Modals.CREATE_TEMPLATE_MODAL)}
                   variant="default"
                 >
@@ -125,9 +147,12 @@ export default function TemplatesPage() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
             >
-              <h3 className="text-lg font-semibold mb-2">No Matching Templates</h3>
+              <h3 className="text-lg font-semibold mb-2">
+                No Matching Templates
+              </h3>
               <p className="text-muted-foreground">
-                No templates found for &quot;{searchTerm}&quot;. Try a different search term.
+                No templates found for &quot;{searchTerm}&quot;. Try a different
+                search term.
               </p>
             </motion.div>
           ) : (

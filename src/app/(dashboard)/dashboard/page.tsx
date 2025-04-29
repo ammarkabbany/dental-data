@@ -98,28 +98,27 @@ export default function DashboardPage() {
 
   const actionCards = [
     {
-      title: "Create Case",
-      description: "Create a new case for your team",
+      title: "New Case",
+      description: "Create and manage patient cases",
+      isPrimary: true,
       icon: <FileTextIcon className="size-5" />,
       href: "/dashboard/cases/new",
-      buttonText: "Create",
-      isPrimary: true,
       permission: ["cases", "create"] as [Resource, Action],
     },
     {
-      title: "Add Doctor",
-      description: "Register a new doctor to your lab",
+      title: "New Doctor",
+      description: "Add doctors to your network",
+      isPrimary: false,
       icon: <HugeiconsIcon icon={Doctor02Icon} className="size-5" />,
       onClick: () => openModal(Modals.CREATE_DOCTOR_MODAL),
-      buttonText: "Add Doctor",
       permission: ["doctors", "create"] as [Resource, Action],
     },
     {
-      title: "Add Material",
-      description: "Add new materials to inventory",
+      title: "New Material",
+      description: "Track dental materials and inventory",
+      isPrimary: false,
       icon: <CubeIcon className="size-5" />,
       onClick: () => openModal(Modals.CREATE_MATERIAL_MODAL),
-      buttonText: "Add Material",
       permission: ["materials", "create"] as [Resource, Action],
     },
   ].filter((card) => checkPermission(...card.permission));
@@ -130,31 +129,23 @@ export default function DashboardPage() {
       <DoctorCreateModal />
       <div className="space-y-4">
         {/* Welcome Card */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-green-600 via-lime-600 to-emerald-700 p-6 text-white shadow-xl shadow-lime-900/20">
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-green-600 via-lime-600 to-emerald-700 p-7 text-white shadow-xl shadow-lime-900/20">
           <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10 blur-3xl"></div>
           <div className="absolute -bottom-12 left-1/3 h-40 w-40 rounded-full bg-white/10 blur-3xl"></div>
           <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black/20 to-transparent"></div>
           <div className="absolute inset-0 bg-[url('/placeholder.svg?height=200&width=1000')] bg-cover bg-center opacity-10 mix-blend-overlay"></div>
-          <div className="relative flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
+          <div className="relative flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
             <div>
-              <div className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-blue-200" />
-                <h1 className="text-lg font-bold">
+              <div className="flex items-center gap-3">
+                <Sparkles className="h-6 w-6 text-blue-200" />
+                <h1 className="text-xl font-bold">
                   Welcome back, {user?.name}
                 </h1>
               </div>
-              <p className="mt-1 text-blue-100">
+              <p className="mt-2 text-blue-100">
                 Here&apos;s what&apos;s happening in your lab
               </p>
             </div>
-            {/* <div className="mt-4 flex items-center gap-3 md:mt-0">
-            <div className="rounded-lg bg-white/20 px-3 py-1 text-sm backdrop-blur-sm">
-              <span className="font-semibold">42</span> Active Cases
-            </div>
-            <div className="rounded-lg bg-white/20 px-3 py-1 text-sm backdrop-blur-sm">
-              <span className="font-semibold">18</span> Doctors
-            </div>
-          </div> */}
           </div>
         </div>
 
@@ -162,7 +153,7 @@ export default function DashboardPage() {
         <div>
           {isLoading ? (
             <motion.div
-              className="grid grid-cols-2 min-[1200px]:grid-cols-4 border border-border rounded-xl bg-gradient-to-br from-sidebar/60 to-sidebar"
+              className="grid grid-cols-2 min-[1200px]:grid-cols-4 gap-6 border border-border rounded-xl bg-gradient-to-br from-sidebar/60 to-sidebar" // added gap-6
               initial="hidden"
               animate="visible"
               variants={containerVariants}
@@ -197,7 +188,7 @@ export default function DashboardPage() {
 
         {/* Action Cards */}
         <motion.div
-          className="grid gap-4 grid-cols-1 md:grid-cols-3 lg:grid-cols-3"
+          className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
           initial="hidden"
           animate="visible"
           variants={containerVariants}
@@ -205,74 +196,57 @@ export default function DashboardPage() {
           {isLoading ? (
             <>
               {Array.from({ length: 3 }).map((_, i) => (
-                <motion.div
-                  key={i}
-                  variants={itemVariants}
-                  className="h-[200px]"
-                >
-                  <Card className="border border-muted h-full">
-                    <CardHeader className="pb-2">
-                      <Skeleton className="h-6 w-32" />
-                    </CardHeader>
-                    <CardContent className="pb-2">
-                      <Skeleton className="h-4 w-full" />
-                      <Skeleton className="h-4 w-2/3 mt-2" />
-                    </CardContent>
-                    <CardFooter className="mt-auto">
-                      <Skeleton className="h-9 w-full" />
-                    </CardFooter>
-                  </Card>
+                <motion.div key={i} variants={itemVariants}>
+                  <Skeleton className="h-48 w-full" />
                 </motion.div>
               ))}
             </>
           ) : (
-            actionCards.map((card, index) => (
+            actionCards.map((card) => (
               <motion.div
                 key={card.title}
                 variants={itemVariants}
                 whileHover="hover"
-                className="h-[200px]"
+                className="w-full"
               >
-                <Card
-                  className={cn(
-                    "border border-muted h-full",
-                    card.isPrimary && "bg-primary text-primary-foreground"
-                  )}
-                >
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-base flex items-center gap-2">
-                      {card.icon}
-                      {card.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="pb-2">
-                    <p className={cn(
-                      "text-sm",
-                      card.isPrimary ? "opacity-90" : "text-muted-foreground"
-                    )}>
-                      {card.description}
-                    </p>
-                  </CardContent>
-                  <CardFooter className="mt-auto">
-                    <Button
-                      variant={card.isPrimary ? "secondary" : "outline"}
-                      size="sm"
-                      className="w-full transition cursor-pointer to-secondary hover:from-secondary/80 hover:to-secondary/80"
-                      onClick={card.onClick}
-                      asChild={card.href !== undefined}
-                    >
-                      {card.href ? <Link href={card.href}>
-                        <Plus className="mr-1 h-4 w-4" />
-                        {card.buttonText}
-                      </Link> : (
-                        <>
-                          <Plus className="mr-1 h-4 w-4" />
+                {card.href ? (
+                  <Link href={card.href} className="block w-full">
+                    <Card className={`group border-border ${card.isPrimary ? "bg-primary" : "hover:border-primary/50"} transition-all hover:shadow-md h-full`}>
+                      <CardContent className="flex flex-col items-center justify-center gap-4">
+                        <div className="p-3 rounded-full bg-secondary/20 group-hover:bg-secondary/40 transition-colors">
+                          {card.icon}
+                        </div>
+                        <div className="text-center space-y-2">
+                          <h3 className="font-semibold text-foreground">{card.title}</h3>
+                          <p className="text-sm text-foreground/75">{card.description}</p>
+                        </div>
+                        {/* <Button variant="ghost" size="sm" className="mt-2">
+                          <Plus className="mr-2 size-4" />
                           {card.buttonText}
-                        </>
-                      )}
-                    </Button>
-                  </CardFooter>
-                </Card>
+                        </Button> */}
+                      </CardContent>
+                    </Card>
+                  </Link>
+                ) : (
+                  <Card 
+                    className="group border-border hover:border-primary/50 transition-all hover:shadow-md cursor-pointer h-full"
+                    onClick={card.onClick}
+                  >
+                    <CardContent className="flex flex-col items-center justify-center gap-4">
+                      <div className="p-3 rounded-full bg-primary/5 group-hover:bg-primary/10 transition-colors">
+                        {card.icon}
+                      </div>
+                      <div className="text-center space-y-2">
+                        <h3 className="font-semibold text-foreground">{card.title}</h3>
+                        <p className="text-sm text-muted-foreground">{card.description}</p>
+                      </div>
+                      {/* <Button variant="ghost" size="sm" className="mt-2">
+                        <Plus className="mr-2 size-4" />
+                        {card.buttonText}
+                      </Button> */}
+                    </CardContent>
+                  </Card>
+                )}
               </motion.div>
             ))
           )}
@@ -283,6 +257,7 @@ export default function DashboardPage() {
           initial="hidden"
           animate="visible"
           variants={containerVariants}
+          className="mt-2" // added margin top
         >
           <RecentCases cases={data?.recentCases ?? []} />
         </motion.div>

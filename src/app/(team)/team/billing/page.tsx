@@ -6,12 +6,15 @@ import Header from "@/components/layout/Header";
 import RedirectToAuth from "@/components/auth/custom-auth-redirect";
 import RedirectToOnboarding from "@/components/auth/custom-onboard-redirect";
 import { useTeam } from "@/providers/team-provider";
+import { usePermission } from "@/hooks/use-permissions";
+import ForbiddenPage from "@/components/forbidden";
 
 export default function BillingPage() {
-  const {isLoading, isAuthenticated, currentTeam} = useTeam();
+  const { isLoading, isAuthenticated, currentTeam, userRole } = useTeam();
+  const hasFinancialAccess = usePermission(userRole).checkPermission('financials', 'has')
   if (isLoading) {
     return (
-      <main className="bg-gradient-to-b from-background to-muted/30">
+      <main className="">
         <Header />
         <div className="flex items-center justify-center min-h-screen">
           <LoadingSpinner />
@@ -26,15 +29,26 @@ export default function BillingPage() {
 
   if (!currentTeam) {
     return (
-      <main className="bg-gradient-to-b from-background to-muted/30 min-h-screen">
+      <main className="">
         <Header />
         <RedirectToOnboarding />
       </main>
     );
   }
 
+  if (!hasFinancialAccess) {
+    return (
+      <main className="">
+        <Header />
+        <div className="flex items-center justify-center min-h-[90vh]">
+          <ForbiddenPage />
+        </div>
+      </main>
+    );
+  }
+
   return (
-    <main className="bg-gradient-to-b from-background to-muted/30 min-h-screen">
+    <main className="min-h-screen">
       <Header />
       <div className="max-w-7xl mx-auto pt-8 pb-16 px-4 sm:px-8">
         <PlanBillingPage />

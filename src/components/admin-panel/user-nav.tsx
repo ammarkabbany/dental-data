@@ -1,6 +1,6 @@
 "use client";
 
-import { FileText, FlaskConical, Settings, Users } from "lucide-react";
+import { FileText, Settings, SquareUserRound, UsersRoundIcon } from "lucide-react";
 
 import {
   Tooltip,
@@ -53,8 +53,8 @@ export function UserNav() {
           </div>
         </div>
         <DropdownMenuSeparator className="my-1" />
-        <DropdownMenuItem className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm transition">
-          <Users className="h-4 w-4" />
+        <DropdownMenuItem disabled className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm transition">
+          <SquareUserRound className="h-4 w-4" />
           Profile
         </DropdownMenuItem>
         <DropdownMenuItem className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm transition" asChild>
@@ -71,8 +71,8 @@ export function UserNav() {
         <DropdownMenuSeparator className="my-1" />
         <DropdownMenuItem className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm transition" asChild>
           <Link href={'/team'}>
-            <FlaskConical className="h-4 w-4" />
-            Lab Settings</Link>
+            <UsersRoundIcon className="h-4 w-4" />
+            Team</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator className="my-1" />
         <DropdownMenuItem onClick={logOut} className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm transition">

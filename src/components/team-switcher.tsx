@@ -23,7 +23,7 @@ export function TeamSwitcher() {
           size="lg"
           className="bg-transparent shadow-none h-12 hover:bg-sidebar-accent w-full text-sidebar-accent-foreground focus-visible:ring-0 gap-3 [&>svg]:size-auto"
         >
-          <div className="flex aspect-square size-8 items-center justify-center rounded-md overflow-hidden bg-sidebar-primary text-sidebar-primary-foreground">
+          <div className="flex aspect-square size-8 items-center justify-center rounded overflow-hidden bg-sidebar-primary text-sidebar-primary-foreground">
             {membership && (
               <TeamAvatar name={membership.teamName} />
             )}
@@ -55,7 +55,7 @@ export function TeamSwitcher() {
                 // onClick={() => setActiveTeam(team)}
                 className="gap-2 p-2  bg-accent"
               >
-                <div className="flex size-8 items-center justify-center rounded-md overflow-hidden">
+                <div className="flex size-8 items-center justify-center rounded overflow-hidden">
                   {membership && (
                     <TeamAvatar name={membership.teamName} />
                   )}

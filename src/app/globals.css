@@ -338,7 +338,7 @@
 }
 
 .sidebar-container::before {
-  content: '';
+  content: "";
   position: fixed;
   bottom: -20;
   left: 0;

@@ -33,7 +33,7 @@ export default function TeamPage() {
   } = useGetBillingPlan();
 
   if (isLoading) {
-    return <main className="bg-gradient-to-b from-background to-muted/30">
+    return <main className="">
       <Header />
       <div className="flex items-center justify-center min-h-screen">
         <LoadingSpinner />
@@ -46,7 +46,7 @@ export default function TeamPage() {
   }
 
   if (!currentTeam) {
-    return <main className="bg-gradient-to-b from-background to-muted/30 min-h-screen">
+    return <main className="min-h-screen">
       <Header />
       <RedirectToOnboarding />
     </main>
