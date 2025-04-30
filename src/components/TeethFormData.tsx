@@ -173,9 +173,12 @@ export default function TeethFormData({
           ))}
         </div>
       </div>
+      <div className="text-center text-sm text-muted-foreground mt-4">
+        <p>Select teeth by clicking. Use Shift+Click to select multiple teeth.</p>
+      </div>
 
       {/* Controls */}
-      {/* <div className="grid sm:grid-cols-2 gap-4 w-full max-w-[400px]">
+      <div className="grid sm:grid-cols-2 gap-4 w-full max-w-[400px]">
         <div className="space-y-2">
           <Label className="text-sm font-medium">Select Tooth</Label>
           <Select
@@ -208,7 +211,7 @@ export default function TeethFormData({
             </SelectTrigger>
             <SelectContent>
               {materials
-                .filter((_material) => _material?.$id !== selectedTooth?.materialId)
+                // .filter((_material) => _material?.$id !== selectedTooth?.materialId)
                 .map((_material, index) => (
                   <SelectItem key={index} value={_material?.$id}>
                     {_material.name} ({_material.price})
@@ -217,9 +220,6 @@ export default function TeethFormData({
             </SelectContent>
           </Select>
         </div>
-      </div> */}
-      <div className="text-center text-sm text-muted-foreground mt-4">
-        <p>Select teeth by clicking. Use Shift+Click to select multiple teeth.</p>
       </div>
     </div>
   );

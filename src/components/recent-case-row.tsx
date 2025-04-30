@@ -34,7 +34,7 @@ export const RecentCaseRow = ({ caseItem, className }: RecentCaseRowProps) => {
       <td className="whitespace-nowrap py-4 px-6 md:px-0">
         <div className="flex items-center gap-x-3">
           <UserAvatar 
-            className="ring-2 ring-offset-2 ring-offset-background ring-primary/10" 
+            className="ring-2 ring-offset-2 ring-offset-background ring-secondary" 
             image={caseItem.user?.avatar || "?"} 
             name={caseItem.user?.name || ""} 
           />

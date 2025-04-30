@@ -27,6 +27,7 @@ import { usePermission } from "@/hooks/use-permissions";
 import useTeamStore from "@/store/team-store";
 import { useDoctorsStore } from "@/store/doctors-store";
 import { useMaterialsStore } from "@/store/material-store";
+import { EditIcon } from "lucide-react";
 
 export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
   const {userRole, membership} = useTeamStore();
@@ -341,7 +342,7 @@ export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
         "data.upper.left",
         data?.upper?.left?.map((t) =>
           t.label === newValue.label
-            ? { ...t, material: newValue.material.$id }
+            ? { ...t, materialId: newValue.material.$id }
             : t
         )
       );
@@ -349,7 +350,7 @@ export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
         "data.upper.right",
         data?.upper?.right?.map((t) =>
           t.label === newValue.label
-            ? { ...t, material: newValue.material.$id }
+            ? { ...t, materialId: newValue.material.$id }
             : t
         )
       );
@@ -357,7 +358,7 @@ export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
         "data.lower.left",
         data?.lower?.left?.map((t) =>
           t.label === newValue.label
-            ? { ...t, material: newValue.material.$id }
+            ? { ...t, materialId: newValue.material.$id }
             : t
         )
       );
@@ -365,7 +366,7 @@ export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
         "data.lower.right",
         data?.lower?.right?.map((t) =>
           t.label === newValue.label
-            ? { ...t, material: newValue.material.$id }
+            ? { ...t, materialId: newValue.material.$id }
             : t
         )
       );
@@ -427,6 +428,7 @@ export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
             variant="ghost"
             className="w-full justify-start"
           >
+            <EditIcon size={16} className="opacity-60" aria-hidden="true" />
             Edit
           </Button>
         </DialogTrigger>
@@ -614,7 +616,7 @@ export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
                 </div>
                 <div className="mt-4">
                   <TeethFormData
-                    data={[]}
+                    data={teethData}
                     checkedTeeth={checkedTeeth}
                     materials={materials || []}
                     handleChangeToothMaterial={handleChangeToothMaterial}

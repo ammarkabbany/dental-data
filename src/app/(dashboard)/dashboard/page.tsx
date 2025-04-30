@@ -8,7 +8,6 @@ import RecentCases from "@/components/recent-cases";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
 import {
-  Plus,
   Sparkles,
 } from "lucide-react";
 import { Action, Resource, usePermission } from "@/hooks/use-permissions";
@@ -17,13 +16,8 @@ import { formatNumbers } from "@/lib/format-utils";
 import {
   Card,
   CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
 import { Modals, useModalStore } from "@/store/modal-store";
 import { MaterialCreateModal } from "@/components/materials/create-material-modal";
 import { DoctorCreateModal } from "@/components/doctors/create-doctor-modal";
@@ -84,22 +78,22 @@ export default function DashboardPage() {
       href: "/dashboard/materials",
       icon: <CubeIcon className="size-6" />,
     },
-    {
-      title: "N/A",
-      value: formatNumbers(0),
-      // change: {
-      //   value: "0%",
-      //   trend: "down",
-      // },
-      href: "#",
-      icon: <QuestionMarkIcon className="size-6" />,
-    },
+    // {
+    //   title: "N/A",
+    //   value: formatNumbers(0),
+    //   // change: {
+    //   //   value: "0%",
+    //   //   trend: "down",
+    //   // },
+    //   href: "#",
+    //   icon: <QuestionMarkIcon className="size-6" />,
+    // },
   ];
 
   const actionCards = [
     {
       title: "New Case",
-      description: "Create and manage patient cases",
+      description: "Create and manage cases",
       isPrimary: true,
       icon: <FileTextIcon className="size-5" />,
       href: "/dashboard/cases/new",
@@ -107,7 +101,7 @@ export default function DashboardPage() {
     },
     {
       title: "New Doctor",
-      description: "Add doctors to your network",
+      description: "Add doctors to your lab",
       isPrimary: false,
       icon: <HugeiconsIcon icon={Doctor02Icon} className="size-5" />,
       onClick: () => openModal(Modals.CREATE_DOCTOR_MODAL),
@@ -115,7 +109,7 @@ export default function DashboardPage() {
     },
     {
       title: "New Material",
-      description: "Track dental materials and inventory",
+      description: "Add materials to your lab",
       isPrimary: false,
       icon: <CubeIcon className="size-5" />,
       onClick: () => openModal(Modals.CREATE_MATERIAL_MODAL),

@@ -42,6 +42,20 @@ export const getColumns = (): ColumnDef<Case>[] => [
   },
   {
     accessorKey: "date",
+    sortingFn: "datetime", // Use built-in datetime sorting
+    filterFn: (row, columnId, filterValue) => {
+      if (filterValue === undefined) {
+        return true; // No filtering if no filter value is set
+      }
+      const rowDate = new Date(row.getValue(columnId));
+      const { from: startDate, to: endDate } = filterValue;
+
+      if (!startDate || !endDate) {
+        return true; // No filtering if date range is not set
+      }
+
+      return rowDate >= new Date(startDate) && rowDate <= new Date(endDate);
+    },
     header: ({ column }) => (
       <Button
         variant="ghost"

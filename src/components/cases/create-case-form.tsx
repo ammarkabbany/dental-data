@@ -337,7 +337,7 @@ export const CreateCaseForm = () => {
         "data.upper.left",
         data?.upper?.left?.map((t) =>
           t.label === newValue.label
-            ? { ...t, material: newValue.material.$id }
+            ? { ...t, materialId: newValue.material.$id }
             : t
         )
       );
@@ -345,7 +345,7 @@ export const CreateCaseForm = () => {
         "data.upper.right",
         data?.upper?.right?.map((t) =>
           t.label === newValue.label
-            ? { ...t, material: newValue.material.$id }
+            ? { ...t, materialId: newValue.material.$id }
             : t
         )
       );
@@ -353,7 +353,7 @@ export const CreateCaseForm = () => {
         "data.lower.left",
         data?.lower?.left?.map((t) =>
           t.label === newValue.label
-            ? { ...t, material: newValue.material.$id }
+            ? { ...t, materialId: newValue.material.$id }
             : t
         )
       );
@@ -361,7 +361,7 @@ export const CreateCaseForm = () => {
         "data.lower.right",
         data?.lower?.right?.map((t) =>
           t.label === newValue.label
-            ? { ...t, material: newValue.material.$id }
+            ? { ...t, materialId: newValue.material.$id }
             : t
         )
       );

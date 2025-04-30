@@ -9,6 +9,7 @@ import {
   Layers,
   ShieldUser,
   Logs,
+  ClipboardListIcon,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -110,6 +111,12 @@ export function Menu({ isOpen }: MenuProps) {
                 label="Templates"
                 active={isActive("templates")}
                 onClick={() => navigate("/dashboard/templates")}
+              />
+              <NavItem
+                icon={ClipboardListIcon}
+                label="Logs"
+                active={isActive("logs")}
+                onClick={() => navigate("/dashboard/logs")}
               />
 
               {permission.canViewDue() && (

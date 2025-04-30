@@ -251,7 +251,7 @@ export function DoctorsDataTable({ data = [] }: DataTableProps) {
             </Button>
           </div>
         </div> */}
-        <DataTablePagination table={table} />
+        <DataTablePagination table={table} selectionEnabled={false} />
       </div>
     </div>
   );

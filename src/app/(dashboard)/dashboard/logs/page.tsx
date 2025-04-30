@@ -4,17 +4,15 @@ import { FileIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
-import useTeamStore from "@/store/team-store";
 import { AuditLogTable } from "@/components/audit-logs/AuditLogTable";
 import { AUDIT_LOGS_COLLECTION_ID, DATABASE_ID } from "@/lib/constants";
 import { AuditLogEntry } from "@/types";
 import { useGetLogs } from "@/features/logs/hooks/use-get-logs";
 
 export default function AuditLogsPage() {
-  const {userRole} = useTeamStore();
   // const canCreate = usePermission(userRole).checkPermission('cases', 'create');
   const { data: logs, isLoading } = useGetLogs();
-  const showEmptyState = !isLoading && (!logs || logs.length === 0);
+  const showEmptyState = !isLoading && (!logs || logs.total === 0);
 
   const mockLogs: AuditLogEntry[] = [
     {
@@ -111,7 +109,7 @@ export default function AuditLogsPage() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <AuditLogTable data={logs} />
+            <AuditLogTable />
           </motion.div>
         )}
       </AnimatePresence>

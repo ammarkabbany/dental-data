@@ -101,7 +101,7 @@ interface StatsGridProps {
 
 export function StatsGrid({ stats }: StatsGridProps) {
   return (
-    <div className={`grid grid-cols-2 min-[1200px]:grid-cols-${stats.length} border border-border rounded-xl bg-gradient-to-br from-sidebar/60 to-sidebar`}>
+    <div className={`grid grid-cols-2 min-md:grid-cols-3 border border-border rounded-xl bg-gradient-to-br from-sidebar/60 to-sidebar`}>
       {stats.map((stat) => (
         <StatsCard key={stat.title} {...stat} />
       ))}

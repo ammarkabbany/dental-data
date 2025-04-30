@@ -1,9 +1,10 @@
 "use client";
 import AdminPanelLayout from "@/components/admin-panel/admin-panel-layout";
 import { useQueryClient } from "@tanstack/react-query";
-import { Case } from "@/types";
+import { AuditLogEntry, Case } from "@/types";
 import { useRealtimeUpdates } from "@/hooks/use-realtime-updates";
 import {
+  AUDIT_LOGS_COLLECTION_ID,
   CASES_COLLECTION_ID,
   TEMPLATES_COLLECTION_ID,
 } from "@/lib/constants";
@@ -45,8 +46,30 @@ export default function DashboardLayout({
         oldData.filter((c) => c.$id !== caseData.$id)
       );
     }
-    queryClient.refetchQueries({ queryKey: ["dashboard"] });
+    // queryClient.refetchQueries({ queryKey: ["dashboard"] });
   });
+  // useRealtimeUpdates(AUDIT_LOGS_COLLECTION_ID, (payload) => {
+  //   const events = payload.events;
+  //   const entryData: AuditLogEntry = payload.payload;
+
+  //   if (events.includes("databases.*.collections.*.documents.*.create")) {
+  //     queryClient.setQueryData(['logs'], (oldData: any[]) => [entryData, ...oldData]);
+  //   }
+  //   else if (
+  //     events.includes("databases.*.collections.*.documents.*.update")
+  //   ) {
+  //     queryClient.setQueryData(["logs"], (oldData: any[]) =>
+  //       oldData.map((c) => (c.$id === entryData.$id ? entryData : c))
+  //     );
+  //   }
+  //   else if (
+  //     events.includes("databases.*.collections.*.documents.*.delete")
+  //   ) {
+  //     queryClient.setQueryData(["logs"], (oldData: any[]) =>
+  //       oldData.filter((c) => c.$id !== entryData.$id)
+  //     );
+  //   }
+  // });
   useRealtimeUpdates(TEMPLATES_COLLECTION_ID, () => {
     queryClient.invalidateQueries({ queryKey: ["templates"] });
   });

@@ -5,27 +5,64 @@ import { DATABASE_ID, AUDIT_LOGS_COLLECTION_ID } from "@/lib/constants";
 import { Query } from "appwrite";
 import { getUserInfo } from "@/features/auth/actions";
 
-export const useGetLogs = () => {
+// Define filter types for better type safety
+export interface LogFilters {
+  action?: string;
+  resource?: string;
+  userId?: string;
+  search?: string;
+}
+
+export const useGetLogs = (
+  pageIndex = 0, 
+  pageSize = 10, 
+  filters: LogFilters = {}
+) => {
   return useQuery({
-    queryKey: ["logs"],
+    queryKey: ["logs", pageIndex, pageSize, filters],
     queryFn: async () => {
+      const offset = pageIndex * pageSize;
+      
+      // Start with basic query parameters
+      const queryParams = [
+        Query.limit(pageSize),
+        Query.offset(offset),
+        Query.orderDesc("timestamp"),
+        Query.select([
+          "$id",
+          "timestamp",
+          "$createdAt",
+          "teamId",
+          "userId",
+          "action",
+          "resource",
+          "resourceId",
+        ])
+      ];
+      
+      // Add filter conditions if provided
+      if (filters.action) {
+        queryParams.push(Query.equal("action", filters.action));
+      }
+      
+      if (filters.resource) {
+        queryParams.push(Query.equal("resource", filters.resource));
+      }
+      
+      if (filters.userId) {
+        queryParams.push(Query.equal("userId", filters.userId));
+      }
+      
+      if (filters.search) {
+        // Add text search if available in Appwrite
+        // If not available, you might need to fetch more data and filter client-side
+        queryParams.push(Query.search("resourceId", filters.search));
+      }
+
       const logs = await databases.listDocuments<AuditLogEntry>(
         DATABASE_ID,
         AUDIT_LOGS_COLLECTION_ID,
-        [
-          Query.limit(100),
-          Query.orderDesc("timestamp"),
-          Query.select([
-            "$id",
-            "timestamp",
-            "$createdAt",
-            "teamId",
-            "userId",
-            "action",
-            "resource",
-            "resourceId",
-          ])
-        ]
+        queryParams
       );
 
       const userIds = [...new Set(logs.documents.map((row) => row.userId))];
@@ -46,7 +83,10 @@ export const useGetLogs = () => {
         user: userInfoMap[log.userId] || null,
       }));
 
-      return logs.documents;
+      return {
+        documents: logs.documents,
+        total: logs.total,
+      };
     },
   });
 };
@@ -54,27 +94,50 @@ export const useGetLogs = () => {
 export const usePrefetchLogs = () => {
   const queryClient = useQueryClient();
 
-  return async () => {
+  return async (pageIndex = 0, pageSize = 10, filters: LogFilters = {}) => {
     await queryClient.prefetchQuery({
-      queryKey: ["logs"],
+      queryKey: ["logs", pageIndex, pageSize, filters],
       queryFn: async () => {
+        const offset = pageIndex * pageSize;
+        
+        // Start with basic query parameters
+        const queryParams = [
+          Query.limit(pageSize),
+          Query.offset(offset),
+          Query.orderDesc("timestamp"),
+          Query.select([
+            "$id",
+            "timestamp",
+            "$createdAt",
+            "teamId",
+            "userId",
+            "action",
+            "resource",
+            "resourceId",
+          ])
+        ];
+        
+        // Add filter conditions if provided
+        if (filters.action) {
+          queryParams.push(Query.equal("action", filters.action));
+        }
+        
+        if (filters.resource) {
+          queryParams.push(Query.equal("resource", filters.resource));
+        }
+        
+        if (filters.userId) {
+          queryParams.push(Query.equal("userId", filters.userId));
+        }
+        
+        if (filters.search) {
+          queryParams.push(Query.search("resourceId", filters.search));
+        }
+
         const logs = await databases.listDocuments<AuditLogEntry>(
           DATABASE_ID,
           AUDIT_LOGS_COLLECTION_ID,
-          [
-            Query.limit(100),
-            Query.orderDesc("timestamp"),
-            Query.select([
-              "$id",
-              "$createdAt",
-              "timestamp",
-              "teamId",
-              "userId",
-              "action",
-              "resource",
-              "resourceId",
-            ])
-          ]
+          queryParams
         );
 
         const userIds = [...new Set(logs.documents.map((row) => row.userId))];
@@ -95,7 +158,10 @@ export const usePrefetchLogs = () => {
           user: userInfoMap[log.userId] || null,
         }));
 
-        return logs.documents;
+        return {
+          documents: logs.documents,
+          total: logs.total,
+        };
       },
     });
   };

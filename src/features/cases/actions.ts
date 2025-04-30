@@ -118,6 +118,7 @@ export const UpdateCase = async (
       shade: data.shade || "-",
       teamId,
       data: JSON.stringify(data.data),
+      due: Math.max(0, data.due || 0),
     }
   );
 
@@ -158,84 +159,88 @@ export const DeleteCase = async (
   ids: Case["$id"][],
   teamId: Case["teamId"]
 ) => {
-  const { functions, databases } = await createAdminClient();
-
-  const doctorUpdates: {
-    [key: string]: any;
-  } = {};
-
-  const promises = ids.map(async (documentId) => {
-    const document = await GetCaseById(documentId);
-    const doctorId = document.doctorId;
-
-    // Delete the document
-    await databases.deleteDocument(
-      DATABASE_ID,
-      CASES_COLLECTION_ID,
-      documentId
-    );
-
-    // Log the deletion
-    await LogAuditEvent({
-      userId: document.userId,
-      teamId: document.teamId,
-      action: "DELETE",
-      resource: "CASE",
-      resourceId: document.$id,
-      changes: {
-        before: document,
-        after: {},
-      },
-      timestamp: new Date().toISOString(),
-    });
-
-    // Prepare the doctor update if it doesn't exist yet
-    if (!doctorUpdates[doctorId]) {
-      doctorUpdates[doctorId] = {
-        due: 0,
-        totalCases: 0,
-      };
-    }
-
-    // Accumulate the due and total cases for the doctor
-    doctorUpdates[doctorId].due += document.due || 0;
-    doctorUpdates[doctorId].totalCases += 1; // Increment for each document being deleted
-  });
-
-  // Wait for all deletions to complete
-  await Promise.all(promises);
-
-  // Now update each doctor with the accumulated values
-  for (const [doctorId, updateData] of Object.entries(doctorUpdates)) {
-    const doctor = await GetDoctorById(doctorId);
-    if (doctor) {
-      const doctorData = {
-        due: Math.max((doctor.due || 0) - updateData.due, 0),
-        totalCases: Math.max(
-          0,
-          (doctor.totalCases || 0) - updateData.totalCases
-        ),
-      };
-      await UpdateDoctor(doctorId, doctorData);
-    }
+  if (!Array.isArray(ids) || ids.length === 0) {
+    throw new Error("Invalid input: 'ids' must be a non-empty array.");
   }
 
-  // Update team
-  // const team = await getTeamById(teamId, [Query.select(["casesUsed"])]);
-  // if (team) {
-  //   await updateTeam(teamId, {
-  //     casesUsed: Math.max(0, (team.casesUsed || 0) - ids.length),
-  //   });
-  // }
+  if (!teamId) {
+    throw new Error("Invalid input: 'teamId' is required.");
+  }
 
-  // return await functions.createExecution(
-  //   process.env.NEXT_DOCUMENT_UPDATE_FUNCTION_ID!,
-  //   JSON.stringify({ documents: ids }),
-  //   false,
-  //   "/deletedocuments",
-  //   ExecutionMethod.POST,
-  //   { databaseid: DATABASE_ID, collectionid: CASES_COLLECTION_ID }
-  // );
+  const { databases } = await createAdminClient();
+  const doctorUpdates: {
+    [key: string]: { due: number; totalCases: number };
+  } = {};
+
+  const lock = new Set(); // Simulated lock for thread-safe doctorUpdates
+
+  const handleCaseDeletion = async (documentId: string) => {
+    try {
+      const document = await GetCaseById(documentId);
+      if (!document) {
+        console.warn(`Case with ID ${documentId} not found.`);
+        return;
+      }
+
+      const doctorId = document.doctorId;
+
+      // Delete the document
+      await databases.deleteDocument(DATABASE_ID, CASES_COLLECTION_ID, documentId);
+
+      // Log the deletion
+      await LogAuditEvent({
+        userId: document.userId,
+        teamId: document.teamId,
+        action: "DELETE",
+        resource: "CASE",
+        resourceId: document.$id,
+        changes: {
+          before: document,
+          after: {},
+        },
+        timestamp: new Date().toISOString(),
+      });
+
+      // Update doctorUpdates map in a thread-safe way
+      if (!lock.has(doctorId)) {
+        lock.add(doctorId);
+        doctorUpdates[doctorId] = { due: 0, totalCases: 0 };
+      }
+
+      doctorUpdates[doctorId].due += document.due || 0;
+      doctorUpdates[doctorId].totalCases += 1;
+    } catch (error) {
+      console.error(`Failed to delete case with ID ${documentId}:`, error);
+    }
+  };
+
+  // Process all deletions in parallel
+  await Promise.allSettled(ids.map((id) => handleCaseDeletion(id)));
+
+  // Apply doctor updates in batches
+  const updateDoctorRecords = async () => {
+    for (const [doctorId, updateData] of Object.entries(doctorUpdates)) {
+      try {
+        const doctor = await GetDoctorById(doctorId);
+        if (!doctor) {
+          console.warn(`Doctor with ID ${doctorId} not found.`);
+          continue;
+        }
+
+        const updatedDoctorData = {
+          due: Math.max((doctor.due || 0) - updateData.due, 0),
+          totalCases: Math.max((doctor.totalCases || 0) - updateData.totalCases, 0),
+        };
+
+        await UpdateDoctor(doctorId, updatedDoctorData);
+      } catch (error) {
+        console.error(`Failed to update doctor with ID ${doctorId}:`, error);
+      }
+    }
+  };
+
+  // Execute the doctor updates
+  await updateDoctorRecords();
 };
 
 export const GetCases = async (): Promise<Case[]> => {

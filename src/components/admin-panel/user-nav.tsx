@@ -29,7 +29,7 @@ export function UserNav() {
         <Tooltip delayDuration={100}>
           <TooltipTrigger asChild>
             <DropdownMenuTrigger className="hover:opacity-80 transition bg-white rounded-full">
-              <UserAvatar className="size-10" name={user?.name || ""} image={user?.avatar} />
+              <UserAvatar className="size-10 ring ring-offset-2 ring-offset-background" name={user?.name || ""} image={user?.avatar} />
             </DropdownMenuTrigger>
           </TooltipTrigger>
           <TooltipContent side="bottom">Profile</TooltipContent>
@@ -42,7 +42,7 @@ export function UserNav() {
         forceMount
       >
         <div className="flex items-center gap-3 p-2">
-          <UserAvatar className="bg-white size-9" name={user?.name || ""} image={user?.avatar} />
+          <UserAvatar className="bg-white size-9 ring-2 ring-offset-2 ring-offset-background ring-secondary" name={user?.name || ""} image={user?.avatar} />
           <div className="flex flex-col space-y-0.5">
             <p className="text-sm font-medium leading-none text-white">{user?.name}</p>
             <p className="text-xs leading-none">{shortenString(user?.email, 25)}</p>

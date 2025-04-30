@@ -18,7 +18,7 @@ export const UserAvatar = ({ image, name, className, imgClassName }: UserAvatarP
           className
         )}
       >
-        <Image unoptimized src={image} alt={name} sizes="24" fill className="object-cover" />
+        <Image src={image} alt={name} sizes="24" fill className="object-cover" />
       </Avatar>
     );
   }

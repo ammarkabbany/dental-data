@@ -89,7 +89,6 @@ export default function AccountGeneralSettingsForm() {
                             ? URL.createObjectURL(field.value)
                             : field.value
                         }
-                        unoptimized
                       />
                     </div>
                   ) : (

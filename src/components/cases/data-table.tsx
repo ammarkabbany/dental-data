@@ -89,7 +89,7 @@ export function CasesDataTable({ data = [] }: DataTableProps) {
     React.useState<Row<Case> | null>(null);
 
   const handleRowSelection = (e: MouseEvent, row: Row<Case>) => {
-    const rows = table.getRowModel().rows;
+    const rows = table.getFilteredRowModel().rows;
 
     if (
       e.target instanceof HTMLElement &&
@@ -134,7 +134,7 @@ export function CasesDataTable({ data = [] }: DataTableProps) {
           type="scroll"
         >
           <Table className="table-fixed border-separate border-spacing-0 [&_tr:not(:last-child)_td]:border-b">
-            <TableHeader className="sticky z-50 top-0 bg-accent !rounded-full">
+            <TableHeader className="sticky z-30 top-0 bg-accent !rounded-full">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
