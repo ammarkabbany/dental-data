@@ -97,7 +97,7 @@ export function CustomComboBox({
                   value={entry[property]}
                   onSelect={(currentValue: any) => handleOnSelect(currentValue)}
                 >
-                  {entry.name} {label === "material" && "/ "+ entry.price}
+                  {entry.name} {label === "material" && " ("+ entry.price + ")"}
                   <Check
                     className={cn(
                       "ml-auto h-4 w-4",

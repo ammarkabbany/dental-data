@@ -504,9 +504,9 @@ export const EditCaseModal = ({ selectedCase }: { selectedCase: Case }) => {
                               values={materials || []}
                               value={field.value}
                               action={handleMaterialSelection}
-                              previewValue={`${getMaterialById(field.value)?.name} ${
+                              previewValue={`${getMaterialById(field.value)?.name} (${
                                 getMaterialById(field.value)?.price
-                              }`}
+                              })`}
                             />
                           </FormControl>
                           <FormMessage />
