@@ -332,10 +332,15 @@ export const CreateCaseForm = () => {
         (mat) => mat.$id === tooth.materialId
       );
       handleDueSpecific(toothMaterial ?? newValue.material, newValue.material);
-      const data = form.getValues().data;
+      const data = form.getValues().data || {
+        upper: { left: [], right: [] },
+        lower: { left: [], right: [] }
+      };
+      
+      // Update tooth material in each quadrant with null checks
       form.setValue(
         "data.upper.left",
-        data?.upper?.left?.map((t) =>
+        (data?.upper?.left || []).map((t) =>
           t.label === newValue.label
             ? { ...t, materialId: newValue.material.$id }
             : t
@@ -343,7 +348,7 @@ export const CreateCaseForm = () => {
       );
       form.setValue(
         "data.upper.right",
-        data?.upper?.right?.map((t) =>
+        (data?.upper?.right || []).map((t) =>
           t.label === newValue.label
             ? { ...t, materialId: newValue.material.$id }
             : t
@@ -351,7 +356,7 @@ export const CreateCaseForm = () => {
       );
       form.setValue(
         "data.lower.left",
-        data?.lower?.left?.map((t) =>
+        (data?.lower?.left || []).map((t) =>
           t.label === newValue.label
             ? { ...t, materialId: newValue.material.$id }
             : t
@@ -359,12 +364,13 @@ export const CreateCaseForm = () => {
       );
       form.setValue(
         "data.lower.right",
-        data?.lower?.right?.map((t) =>
+        (data?.lower?.right || []).map((t) =>
           t.label === newValue.label
             ? { ...t, materialId: newValue.material.$id }
             : t
         )
       );
+      
       setTeethData([
         ...teethData.filter((t) => t.label !== newValue.label),
         { ...newValue, materialId: newValue.material.$id },
@@ -517,9 +523,9 @@ export const CreateCaseForm = () => {
                               values={materials || []}
                               value={field.value}
                               action={handleMaterialSelection}
-                              previewValue={`${getMaterialById(field.value)?.name} ${
+                              previewValue={`${getMaterialById(field.value)?.name} (${
                                 getMaterialById(field.value)?.price
-                              }`}
+                              })`}
                             />
                           </FormControl>
                           <FormMessage />
