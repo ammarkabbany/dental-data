@@ -32,3 +32,8 @@ export const shortenString = (name?: string, length: number = 15) => {
   if (!name) return 'Undefined String'
   return name.length > length ? name.substring(0, length) + "..." : name
 }
+
+export const getYearlyPrice = (monthlyPrice: number, discount = 0.20) => {
+  const fullYear = monthlyPrice * 12;
+  return (fullYear * (1 - discount)).toFixed(2);
+};

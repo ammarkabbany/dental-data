@@ -18,6 +18,8 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
+  CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -26,6 +28,9 @@ import Logo from "@/components/logo";
 import Header from "@/components/layout/Header";
 import { useAuth } from "@/providers/auth-provider";
 import { InstagramLogoIcon } from "@radix-ui/react-icons";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Plans } from "@/lib/constants";
+import { formatCurrency, getYearlyPrice } from "@/lib/format-utils";
 
 export default function Homepage() {
   const { handleLogin, isAuthenticated, isLoading } = useAuth();
@@ -53,7 +58,7 @@ export default function Homepage() {
             >
               Workflow
             </div>
-            {/* <div onClick={() => handleClickScroll('pricing')} className="text-sm cursor-pointer font-medium hover:text-primary transition-colors">Pricing</div> */}
+            <div onClick={() => handleClickScroll('pricing')} className="text-sm cursor-pointer font-medium hover:text-primary transition-colors">Pricing</div>
           </nav>
         </Header>
 
@@ -372,7 +377,7 @@ export default function Homepage() {
           </section>
 
           {/* Pricing Section */}
-          {/* <section id="pricing" className="py-20 md:py-28 w-full">
+          <section id="pricing" className="py-20 md:py-28 w-full">
           <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
@@ -392,58 +397,12 @@ export default function Homepage() {
                 <div className="flex justify-center mb-8">
                   <TabsList>
                     <TabsTrigger value="monthly">Monthly</TabsTrigger>
-                    <TabsTrigger value="annually">Annually (Save 20%)</TabsTrigger>
+                    <TabsTrigger value="annually">Annually (Save 25%)</TabsTrigger>
                   </TabsList>
                 </div>
                 <TabsContent value="monthly">
                   <div className="grid gap-6 lg:grid-cols-3">
-                    {[
-                      {
-                        title: "Starter",
-                        price: "$99",
-                        description: "Perfect for small dental labs just getting started",
-                        features: [
-                          "Up to 2 users",
-                          "100 cases per month",
-                          "Basic reporting",
-                          "Doctor management",
-                          "Email support"
-                        ],
-                        cta: "Get Started",
-                        popular: false
-                      },
-                      {
-                        title: "Professional",
-                        price: "$249",
-                        description: "Ideal for growing dental laboratories",
-                        features: [
-                          "Up to 10 users",
-                          "Unlimited cases",
-                          "Advanced analytics",
-                          "Inventory management",
-                          "Priority support",
-                          "API access"
-                        ],
-                        cta: "Get Started",
-                        popular: true
-                      },
-                      {
-                        title: "Enterprise",
-                        price: "$499",
-                        description: "For large labs with complex requirements",
-                        features: [
-                          "Unlimited users",
-                          "Unlimited cases",
-                          "Custom reporting",
-                          "Dedicated account manager",
-                          "24/7 phone support",
-                          "Custom integrations",
-                          "Training sessions"
-                        ],
-                        cta: "Contact Sales",
-                        popular: false
-                      }
-                    ].map((plan, index) => (
+                    {Plans.map((plan, index) => (
                       <motion.div
                         key={index}
                         initial={{ opacity: 0, y: 20 }}
@@ -451,35 +410,35 @@ export default function Homepage() {
                         transition={{ duration: 0.5, delay: index * 0.1 }}
                         viewport={{ once: true }}
                       >
-                        <Card className={`flex flex-col relative ${plan.popular ? "border-primary shadow-lg" : ""}`}>
+                        <Card className={`flex flex-col h-[350px] relative ${plan.popular ? "border-primary shadow-lg" : ""}`}>
                           {plan.popular && (
                             <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                               <Badge variant="default" className="px-6 py-1 text-sm">Most Popular</Badge>
                             </div>
                           )}
                           <CardHeader>
-                            <CardTitle>{plan.title}</CardTitle>
+                            <CardTitle>{plan.name}</CardTitle>
                             <div className="flex items-baseline gap-1">
-                              <span className="text-3xl font-bold">{plan.price}</span>
+                              <span className="text-3xl font-bold">{formatCurrency(plan.price, 'EGP', 0)}</span>
                               <span className="text-muted-foreground">/month</span>
                             </div>
-                            <CardDescription>{plan.description}</CardDescription>
+                            <CardDescription>{plan.desc}</CardDescription>
                           </CardHeader>
                           <CardContent className="flex-1">
                             <ul className="space-y-2 text-sm">
                               {plan.features.map((feature, i) => (
                                 <li key={i} className="flex items-center">
-                                  <Check className="mr-2 h-4 w-4 text-primary" />
-                                  <span>{feature}</span>
+                                  <feature.icon className="mr-2 h-4 w-4 text-primary" />
+                                  <span>{feature.text}</span>
                                 </li>
                               ))}
                             </ul>
                           </CardContent>
-                          <CardFooter>
+                          {/* <CardFooter>
                             <Button className="w-full" variant={plan.popular ? "default" : "outline"}>
-                              {plan.cta}
+                              {plan.}
                             </Button>
-                          </CardFooter>
+                          </CardFooter> */}
                         </Card>
                       </motion.div>
                     ))}
@@ -487,53 +446,7 @@ export default function Homepage() {
                 </TabsContent>
                 <TabsContent value="annually">
                   <div className="grid gap-6 lg:grid-cols-3">
-                    {[
-                      {
-                        title: "Starter",
-                        price: "$79",
-                        description: "Perfect for small dental labs just getting started",
-                        features: [
-                          "Up to 2 users",
-                          "100 cases per month",
-                          "Basic reporting",
-                          "Doctor management",
-                          "Email support"
-                        ],
-                        cta: "Get Started",
-                        popular: false
-                      },
-                      {
-                        title: "Professional",
-                        price: "$199",
-                        description: "Ideal for growing dental laboratories",
-                        features: [
-                          "Up to 10 users",
-                          "Unlimited cases",
-                          "Advanced analytics",
-                          "Inventory management",
-                          "Priority support",
-                          "API access"
-                        ],
-                        cta: "Get Started",
-                        popular: true
-                      },
-                      {
-                        title: "Enterprise",
-                        price: "$399",
-                        description: "For large labs with complex requirements",
-                        features: [
-                          "Unlimited users",
-                          "Unlimited cases",
-                          "Custom reporting",
-                          "Dedicated account manager",
-                          "24/7 phone support",
-                          "Custom integrations",
-                          "Training sessions"
-                        ],
-                        cta: "Contact Sales",
-                        popular: false
-                      }
-                    ].map((plan, index) => (
+                    {Plans.map((plan, index) => (
                       <motion.div
                         key={index}
                         initial={{ opacity: 0, y: 20 }}
@@ -541,35 +454,35 @@ export default function Homepage() {
                         transition={{ duration: 0.5, delay: index * 0.1 }}
                         viewport={{ once: true }}
                       >
-                        <Card className={`flex flex-col relative ${plan.popular ? "border-primary shadow-lg" : ""}`}>
+                        <Card className={`flex flex-col h-[350px] relative ${plan.popular ? "border-primary shadow-lg" : ""}`}>
                           {plan.popular && (
                             <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                               <Badge variant="default" className="px-6 py-1 text-sm">Most Popular</Badge>
                             </div>
                           )}
                           <CardHeader>
-                            <CardTitle>{plan.title}</CardTitle>
+                            <CardTitle>{plan.name}</CardTitle>
                             <div className="flex items-baseline gap-1">
-                              <span className="text-3xl font-bold">{plan.price}</span>
-                              <span className="text-muted-foreground">/month</span>
+                              <span className="text-3xl font-bold">{formatCurrency(getYearlyPrice(plan.price, 0.25), 'EGP', 0)}</span>
+                              <span className="text-muted-foreground">/year</span>
                             </div>
-                            <CardDescription>{plan.description}</CardDescription>
+                            <CardDescription>{plan.desc}</CardDescription>
                           </CardHeader>
                           <CardContent className="flex-1">
                             <ul className="space-y-2 text-sm">
                               {plan.features.map((feature, i) => (
                                 <li key={i} className="flex items-center">
-                                  <Check className="mr-2 h-4 w-4 text-primary" />
-                                  <span>{feature}</span>
+                                  <feature.icon className="mr-2 h-4 w-4 text-primary" />
+                                  <span>{feature.text}</span>
                                 </li>
                               ))}
                             </ul>
                           </CardContent>
-                          <CardFooter>
+                          {/* <CardFooter>
                             <Button className="w-full" variant={plan.popular ? "default" : "outline"}>
-                              {plan.cta}
+                              {plan.features}
                             </Button>
-                          </CardFooter>
+                          </CardFooter> */}
                         </Card>
                       </motion.div>
                     ))}
@@ -578,7 +491,7 @@ export default function Homepage() {
               </Tabs>
             </div>
           </div>
-        </section> */}
+        </section>
 
           {/* FAQ Section */}
           {/* <section id="faq" className="py-20 md:py-28 w-full">
@@ -714,6 +627,12 @@ export default function Homepage() {
                     className="text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
                   >
                     Workflow
+                  </li>
+                  <li
+                    onClick={() => handleClickScroll("pricing")}
+                    className="text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
+                  >
+                    Pricing
                   </li>
                 </ul>
               </div>
