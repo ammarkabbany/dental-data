@@ -27,6 +27,7 @@ export const Plans = [
     desc: 'Test out the platform.',
     price: 0,
     features: [
+      { text: "14 days free trial", icon: Clock },
       { text: "100 cases", icon: Database },
       { text: "1 team member", icon: Users },
       { text: "Basic support", icon: MessageSquare },
