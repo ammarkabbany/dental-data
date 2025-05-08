@@ -8,7 +8,10 @@ export const useCreateCase = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({data, teamId, userId}: {data: Partial<Case>, teamId: string, userId: string}) => {
-      await CreateCase(teamId, userId, data)
+      const res = await CreateCase(teamId, userId, data)
+      if (!res.success) {
+        throw new Error(res.message);
+      }
     },
     onSuccess: (data) => {
       // queryClient.setQueryData(['cases'], (oldData: any[]) => [data, ...oldData]);
