@@ -638,13 +638,13 @@ export const CreateCaseForm = () => {
                   name="data"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="z-50">
+                      <FormLabel className="z-30">
                         Dental Chart
                       </FormLabel>
                       <FormControl>
                         <div>
                           {!form.getValues().materialId && (
-                            <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-10 flex items-center justify-center flex-col gap-2 rounded-lg">
+                            <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-20 flex items-center justify-center flex-col gap-2 rounded-lg">
                               <AlertCircle className="w-8 h-8 text-muted-foreground" />
                               <p className="text-muted-foreground font-medium">
                                 Please select a material
@@ -663,7 +663,7 @@ export const CreateCaseForm = () => {
                           />
                         </div>
                       </FormControl>
-                      <FormMessage className="z-50" />
+                      <FormMessage className="z-30" />
                     </FormItem>
                   )}
                 />

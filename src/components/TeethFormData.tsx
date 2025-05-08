@@ -1,6 +1,5 @@
 "use client"
 import { Material } from "@/types";
-import CustomCheckbox from "./CustomCheckbox";
 import React, { useState } from "react";
 import { Label } from "@/components/ui/label";
 import {
@@ -11,8 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tooth } from "@/types";
-import { Button } from "@/components/ui/button";
-import { RefreshCw } from "lucide-react";
+import ToothCheckbox from "./ToothCheckbox";
 
 interface TeethFormDataProps {
   handleChangeToothMaterial(newValue: any): void;
@@ -102,8 +100,14 @@ export default function TeethFormData({
 
   return (
     <div className="flex flex-col items-center space-y-4 lg:space-y-6">
-      <div className="relative max-w-[125px] mx-auto">
-        {/* Upper Teeth */}
+      <ToothCheckbox
+      // onChange={(v) => handleCheckTeeth(e, v)}
+      onChange={(e, v) => handleCheckTeeth(e, v)}
+      teethData={checkedTeeth}
+      onReset={resetTeeth}
+      showLabels
+      />
+      {/* <div className="relative max-w-[125px] mx-auto">
         <div className="flex flex-col gap-1">
           {groupedUpper.map((pair: any, index: any) => (
             <div
@@ -129,7 +133,6 @@ export default function TeethFormData({
           ))}
         </div>
 
-        {/* Reset Button */}
         {resetTeeth && (
           <div className="flex justify-center my-2">
             <Button 
@@ -145,10 +148,8 @@ export default function TeethFormData({
           </div>
         )}
 
-        {/* Separator */}
         <div className="h-px w-full bg-border my-2" />
 
-        {/* Lower Teeth */}
         <div className="flex flex-col gap-1">
           {groupedLower.map((pair: any, index: any) => (
             <div
@@ -172,7 +173,7 @@ export default function TeethFormData({
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
       <div className="text-center text-sm text-muted-foreground mt-4">
         <p>Select teeth by clicking. Use Shift+Click to select multiple teeth.</p>
       </div>
