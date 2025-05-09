@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Material } from "@/types";
 import React, { useState } from "react";
 import { Label } from "@/components/ui/label";
@@ -39,7 +39,7 @@ export default function TeethFormData({
 
   const doHandleSelectToothMaterial = (value: string) => {
     const choice = materials.find(
-      (material: Material) => material.$id === value,
+      (material: Material) => material.$id === value
     );
     handleChangeToothMaterial({ ...selectedTooth, material: choice });
     setSelectedTooth((prevTooth) => {
@@ -100,12 +100,13 @@ export default function TeethFormData({
 
   return (
     <div className="flex flex-col items-center space-y-4 lg:space-y-6">
+      
       <ToothCheckbox
-      // onChange={(v) => handleCheckTeeth(e, v)}
-      onChange={(e, v) => handleCheckTeeth(e, v)}
-      teethData={checkedTeeth}
-      onReset={resetTeeth}
-      showLabels
+        // onChange={(v) => handleCheckTeeth(e, v)}
+        onChange={(e, v) => handleCheckTeeth(e, v)}
+        teethData={checkedTeeth}
+        onReset={resetTeeth}
+        showLabels
       />
       {/* <div className="relative max-w-[125px] mx-auto">
         <div className="flex flex-col gap-1">
@@ -175,7 +176,9 @@ export default function TeethFormData({
         </div>
       </div> */}
       <div className="text-center text-sm text-muted-foreground mt-4">
-        <p>Select teeth by clicking. Use Shift+Click to select multiple teeth.</p>
+        <p>
+          Select teeth by clicking. Use Shift+Click to select multiple teeth.
+        </p>
       </div>
 
       {/* Controls */}
@@ -190,7 +193,8 @@ export default function TeethFormData({
               <SelectValue placeholder="Select a tooth" />
             </SelectTrigger>
             <SelectContent>
-              {data?.sort((a, b) => a?.label - b?.label)
+              {data
+                ?.sort((a, b) => a?.label - b?.label)
                 .map((t, i) => (
                   <SelectItem key={i} value={String(t.label)}>
                     Tooth {t.label}
