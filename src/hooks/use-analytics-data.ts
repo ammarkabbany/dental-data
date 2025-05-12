@@ -1,8 +1,10 @@
+import { TriggerAnalyticsFunction } from "@/app/(dashboard)/dashboard/analytics/actions";
 import { databases } from "@/lib/appwrite/client";
 import {
   ANALYTICS_COLLECTION_ID,
   DATABASE_ID,
 } from "@/lib/constants";
+import { useTeam } from "@/providers/team-provider";
 import { AnalyticsEntry } from "@/types";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Query } from "appwrite";
@@ -16,7 +18,7 @@ import {
   subYears,
 } from "date-fns";
 
-async function getAnalyticsData() {
+async function getAnalyticsData({ teamId }: { teamId: string }) {
   const now = new Date();
   const periods = {
     thisMonth: {
@@ -60,6 +62,29 @@ async function getAnalyticsData() {
     ]
   )
   const analytics = analyticsData.documents[0];
+  if (!analytics) {
+    // run the appwrite function to create the analytics entry
+    const res = await TriggerAnalyticsFunction(teamId);
+    if (res === "failed") {
+      throw new Error("Failed to fetch analytics");
+    }
+    if (res === "completed") {
+      // refetch the analytics data
+      const analyticsData = await databases.listDocuments(
+        DATABASE_ID,
+        ANALYTICS_COLLECTION_ID,
+        [
+          Query.equal("period", periods.thisMonth.label),
+          Query.orderDesc("$createdAt"),
+        ]
+      );
+      return {
+        ...analyticsData.documents[0],
+        data: JSON.parse(analyticsData.documents[0].data),
+        casesChartData: JSON.parse(analyticsData.documents[0].casesChartData),
+      } as AnalyticsEntry;
+    }
+  }
   return {
     ...analytics,
     data: JSON.parse(analytics.data),
@@ -68,20 +93,32 @@ async function getAnalyticsData() {
 }
 
 export function useAnalyiticsData() {
+  const { currentTeam } = useTeam();
   return useQuery({
     queryKey: ["analytics"],
-    queryFn: getAnalyticsData,
+    queryFn: () => {
+      if (!currentTeam) {
+        throw new Error("No team found");
+      }
+      return getAnalyticsData({ teamId: currentTeam.$id });
+    },
     retry: 1
   });
 }
 
 export function usePrefetchAnalyticsData() {
   const queryClient = useQueryClient();
+  const { currentTeam } = useTeam();
 
   return async () => {
     await queryClient.prefetchQuery({
       queryKey: ["analytics"],
-      queryFn: getAnalyticsData,
+      queryFn: () => {
+        if (!currentTeam) {
+          throw new Error("No team found");
+        }
+        return getAnalyticsData({ teamId: currentTeam.$id });
+      }
     });
   };
 }

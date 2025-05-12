@@ -106,7 +106,7 @@ export const UpdateCase = async (
   data: Partial<Case>,
   oldCase: Case
 ): Promise<Case | null> => {
-  const { databases } = await createAdminClient();
+  const { databases, functions } = await createAdminClient();
 
   const updatedDocument = await databases.updateDocument<Case>(
     DATABASE_ID,

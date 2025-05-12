@@ -148,12 +148,12 @@ export default function DashboardPage() {
         <div>
           {isLoading ? (
             <motion.div
-              className="grid grid-cols-2 min-[1200px]:grid-cols-4 gap-6 border border-border rounded-xl bg-gradient-to-br from-sidebar/60 to-sidebar" // added gap-6
+              className="grid grid-cols-2 min-[1200px]:grid-cols-3 gap-6 border border-border rounded-xl bg-gradient-to-br from-sidebar/60 to-sidebar" // added gap-6
               initial="hidden"
               animate="visible"
               variants={containerVariants}
             >
-              {Array.from({ length: 4 }).map((_, i) => (
+              {Array.from({ length: 3 }).map((_, i) => (
                 <motion.div
                   key={i}
                   variants={itemVariants}

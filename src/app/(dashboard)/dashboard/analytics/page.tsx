@@ -1,8 +1,7 @@
 "use client";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "framer-motion";
-import { BarChart3, FileTextIcon, LineChart, PieChart, TrendingUp } from "lucide-react";
+import { FileTextIcon } from "lucide-react";
 import AnalyticsAreaChart from "@/components/area-chart";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatNumbers } from "@/lib/format-utils";
@@ -13,6 +12,8 @@ import { StatsCardProps, StatsGrid } from "@/components/stats-grid";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Doctor02Icon } from "@hugeicons/core-free-icons";
 import { CubeIcon } from "@radix-ui/react-icons";
+import { formatDistanceToNowStrict } from "date-fns";
+import { Button } from "@/components/ui/button";
 
 export default function AnalyticsPage() {
   const { userRole } = useTeamStore();
@@ -21,22 +22,18 @@ export default function AnalyticsPage() {
 
   // Animation variants
   const containerVariants = {
-    hidden: { opacity: 0 },
+    hidden: {},
     visible: {
-      opacity: 1,
       transition: {
-        staggerChildren: 0.1
-      }
-    }
+        staggerChildren: 0.1,
+      },
+    },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.3 }
-    }
+    hidden: { opacity: 0, y: 10 },
+    visible: { opacity: 1, y: 0 },
+    hover: { y: -4, transition: { duration: 0.2 } }
   };
 
   const statsCards: StatsCardProps[] = [
@@ -81,33 +78,62 @@ export default function AnalyticsPage() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="mb-8"
+        className="mb-8 flex items-center justify-between"
       >
-        <h2 className="text-2xl font-bold">Analytics Dashboard</h2>
-        <p className="text-muted-foreground">
-          Track your dental lab performance and insights
-        </p>
+        <div>
+          <h2 className="text-2xl font-bold">Analytics Dashboard</h2>
+          <p className="text-muted-foreground">
+            Track your dental lab performance and insights.
+            <br />
+            Analytics are automatically updated every 12 hours.
+            <br />
+            <span className="text-primary">Last updated: {data?.$createdAt && formatDistanceToNowStrict(new Date(data.$createdAt), {addSuffix: true})}</span>
+          </p>
+        </div>
+        {/* <Button
+          className="transition" 
+        >
+          <RefreshCcw className="size-4" />
+          Refresh
+        </Button> */}
       </motion.div>
 
       <div className="space-y-6">
-        {isLoading ? (
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className={`gap-4 grid grid-cols-3`}
-          >
-            {Array.from({ length: 3 }).map((_, i) => (
-              <motion.div key={i} variants={itemVariants}>
-                <Skeleton className="h-[150px] w-full" />
-              </motion.div>
-            ))}
-          </motion.div>
-        ) : (
-          <motion.div variants={itemVariants}>
-            <StatsGrid stats={statsCards} />
-          </motion.div>
-        )}
+        <div>
+          {isLoading ? (
+            <motion.div
+              className="grid grid-cols-2 min-[1200px]:grid-cols-3 gap-6 border border-border rounded-xl bg-gradient-to-br from-sidebar/60 to-sidebar" // added gap-6
+              initial="hidden"
+              animate="visible"
+              variants={containerVariants}
+            >
+              {Array.from({ length: 3 }).map((_, i) => (
+                <motion.div
+                  key={i}
+                  variants={itemVariants}
+                  className="relative p-4 lg:p-5 group"
+                >
+                  <div className="flex items-center gap-4">
+                    <Skeleton className="size-10 rounded-full" />
+                    <div className="flex-1">
+                      <Skeleton className="h-4 w-20 mb-2" />
+                      <Skeleton className="h-8 w-24 mb-2" />
+                      <Skeleton className="h-3 w-32" />
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          ) : (
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={containerVariants}
+            >
+              <StatsGrid stats={statsCards} />
+            </motion.div>
+          )}
+        </div>
 
         {/* Area Chart */}
         <motion.div
@@ -118,7 +144,7 @@ export default function AnalyticsPage() {
           <AnalyticsAreaChart data={data?.casesChartData ?? {}} label="cases" />
         </motion.div>
 
-        <motion.div
+        {/* <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -145,9 +171,9 @@ export default function AnalyticsPage() {
                           <p className="font-medium">{doctor.name}</p>
                           <p className="text-sm text-muted-foreground">{doctor.totalCases} cases</p>
                         </div>
-                        {/* <div className={`text-sm ${doctor.trend > 0 ? 'text-green-500' : 'text-red-500'}`}>
+                        <div className={`text-sm ${doctor.trend > 0 ? 'text-green-500' : 'text-red-500'}`}>
                             {doctor.trend > 0 ? '+' : ''}{doctor.trend}%
-                          </div> */}
+                          </div>
                       </div>
                     ))}
                   </div>
@@ -193,7 +219,7 @@ export default function AnalyticsPage() {
               </CardContent>
             </Card>
           </motion.div>
-        </motion.div>
+        </motion.div> */}
       </div>
     </ContentLayout>
   );

@@ -20,7 +20,7 @@ export const INSTAPAY_ORDERS_COLLECTION_ID = process.env.INSTAPAY_ORDERS_COLLECT
 
 export const AVATARS_BUCKET_ID = process.env.NEXT_PUBLIC_AVATARS_BUCKET_ID as string
 export const TRANSACTIONS_BUCKET_ID = process.env.TRANSACTIONS_BUCKET_ID as string
-export const ANALYTICS_FUNCTION_ID = process.env.NEXT_DOCUMENT_ANALYTICS_FUNCTION_ID as string
+export const ANALYTICS_FUNCTION_ID = process.env.NEXT_ANALYTICS_FUNCTION_ID as string
 
 
 export const Plans = [
