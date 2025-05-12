@@ -1,11 +1,9 @@
 import { databases } from "@/lib/appwrite/client";
 import {
-  CASES_COLLECTION_ID,
+  ANALYTICS_COLLECTION_ID,
   DATABASE_ID,
-  DOCTORS_COLLECTION_ID,
-  MATERIALS_COLLECTION_ID,
 } from "@/lib/constants";
-import { Case, Doctor } from "@/types";
+import { AnalyticsEntry } from "@/types";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Query } from "appwrite";
 import {
@@ -24,7 +22,7 @@ async function getAnalyticsData() {
     thisMonth: {
       start: startOfMonth(now),
       end: endOfMonth(now),
-      label: format(now, "MMMM yyyy"),
+      label: format(now, "yyyy-MM"),
     },
     lastMonth: {
       start: startOfMonth(subMonths(now, 1)),
@@ -52,75 +50,34 @@ async function getAnalyticsData() {
       label: format(subYears(now, 1), "yyyy"),
     },
   };
-  // const cookie = await getSessionCookie();
-  // databases.client.setSession(cookie!)
-  const thisMonthCases = await databases.listDocuments(
-    DATABASE_ID,
-    CASES_COLLECTION_ID,
-    [
-      Query.greaterThanEqual("date", periods.thisMonth.start.toISOString()),
-      Query.lessThanEqual("date", periods.thisMonth.end.toISOString()),
-      Query.limit(1),
-      Query.select(["$id"]),
-    ]
-  );
 
-  const lastMonthCases = await databases.listDocuments(
+  const analyticsData = await databases.listDocuments(
     DATABASE_ID,
-    CASES_COLLECTION_ID,
+    ANALYTICS_COLLECTION_ID,
     [
-      Query.greaterThanEqual("date", periods.lastMonth.start.toISOString()),
-      Query.lessThanEqual("date", periods.lastMonth.end.toISOString()),
-      Query.limit(1),
-      Query.select(["$id"]),
-    ]
-  );
-  const casesMonthDifference = ((thisMonthCases.total - lastMonthCases.total) / thisMonthCases.total) * 100;
-
-  const casesData = await databases.listDocuments<Case>(
-    DATABASE_ID,
-    CASES_COLLECTION_ID,
-    [
-      Query.limit(1),
-      Query.select(["$id"]),
+      Query.equal("period", periods.thisMonth.label),
+      Query.orderDesc("$createdAt"),
     ]
   )
-
-  const doctorsData = await databases.listDocuments<Doctor>(
-    DATABASE_ID,
-    DOCTORS_COLLECTION_ID,
-    [
-      Query.limit(5),
-      Query.select(["$id", "name", "totalCases"]),
-      Query.orderDesc('totalCases')
-    ]
-  );
-
-  const materialsCount = await databases.listDocuments(
-    DATABASE_ID,
-    MATERIALS_COLLECTION_ID,
-    [Query.limit(1), Query.select(["$id"])]
-  );
-
+  const analytics = analyticsData.documents[0];
   return {
-    casesDifference: casesMonthDifference,
-    casesCount: casesData.total,
-    doctorsCount: doctorsData.total,
-    topDoctors: doctorsData.documents,
-    materialsCount: materialsCount.total,
-  };
+    ...analytics,
+    data: JSON.parse(analytics.data),
+    casesChartData: JSON.parse(analytics.casesChartData),
+  } as AnalyticsEntry;
 }
 
 export function useAnalyiticsData() {
   return useQuery({
     queryKey: ["analytics"],
     queryFn: getAnalyticsData,
+    retry: 1
   });
 }
 
 export function usePrefetchAnalyticsData() {
   const queryClient = useQueryClient();
-  
+
   return async () => {
     await queryClient.prefetchQuery({
       queryKey: ["analytics"],

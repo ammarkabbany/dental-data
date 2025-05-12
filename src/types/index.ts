@@ -244,3 +244,27 @@ export type AuditLogEntry = Models.Document & {
    */
   metadata?: Record<string, any>;
 };
+
+export type AnalyticsEntry = Models.Document & {
+  period: string;
+  data: {
+    cases: number;
+    casesDelta: number;
+    doctors: number;
+    doctorsDelta: number;
+    materials: number;
+    materialsDelta: number;
+  }
+  casesChartData: {
+    week: {
+      [key: string]: number;
+    }
+    month: {
+      [key: string]: number;
+    }
+    year: {
+      [key: string]: number;
+    }
+  }
+  teamId: string;
+}

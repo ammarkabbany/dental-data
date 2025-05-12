@@ -2,7 +2,7 @@
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Doctor02Icon } from "@hugeicons/core-free-icons";
-import { useDashboardData } from "@/hooks/use-dashboard-data";
+import { useDashboardData, useRecentCases } from "@/hooks/use-dashboard-data";
 import { CubeIcon, FileTextIcon, QuestionMarkIcon } from "@radix-ui/react-icons";
 import RecentCases from "@/components/recent-cases";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -28,6 +28,7 @@ export default function DashboardPage() {
   const { user } = useAuth();
   const { userRole } = useTeamStore();
   const { data, isLoading } = useDashboardData();
+  const { data: recentCases } = useRecentCases();
   const { checkPermission } = usePermission(userRole);
   const { openModal } = useModalStore();
 
@@ -222,7 +223,7 @@ export default function DashboardPage() {
                     </Card>
                   </Link>
                 ) : (
-                  <Card 
+                  <Card
                     className="group border-border hover:border-primary/50 transition-all hover:shadow-md cursor-pointer h-full"
                     onClick={card.onClick}
                   >
@@ -253,7 +254,7 @@ export default function DashboardPage() {
           variants={containerVariants}
           className="mt-2" // added margin top
         >
-          <RecentCases cases={data?.recentCases ?? []} />
+          <RecentCases cases={recentCases?.documents ?? []} />
         </motion.div>
       </div>
     </ContentLayout>
