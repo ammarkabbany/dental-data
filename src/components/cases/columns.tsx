@@ -26,7 +26,7 @@ export const getColumns = (): ColumnDef<Case>[] => [
         }
         onCheckedChange={(value: boolean) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
-        className="translate-y-[2px]"
+        className="size-4 hover:bg-secondary/20"
       />
     ),
     cell: ({ row }) => (
@@ -34,7 +34,7 @@ export const getColumns = (): ColumnDef<Case>[] => [
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
-        className="translate-y-[2px]"
+        className="translate-y-[2px] size-4 hover:bg-secondary/20"
       />
     ),
     enableSorting: false,

@@ -14,11 +14,13 @@ export const MATERIALS_COLLECTION_ID = process.env.NEXT_PUBLIC_MATERIALS_COLLECT
 export const TEMPLATES_COLLECTION_ID = process.env.NEXT_PUBLIC_TEMPLATES_COLLECTION_ID as string
 export const PLANS_COLLECTION_ID = process.env.NEXT_PUBLIC_PLANS_COLLECTION_ID as string
 export const AUDIT_LOGS_COLLECTION_ID = process.env.NEXT_PUBLIC_AUDIT_LOGS_COLLECTION_ID as string
+export const ANALYTICS_COLLECTION_ID = process.env.NEXT_PUBLIC_ANALYTICS_COLLECTION_ID as string
 
 export const INSTAPAY_ORDERS_COLLECTION_ID = process.env.INSTAPAY_ORDERS_COLLECTION_ID as string
 
 export const AVATARS_BUCKET_ID = process.env.NEXT_PUBLIC_AVATARS_BUCKET_ID as string
 export const TRANSACTIONS_BUCKET_ID = process.env.TRANSACTIONS_BUCKET_ID as string
+export const ANALYTICS_FUNCTION_ID = process.env.NEXT_ANALYTICS_FUNCTION_ID as string
 
 
 export const Plans = [

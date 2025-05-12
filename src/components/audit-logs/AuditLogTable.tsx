@@ -193,6 +193,9 @@ export function AuditLogTable() {
           </Table>
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
+        <p className="text-sm text-muted-foreground text-center">
+          Logs are retained for 7 days.
+        </p>
         <DataTablePagination table={table} isLoading={isLoading} selectionEnabled={false} />
       </div>
     </div>

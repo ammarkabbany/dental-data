@@ -1,11 +1,11 @@
+import { TriggerAnalyticsFunction } from "@/app/(dashboard)/dashboard/analytics/actions";
 import { databases } from "@/lib/appwrite/client";
 import {
-  CASES_COLLECTION_ID,
+  ANALYTICS_COLLECTION_ID,
   DATABASE_ID,
-  DOCTORS_COLLECTION_ID,
-  MATERIALS_COLLECTION_ID,
 } from "@/lib/constants";
-import { Case, Doctor } from "@/types";
+import { useTeam } from "@/providers/team-provider";
+import { AnalyticsEntry } from "@/types";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Query } from "appwrite";
 import {
@@ -18,13 +18,13 @@ import {
   subYears,
 } from "date-fns";
 
-async function getAnalyticsData() {
+async function getAnalyticsData({ teamId }: { teamId: string }) {
   const now = new Date();
   const periods = {
     thisMonth: {
       start: startOfMonth(now),
       end: endOfMonth(now),
-      label: format(now, "MMMM yyyy"),
+      label: format(now, "yyyy-MM"),
     },
     lastMonth: {
       start: startOfMonth(subMonths(now, 1)),
@@ -52,79 +52,73 @@ async function getAnalyticsData() {
       label: format(subYears(now, 1), "yyyy"),
     },
   };
-  // const cookie = await getSessionCookie();
-  // databases.client.setSession(cookie!)
-  const thisMonthCases = await databases.listDocuments(
-    DATABASE_ID,
-    CASES_COLLECTION_ID,
-    [
-      Query.greaterThanEqual("date", periods.thisMonth.start.toISOString()),
-      Query.lessThanEqual("date", periods.thisMonth.end.toISOString()),
-      Query.limit(1),
-      Query.select(["$id"]),
-    ]
-  );
 
-  const lastMonthCases = await databases.listDocuments(
+  const analyticsData = await databases.listDocuments(
     DATABASE_ID,
-    CASES_COLLECTION_ID,
+    ANALYTICS_COLLECTION_ID,
     [
-      Query.greaterThanEqual("date", periods.lastMonth.start.toISOString()),
-      Query.lessThanEqual("date", periods.lastMonth.end.toISOString()),
-      Query.limit(1),
-      Query.select(["$id"]),
-    ]
-  );
-  const casesMonthDifference = ((thisMonthCases.total - lastMonthCases.total) / thisMonthCases.total) * 100;
-
-  const casesData = await databases.listDocuments<Case>(
-    DATABASE_ID,
-    CASES_COLLECTION_ID,
-    [
-      Query.limit(1),
-      Query.select(["$id"]),
+      Query.equal("period", periods.thisMonth.label),
+      Query.orderDesc("$createdAt"),
     ]
   )
-
-  const doctorsData = await databases.listDocuments<Doctor>(
-    DATABASE_ID,
-    DOCTORS_COLLECTION_ID,
-    [
-      Query.limit(5),
-      Query.select(["$id", "name", "totalCases"]),
-      Query.orderDesc('totalCases')
-    ]
-  );
-
-  const materialsCount = await databases.listDocuments(
-    DATABASE_ID,
-    MATERIALS_COLLECTION_ID,
-    [Query.limit(1), Query.select(["$id"])]
-  );
-
+  const analytics = analyticsData.documents[0];
+  if (!analytics) {
+    // run the appwrite function to create the analytics entry
+    const res = await TriggerAnalyticsFunction(teamId);
+    if (res === "failed") {
+      throw new Error("Failed to fetch analytics");
+    }
+    if (res === "completed") {
+      // refetch the analytics data
+      const analyticsData = await databases.listDocuments(
+        DATABASE_ID,
+        ANALYTICS_COLLECTION_ID,
+        [
+          Query.equal("period", periods.thisMonth.label),
+          Query.orderDesc("$createdAt"),
+        ]
+      );
+      return {
+        ...analyticsData.documents[0],
+        data: JSON.parse(analyticsData.documents[0].data),
+        casesChartData: JSON.parse(analyticsData.documents[0].casesChartData),
+      } as AnalyticsEntry;
+    }
+  }
   return {
-    casesDifference: casesMonthDifference,
-    casesCount: casesData.total,
-    doctorsCount: doctorsData.total,
-    topDoctors: doctorsData.documents,
-    materialsCount: materialsCount.total,
-  };
+    ...analytics,
+    data: JSON.parse(analytics.data),
+    casesChartData: JSON.parse(analytics.casesChartData),
+  } as AnalyticsEntry;
 }
 
 export function useAnalyiticsData() {
+  const { currentTeam } = useTeam();
   return useQuery({
     queryKey: ["analytics"],
-    queryFn: getAnalyticsData,
+    queryFn: () => {
+      if (!currentTeam) {
+        throw new Error("No team found");
+      }
+      return getAnalyticsData({ teamId: currentTeam.$id });
+    },
+    retry: 1
   });
 }
 
 export function usePrefetchAnalyticsData() {
   const queryClient = useQueryClient();
-  
+  const { currentTeam } = useTeam();
+
   return async () => {
     await queryClient.prefetchQuery({
       queryKey: ["analytics"],
-      queryFn: getAnalyticsData,
+      queryFn: () => {
+        if (!currentTeam) {
+          throw new Error("No team found");
+        }
+        return getAnalyticsData({ teamId: currentTeam.$id });
+      }
     });
   };
 }

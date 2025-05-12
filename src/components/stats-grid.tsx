@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import { ArrowTopRightIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { TrendingDown, TrendingUp } from "lucide-react";
 
 export interface StatsCardProps {
   title: string;
@@ -78,13 +79,13 @@ export function StatsCard({ title, value, change, icon, href }: StatsCardProps) 
           </motion.div>
           {change && (
             <motion.div 
-              className="text-xs text-muted-foreground/60"
+              className="text-xs text-muted-foreground/60 flex items-center gap-1"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
             >
-              <span className={cn("font-medium", trendColor)}>
-                {isPositive ? "↗" : "↘"} {change?.value}
+              <span className={cn("font-medium flex items-center gap-1", trendColor)}>
+                {isPositive ? <TrendingUp className="size-4" /> : <TrendingDown className="size-4" />} {change?.value}
               </span>{" "}
               vs last month
             </motion.div>

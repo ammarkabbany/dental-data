@@ -31,12 +31,11 @@ const ToothSection: React.FC<ToothSectionProps> = ({
         <path
           key={`${id}-path-${index}`}
           d={path.d}
-          className={`transition-all duration-200`}
+          className={`transition-all duration-100 ${!isChecked ? 'stroke-[#ffffff55] fill-[#D4D4D465] hover:fill-[#D4D4D475]' : "fill-green-400/45 hover:fill-[#00FF6E55] stroke-[#ffffff75]"}`}
           style={{
-            strokeWidth: 1,
-            stroke: "#333",
-            strokeOpacity: 0.5,
-            fill: isChecked ? path.fill : "#D4D4D475",
+            strokeWidth: 2,
+            strokeOpacity: 0.8,
+            // fill: isChecked ? path.fill : "#D4D4D485",
           }}
         />
       ))}

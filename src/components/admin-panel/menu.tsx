@@ -73,7 +73,13 @@ export function Menu({ isOpen }: MenuProps) {
                   onClick={() => navigate("/admin")}
                 />
               )}
-              <NavItem comingSoon icon={BarChart3} label="Analytics" />
+              <NavItem 
+                isNew
+                icon={BarChart3}
+                label="Analytics"
+                active={isActive("analytics")}
+                onClick={() => navigate("/dashboard/analytics")}
+              />
 
               {/* <Separator className="my-3" /> */}
 
@@ -147,6 +153,7 @@ function NavItem({
   active = false,
   disabled = false,
   comingSoon = false,
+  isNew = false,
   badge,
   badgeVariant = "default",
   variant = "default",
@@ -157,6 +164,7 @@ function NavItem({
   active?: boolean;
   disabled?: boolean;
   comingSoon?: boolean;
+  isNew?: boolean;
   badge?: string;
   badgeVariant?: "default" | "warning" | "destructive";
   variant?: "default" | "danger";
@@ -201,7 +209,16 @@ function NavItem({
         >
           Coming Soon
         </Badge>
-      ) : (
+      ) : 
+      isNew ? (
+        <Badge
+          variant="default"
+          className="ml-auto text-[10px] px-1.5 py-0.5 rounded-sm"
+        >
+          New
+        </Badge>
+      ) :
+      (
         badge &&
         (disabled ? (
           <Badge
