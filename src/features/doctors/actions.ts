@@ -74,7 +74,10 @@ export const CreateDoctor = async (
 export const UpdateDoctor = async (
   id: Doctor["$id"],
   data: Partial<Doctor>
-) => {
+): Promise<{
+  success: boolean;
+  message: string;
+}> => {
   const { databases } = await createAdminClient();
 
   const updatedDocument = await databases.updateDocument<Doctor>(
@@ -85,8 +88,10 @@ export const UpdateDoctor = async (
       ...data,
     }
   );
-
-  return updatedDocument;
+  return {
+    success: true,
+    message: "Doctor updated successfully",
+  }
 };
 
 export const UpdateDoctorDue = async (
