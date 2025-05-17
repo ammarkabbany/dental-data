@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner";
 import { UpdateDoctor } from "../actions";
 import { Doctor } from "@/types";
+import { toastAPI } from "@/lib/ToastAPI";
 
 
 export const useUpdateDoctor = () => {
@@ -15,10 +16,10 @@ export const useUpdateDoctor = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ['doctors']})
-      toast.success('Doctor updated successfully')
+      toastAPI.success('Doctor updated')
     },
     // onError: (error) => {
-    //   toast.error(error.message)
+    //   toastAPI.error(error.message)
     // },
   })
 }

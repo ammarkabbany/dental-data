@@ -1,6 +1,6 @@
 "use client"
 import { ContentLayout } from "@/components/admin-panel/content-layout";
-import { DoctorCreateModal } from "@/components/doctors/create-doctor-modal";
+import { CreateDoctorModal } from "@/components/doctors/create-doctor-modal";
 import { DoctorsDataTable } from "@/components/doctors/data-table";
 import { Button } from "@/components/ui/button";
 import { usePermission } from "@/hooks/use-permissions";
@@ -10,20 +10,20 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { motion, AnimatePresence } from "framer-motion";
 import useTeamStore from "@/store/team-store";
 import { useDoctorsStore } from "@/store/doctors-store";
-import { useGetTableDoctors } from "@/features/doctors/hooks/use-get-doctors";
-import { Skeleton } from "@/components/ui/skeleton";
+
+export const runtime = 'edge'
+export const dynamic = 'force-dynamic'
 
 export default function DoctorsPage() {
   const { openModal } = useModalStore();
   const { userRole } = useTeamStore();
   const canCreate = usePermission(userRole).checkPermission('doctors', 'create');
-  // const {doctors} = useDoctorsStore();
-  const {data: doctors, isLoading} = useGetTableDoctors();
+  const {doctors} = useDoctorsStore();
   const showEmptyState = (!doctors || doctors.length === 0);
 
   return (
     <>
-      <DoctorCreateModal />
+      <CreateDoctorModal />
       <ContentLayout title="Doctors">
         <motion.div
           className="flex flex-col sm:flex-row justify-between sm:items-center mb-8 gap-y-2"
@@ -49,7 +49,7 @@ export default function DoctorsPage() {
         </motion.div>
 
         <AnimatePresence mode="wait">
-          {isLoading ? (
+          {/* {isLoading ? (
             <motion.div
               key="loading"
               initial={{ opacity: 0 }}
@@ -59,8 +59,8 @@ export default function DoctorsPage() {
             >
               <Skeleton className="h-12 w-full" />
               <Skeleton className="h-[400px] w-full" />
-            </motion.div>
-            ):showEmptyState ? (
+            </motion.div> */}
+            {showEmptyState ? (
             <motion.div
               key="empty"
               initial={{ opacity: 0, y: 20 }}

@@ -5,9 +5,17 @@ import { Button } from "@/components/ui/button";
 import { ResponsiveModalWithTrigger } from "../responsive-modal";
 import { useState } from "react";
 import { Case } from "@/types";
-import { DialogClose, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import {
+  DialogClose,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
 import { useDeleteCase } from "@/features/cases/hooks/use-delete-case";
 import useTeamStore from "@/store/team-store";
+import { Trash2 } from "lucide-react";
 
 interface DeleteCaseModalModal {
   cases: Case[];
@@ -16,15 +24,15 @@ interface DeleteCaseModalModal {
 export function DeleteCaseModal({ cases, component }: DeleteCaseModalModal) {
   const [open, setOpen] = useState(false);
   // const {team, updateTeam} = useTeamStore();
-  const {membership} = useTeamStore();
+  const { membership } = useTeamStore();
 
-  const {mutate, isPending} = useDeleteCase();
- 
+  const { mutate, isPending } = useDeleteCase();
+
   const handleDelete = async () => {
     if (!membership) {
       return;
     }
-    mutate({casesIds: cases.map(c => c.$id), teamId: membership.teamId});
+    mutate({ casesIds: cases.map((c) => c.$id), teamId: membership.teamId });
     setOpen(false);
     // const [response] = await Promise.all([
     //   // deleteCase(_case.$id),
@@ -41,11 +49,11 @@ export function DeleteCaseModal({ cases, component }: DeleteCaseModalModal) {
     //   })
     // ]);
     // if (response.status === "completed") {
-    //   toast.success("Case deleted successfully");
+    //   toastAPI.success("Case deleted successfully");
     // }
     // if (response.status === "failed") {
     //   console.log(response)
-    //   toast.error("Failed to delete case");
+    //   toastAPI.error("Failed to delete case");
     // }
   };
 
@@ -56,8 +64,9 @@ export function DeleteCaseModal({ cases, component }: DeleteCaseModalModal) {
       trigger={
         <DialogTrigger asChild>
           {component ?? (
-            <Button disabled={isPending} variant={"ghost"} className="w-full justify-start">
-              Delete
+            <Button disabled={isPending} variant="destructive" className="gap-2">
+              <Trash2 className="h-4 w-4" />
+              Delete Selected ({Math.min(cases.length, 100)})
             </Button>
           )}
         </DialogTrigger>
@@ -65,19 +74,21 @@ export function DeleteCaseModal({ cases, component }: DeleteCaseModalModal) {
       className="bg-gradient-to-t from-card to-accent"
     >
       <div className="p-7 space-y-4">
-      <DialogHeader>
-        <DialogTitle>Are you sure?</DialogTitle>
-        <DialogDescription>
-          This action cannot be undone. This will permanently delete this case
-          and will affect doctor data.
-        </DialogDescription>
-      </DialogHeader>
-      <DialogFooter>
-        <Button variant={"secondary"} asChild>
-          <DialogClose disabled={isPending}>Cancel</DialogClose>
-        </Button>
-        <Button disabled={isPending} onClick={handleDelete}>Confirm</Button>
-      </DialogFooter>
+        <DialogHeader>
+          <DialogTitle>Are you sure?</DialogTitle>
+          <DialogDescription>
+            This action cannot be undone. This will permanently delete this case
+            and will affect doctor data.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button variant={"secondary"} asChild>
+            <DialogClose disabled={isPending}>Cancel</DialogClose>
+          </Button>
+          <Button disabled={isPending} onClick={handleDelete}>
+            Confirm
+          </Button>
+        </DialogFooter>
       </div>
     </ResponsiveModalWithTrigger>
   );

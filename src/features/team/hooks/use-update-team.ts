@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner";
 import { updateTeamSettings } from "../teamService";
+import { toastAPI } from "@/lib/ToastAPI";
 
 export const useUpdateTeam = () => {
   const queryClient = useQueryClient();
@@ -10,10 +11,10 @@ export const useUpdateTeam = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['team'] })
-      toast.success('Team updated successfully')
+      toastAPI.success('Team updated')
     },
     onError: (error) => {
-      console.error('Error create team:', error)
+      console.error('Error updating team:', error)
     },
   })
 }

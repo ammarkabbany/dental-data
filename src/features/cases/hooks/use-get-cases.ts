@@ -38,6 +38,7 @@ export const useGetCases = () => {
       );
       return cases.documents
     },
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 };
 

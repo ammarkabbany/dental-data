@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { Case } from "@/types";
 import { UpdateCase } from "../actions";
 import useTeamStore from "@/store/team-store";
+import { toastAPI } from "@/lib/ToastAPI";
 
 
 export const useUpdateCase = () => {
@@ -21,10 +22,10 @@ export const useUpdateCase = () => {
       //    return oldData.map((c) => (c.$id === data?.$id ? data : c))
       // });
       // queryClient.invalidateQueries({queryKey: ['case', data?.$id]})
-      toast.success('Case updated successfully')
+      toastAPI.success('Case updated')
     },
     onError: (error) => {
-      console.error('Error creating case:', error)
+      console.error('Error updating case:', error)
     },
   })
 }

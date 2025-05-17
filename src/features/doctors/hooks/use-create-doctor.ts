@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import { CreateDoctor } from "../actions";
 import { Doctor } from "@/types";
 import useTeamStore from "@/store/team-store";
-
+import { toastAPI } from "@/lib/ToastAPI";
 
 export const useCreateDoctor = () => {
   const {membership} = useTeamStore();
@@ -20,10 +20,10 @@ export const useCreateDoctor = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ['doctors']})
-      toast.success('Doctor created successfully')
+      toastAPI.success('Doctor created')
     },
     // onError: (error) => {
-    //   toast.error(error.message)
+    //   toastAPI.error(error.message)
     // },
   })
 }

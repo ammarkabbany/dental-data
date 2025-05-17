@@ -2,7 +2,7 @@ import { type ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Doctor } from "@/types";
 import { formatCurrency, formatNumbers } from "@/lib/format-utils";
-import { Edit, ChevronDown, ChevronRight } from "lucide-react";
+import { Edit, ChevronDown, ChevronRight, CreditCard, DollarSign, AlertTriangle } from "lucide-react";
 import { Button } from "../ui/button";
 import { PermissionCheckType } from "@/hooks/use-permissions";
 import {
@@ -11,33 +11,14 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
-import { CreditCard } from "lucide-react";
 import { PaymentDialog } from "./payment-dialog";
 import { Models } from "appwrite";
+import { cn } from "@/lib/utils";
 
 export const getColumns = (
   permissions: PermissionCheckType,
   prefs: Models.Preferences
 ): ColumnDef<Doctor>[] => [
-    // {
-    //   id: 'expander',
-    //   size: 30,
-    //   header: () => null,
-    //   cell: ({ row }) => {
-    //     return row.getCanExpand() ? (
-    //       <Button
-    //         variant="ghost"
-    //         size="icon"
-    //         onClick={(e) => {
-    //           e.stopPropagation(); // Prevent row click event
-    //           row.toggleExpanded();
-    //         }}
-    //       >
-    //         {row.getIsExpanded() ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-    //       </Button>
-    //     ) : null;
-    //   },
-    // },
     {
       accessorKey: "$id",
       header: "ID",
@@ -80,22 +61,45 @@ export const getColumns = (
       },
       size: 180,
     },
-    {
-      accessorKey: "totalCases",
-      header: "Cases",
-      cell: ({ row }) => {
-        const cases = parseInt(row.getValue("totalCases"));
+    // {
+    //   accessorKey: "totalCases",
+    //   header: "Cases",
+    //   cell: ({ row }) => {
+    //     const cases = parseInt(row.getValue("totalCases"));
 
-        const formatted = formatNumbers(cases);
+    //     const formatted = formatNumbers(cases);
 
-        return (
-          <Badge variant={"default"} className="text-center">
-            {formatted}
-          </Badge>
-        );
-      },
-      size: 75,
-    },
+    //     return (
+    //       <Badge variant={"info"} className="text-center">
+    //         {formatted}
+    //       </Badge>
+    //     );
+    //   },
+    //   size: 75,
+    // },
+    // {
+    //   accessorKey: "due",
+    //   header: "Due",
+    //   cell: ({ row }) => {
+    //     // You would get this from your data source
+    //     const dueAmount = row.original.due || 0;
+    //     const formatted = formatCurrency(dueAmount, prefs.currency, 0);
+        
+    //     return (
+    //       <div className="">
+    //         <Badge 
+    //           variant={dueAmount > 0 ? "destructive" : "outline"}
+    //           className={cn(
+    //             dueAmount === 0 && "bg-gray-50 text-gray-500 border-gray-200"
+    //           )}
+    //         >
+    //           {formatted}
+    //         </Badge>
+    //       </div>
+    //     );
+    //   },
+    //   size: 100,
+    // },
     {
       accessorKey: "actions",
       header: () => <div className="text-center">Actions</div>,

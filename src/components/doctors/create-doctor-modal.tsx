@@ -18,7 +18,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useCreateDoctor } from "@/features/doctors/hooks/use-create-doctor";
 
-export const DoctorCreateModal = () => {
+export const CreateDoctorModal = () => {
   const { isModalOpen, closeModal } = useModalStore();
 
   const {mutate, isPending, error} = useCreateDoctor();

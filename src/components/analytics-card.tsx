@@ -21,9 +21,9 @@ export default function AnalyticsStatsCard({
   const isNeutral = trend === 0;
 
   return (
-    <Card className="flex h-[150px] shadow-inner dark:shadow-white/15 shadow-neutral-400/75">
+    <Card className="flex h-[150px] shadow-inner bg-gradient-to-b from-input/30">
       <CardContent className="w-full flex flex-row justify-start gap-4">
-        <div className="p-4 rounded-full flex items-center text-white from-[#667eea] to-[#764ba2] bg-gradient-to-r shadow-lg dark:shadow-white/15 shadow-neutral-400/75">
+        <div className="p-4 rounded-full flex items-center text-white from-primary to-primary/65 bg-gradient-to-r shadow-lg dark:shadow-white/10 shadow-neutral-400/75">
           {icon}
         </div>
         <div className="flex flex-col">

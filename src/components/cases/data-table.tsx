@@ -42,6 +42,7 @@ export function CasesDataTable({ data = [] }: DataTableProps) {
     React.useState<VisibilityState>({
       note: false,
       invoice: false,
+      $createdAt: false,
     });
   const [rowSelection, setRowSelection] = React.useState({});
 
@@ -89,7 +90,7 @@ export function CasesDataTable({ data = [] }: DataTableProps) {
     React.useState<Row<Case> | null>(null);
 
   const handleRowSelection = (e: MouseEvent, row: Row<Case>) => {
-    const rows = table.getFilteredRowModel().rows;
+    const rows = table.getSortedRowModel().rows;
 
     if (
       e.target instanceof HTMLElement &&

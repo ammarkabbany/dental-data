@@ -8,7 +8,7 @@ import { formatCurrency } from "@/lib/format-utils";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { toast } from "sonner";
+import { toastAPI } from "@/lib/ToastAPI";
 
 interface CheckoutDialogProps {
   isOpen: boolean;
@@ -31,7 +31,7 @@ export function CheckoutDialog({
     e.preventDefault();
 
     if (!screenshot) {
-      toast.error("Please provide the transaction screenshot");
+      toastAPI.error("Please provide the transaction screenshot");
       return;
     }
 
@@ -41,7 +41,7 @@ export function CheckoutDialog({
       amount: price,
     }, {
       onSuccess: () => {
-        toast.success(
+        toastAPI.success(
           `Successfully submitted for ${planName} plan
           We will get back to you soon`
         );
@@ -55,11 +55,11 @@ export function CheckoutDialog({
     if (file) {
       if (file.size > 1 * 1024 * 1024) {
         // 1MB limit
-        toast.error("File size should be less than 1MB");
+        toastAPI.error("File size should be less than 1MB");
         return;
       }
       if (!file.type.startsWith("image/")) {
-        toast.error("Please upload an image file");
+        toastAPI.error("Please upload an image file");
         return;
       }
       setScreenshot(file);

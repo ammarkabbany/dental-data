@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner";
 import { createTeam } from "../teamService";
 import { teams } from "@/lib/appwrite/client";
+import { toastAPI } from "@/lib/ToastAPI";
 
 export const useCreateTeam = () => {
   const queryClient = useQueryClient();
@@ -17,7 +18,7 @@ export const useCreateTeam = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ['team']})
-      toast.success('Team created successfully')
+      toastAPI.success('Team created')
     },
     onError: (error) => {
       console.error('Error create team:', error)
