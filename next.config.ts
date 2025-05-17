@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  reactStrictMode: false,
   images: {
     domains: ["api.dental-data.live", "picsum.photos", "img.clerk.com", "api.dentaauto.com", "fra.cloud.appwrite.io"],
   },
