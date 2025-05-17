@@ -1,4 +1,12 @@
-import { ChevronDown, Search, Columns, Filter, Trash2, FileDown } from "lucide-react";
+import {
+  ChevronDown,
+  Search,
+  Columns,
+  Filter,
+  Trash2,
+  FileDown,
+  SortAsc,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -22,6 +30,15 @@ import { usePermission } from "@/hooks/use-permissions";
 import useTeamStore from "@/store/team-store";
 import { useDoctorsStore } from "@/store/doctors-store";
 import { cn } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { SelectIcon } from "@radix-ui/react-select";
 
 export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
   const [exportOptions, setExportOptions] = React.useState<{
@@ -30,12 +47,19 @@ export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
     showClient: true,
     showShade: true,
   });
-  
+
   const { userRole } = useTeamStore();
   const { doctors } = useDoctorsStore();
-  const currentDoctorFilterValue = table.getColumn("doctor")?.getFilterValue() as string;
-  const currentDateFilterValue = table.getColumn("date")?.getFilterValue() as string;
-  
+
+  const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+
+  const currentDoctorFilterValue = table
+    .getColumn("doctor")
+    ?.getFilterValue() as string;
+  const currentDateFilterValue = table
+    .getColumn("date")
+    ?.getFilterValue() as string;
+
   const selectedCases = table
     .getSelectedRowModel()
     .rows.map((row) => row.original)
@@ -59,7 +83,8 @@ export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
             variant="outline"
             className={cn(
               "transition-all duration-200",
-              table.getIsAllRowsSelected() && "bg-primary text-primary-foreground hover:bg-primary/90"
+              table.getIsAllRowsSelected() &&
+                "bg-primary text-primary-foreground hover:bg-primary/90"
             )}
           >
             Select All
@@ -67,11 +92,14 @@ export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="gap-2 transition-all duration-200">
+              <Button
+                variant="outline"
+                className="gap-2 transition-all duration-200"
+              >
                 <Columns className="h-4 w-4" />
                 <span>Columns</span>
-                <Badge 
-                  variant="default" 
+                <Badge
+                  variant="default"
                   className="ml-1 text-secondary-foreground"
                 >
                   {table.getVisibleFlatColumns().length - 2}
@@ -87,7 +115,9 @@ export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
                     key={column.id}
                     className="capitalize"
                     checked={column.getIsVisible()}
-                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
                   >
                     {column.id}
                   </DropdownMenuCheckboxItem>
@@ -95,16 +125,24 @@ export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <CasesFiltersPopover indicator={filtersCount} clearFilters={clearFilters}>
+          <CasesFiltersPopover
+            indicator={filtersCount}
+            clearFilters={clearFilters}
+          >
             <div className="space-y-4">
               <div className="grid gap-2">
                 <Label className="text-sm font-medium">Patient</Label>
                 <Input
                   type="search"
                   placeholder="Search patients..."
-                  value={(table.getColumn("patient")?.getFilterValue() as string) ?? ""}
+                  value={
+                    (table.getColumn("patient")?.getFilterValue() as string) ??
+                    ""
+                  }
                   onChange={(event) =>
-                    table.getColumn("patient")?.setFilterValue(event.target.value)
+                    table
+                      .getColumn("patient")
+                      ?.setFilterValue(event.target.value)
                   }
                   className="h-9"
                 >
@@ -151,24 +189,63 @@ export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
               </div>
             </div>
           </CasesFiltersPopover>
+          {/* <Button
+            onClick={() => table.getColumn("$createdAt")?.toggleSorting()}
+            variant="outline"
+            className={cn(
+              "transition-all duration-200",
+              table.getIsAllRowsSelected() &&
+                "bg-primary text-primary-foreground hover:bg-primary/90"
+            )}
+          >
+            <SortAsc />
+            Show New
+          </Button> */}
+          <Select
+            onValueChange={(value) => {
+              if (value === "date") {
+                table.getColumn("date")?.toggleSorting(true);
+              }
+              if (value === "$createdAt") {
+                table.getColumn("$createdAt")?.toggleSorting(true);
+              }
+            }}
+            defaultValue="date"
+            value={
+              table.getColumn("date")?.getIsSorted() ? "date" : 
+              table.getColumn("$createdAt")?.getIsSorted()
+                ? "$createdAt"
+                : "date"
+            }
+          >
+            <SelectTrigger className="w-[150px]">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent>
+              <Label className="px-2 py-1 text-sm font-medium">
+                Sort by
+              </Label>
+              <SelectItem
+                value="date"
+              >
+                Date
+              </SelectItem>
+              <SelectItem
+                value="$createdAt"
+              >
+                Most Recent
+              </SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
           {canDelete && selectedCases.length > 0 && (
             <DeleteCaseModal
               cases={selectedCases}
-              component={
-                <Button 
-                  variant="destructive"
-                  className="gap-2"
-                >
-                  <Trash2 className="h-4 w-4" />
-                  Delete Selected ({Math.min(selectedCases.length, 100)})
-                </Button>
-              }
             />
           )}
-          
+
           {canExport && (
             <CasesExportDialog
               exportOptions={exportOptions}
@@ -179,4 +256,4 @@ export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
       </div>
     </>
   );
-};
+}

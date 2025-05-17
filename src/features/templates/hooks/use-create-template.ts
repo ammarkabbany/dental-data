@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { Template } from "@/types";
 import { CreateTemplate } from "../actions";
 import useTeamStore from "@/store/team-store";
+import { toastAPI } from "@/lib/ToastAPI";
 
 
 export const useCreateTemplate = () => {
@@ -18,10 +19,10 @@ export const useCreateTemplate = () => {
     },
     onSuccess: (data) => {
       // queryClient.setQueryData(['templates'], (oldData: any[]) => [data, ...oldData]);
-      toast.success('Template created successfully')
+      toastAPI.success('Template created')
     },
     onError: (error) => {
-      toast.error(error.message)
+      toastAPI.error(error.message)
     },
   })
 }

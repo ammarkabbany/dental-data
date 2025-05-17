@@ -37,11 +37,11 @@ export function DeleteTemplateModal({ templateId, component }: DeleteTemplateMod
     //   })
     // ]);
     // if (response.status === "completed") {
-    //   toast.success("Case deleted successfully");
+    //   toastAPI.success("Case deleted successfully");
     // }
     // if (response.status === "failed") {
     //   console.log(response)
-    //   toast.error("Failed to delete case");
+    //   toastAPI.error("Failed to delete case");
     // }
   };
 

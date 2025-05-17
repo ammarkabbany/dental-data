@@ -14,6 +14,8 @@ import { Doctor02Icon } from "@hugeicons/core-free-icons";
 import { CubeIcon } from "@radix-ui/react-icons";
 import { formatDistanceToNowStrict } from "date-fns";
 import { Button } from "@/components/ui/button";
+import AnalyticsStatsCard from "@/components/analytics-card";
+import { DoctorsPieChart } from "@/components/doctors/doctors-chart";
 
 export default function AnalyticsPage() {
   const { userRole } = useTeamStore();
@@ -36,33 +38,27 @@ export default function AnalyticsPage() {
     hover: { y: -4, transition: { duration: 0.2 } }
   };
 
-  const statsCards: StatsCardProps[] = [
+  const statsCards = [
     {
       title: "Cases",
       value: formatNumbers(data?.data.cases ?? 0),
       icon: <FileTextIcon className="size-6" />,
-      change: {
-        value: data?.data.casesDelta ? (data?.data.casesDelta).toFixed(0).concat('%') : "0",
-        trend: data?.data.casesDelta ? data?.data.casesDelta > 1 ? "up" : "down" : "up",
-      }
+      trend: data?.data.casesDelta ? (data?.data.casesDelta) : 0,
+      // trendLabel: data?.data.casesDelta ? data?.data.casesDelta > 1 ? "up" : "down" : "up",
     },
     {
       title: "Doctors",
       value: formatNumbers(data?.data.doctors ?? 0),
       icon: <HugeiconsIcon icon={Doctor02Icon} />,
-      change: {
-        value: data?.data.doctorsDelta ? (data?.data.doctorsDelta).toFixed(0).concat('%') : "0",
-        trend: data?.data.doctorsDelta ? data?.data.doctorsDelta > 1 ? "up" : "down" : "up",
-      }
+      trend: data?.data.doctorsDelta ? (data?.data.doctorsDelta) : 0,
+      // trendLabel: data?.data.doctorsDelta ? data?.data.doctorsDelta > 1 ? "up" : "down" : "up",
     },
     {
       title: "Materials",
       value: formatNumbers(data?.data.materials ?? 0),
       icon: <CubeIcon className="size-6" />,
-      change: {
-        value: data?.data.materialsDelta ? (data?.data.materialsDelta).toFixed(0).concat('%') : "0",
-        trend: data?.data.materialsDelta ? data?.data.materialsDelta > 1 ? "up" : "down" : "up",
-      }
+      trend: data?.data.materialsDelta ? (data?.data.materialsDelta) : 0,
+      // trendLabel: data?.data.materialsDelta ? data?.data.materialsDelta > 1 ? "up" : "down" : "up",
     },
     // ...(canViewRevenue ? [{
     //   title: "Revenue",
@@ -102,7 +98,7 @@ export default function AnalyticsPage() {
         <div>
           {isLoading ? (
             <motion.div
-              className="grid grid-cols-2 min-[1200px]:grid-cols-3 gap-6 border border-border rounded-xl bg-gradient-to-br from-sidebar/60 to-sidebar" // added gap-6
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 rounded-xl" // added gap-6
               initial="hidden"
               animate="visible"
               variants={containerVariants}
@@ -111,16 +107,9 @@ export default function AnalyticsPage() {
                 <motion.div
                   key={i}
                   variants={itemVariants}
-                  className="relative p-4 lg:p-5 group"
+                  className="col-span-1"
                 >
-                  <div className="flex items-center gap-4">
-                    <Skeleton className="size-10 rounded-full" />
-                    <div className="flex-1">
-                      <Skeleton className="h-4 w-20 mb-2" />
-                      <Skeleton className="h-8 w-24 mb-2" />
-                      <Skeleton className="h-3 w-32" />
-                    </div>
-                  </div>
+                  <Skeleton className="h-[150px] w-full rounded-lg" />
                 </motion.div>
               ))}
             </motion.div>
@@ -129,8 +118,19 @@ export default function AnalyticsPage() {
               initial="hidden"
               animate="visible"
               variants={containerVariants}
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 rounded-xl"
             >
-              <StatsGrid stats={statsCards} />
+                {statsCards.map((card, index) => (
+                  <motion.div
+                    key={index}
+                    variants={itemVariants}
+                    className="col-span-1"
+                  >
+                    <AnalyticsStatsCard
+                      {...card}
+                    />
+                  </motion.div>
+                ))}
             </motion.div>
           )}
         </div>
@@ -141,7 +141,10 @@ export default function AnalyticsPage() {
           initial="hidden"
           animate="visible"
         >
-          <AnalyticsAreaChart data={data?.casesChartData ?? {}} label="cases" />
+          <div className="xl:col-span-2">
+            <AnalyticsAreaChart data={data?.casesChartData ?? {}} label="cases" />
+          </div>
+          {/* <DoctorsPieChart /> */}
         </motion.div>
 
         {/* <motion.div

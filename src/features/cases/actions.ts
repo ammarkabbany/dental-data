@@ -64,16 +64,16 @@ export const CreateCase = async (
     ]
   );
   // update doctor
-  const doctor = await GetDoctorById(document.doctorId, [
-    Query.select(["$id", "due", "totalCases"]),
-  ]);
-  if (doctor) {
-    const due = document.due;
-    await UpdateDoctor(doctor.$id, {
-      due: Math.max(0, doctor.due + due),
-      totalCases: Math.max(0, doctor.totalCases + 1),
-    });
-  }
+  // const doctor = await GetDoctorById(document.doctorId, [
+  //   Query.select(["$id", "due", "totalCases"]),
+  // ]);
+  // if (doctor) {
+  //   const due = document.due;
+  //   await UpdateDoctor(doctor.$id, {
+  //     due: Math.max(0, doctor.due + due),
+  //     totalCases: Math.max(0, doctor.totalCases + 1),
+  //   });
+  // }
   // update team
   if (team) {
     await updateTeam(document.teamId, {
@@ -123,21 +123,21 @@ export const UpdateCase = async (
   );
 
   // update doctor
-  const doctorId = updatedDocument.doctorId;
-  const newDue = updatedDocument.due || 0;
-  const oldDue = oldCase.due || 0;
+  // const doctorId = updatedDocument.doctorId;
+  // const newDue = updatedDocument.due || 0;
+  // const oldDue = oldCase.due || 0;
 
-  let result: number = 0;
-  if (newDue < oldDue) {
-    // Decreased due (removed tooth or demoted material)
-    result = -(oldDue - newDue);
-  } else if (newDue > oldDue) {
-    // Increased due (added tooth or promoted material)
-    result = newDue - oldDue;
-  }
-  if (doctorId) {
-    await UpdateDoctorDue(doctorId, result);
-  }
+  // let result: number = 0;
+  // if (newDue < oldDue) {
+  //   // Decreased due (removed tooth or demoted material)
+  //   result = -(oldDue - newDue);
+  // } else if (newDue > oldDue) {
+  //   // Increased due (added tooth or promoted material)
+  //   result = newDue - oldDue;
+  // }
+  // if (doctorId) {
+  //   await UpdateDoctorDue(doctorId, result);
+  // }
 
   await LogAuditEvent({
     userId: updatedDocument.userId,
@@ -168,11 +168,6 @@ export const DeleteCase = async (
   }
 
   const { databases } = await createAdminClient();
-  const doctorUpdates: {
-    [key: string]: { due: number; totalCases: number };
-  } = {};
-
-  const lock = new Set(); // Simulated lock for thread-safe doctorUpdates
 
   const handleCaseDeletion = async (documentId: string) => {
     try {
@@ -181,8 +176,6 @@ export const DeleteCase = async (
         console.warn(`Case with ID ${documentId} not found.`);
         return;
       }
-
-      const doctorId = document.doctorId;
 
       // Delete the document
       await databases.deleteDocument(DATABASE_ID, CASES_COLLECTION_ID, documentId);
@@ -200,15 +193,6 @@ export const DeleteCase = async (
         },
         timestamp: new Date().toISOString(),
       });
-
-      // Update doctorUpdates map in a thread-safe way
-      if (!lock.has(doctorId)) {
-        lock.add(doctorId);
-        doctorUpdates[doctorId] = { due: 0, totalCases: 0 };
-      }
-
-      doctorUpdates[doctorId].due += document.due || 0;
-      doctorUpdates[doctorId].totalCases += 1;
     } catch (error) {
       console.error(`Failed to delete case with ID ${documentId}:`, error);
     }
@@ -216,31 +200,6 @@ export const DeleteCase = async (
 
   // Process all deletions in parallel
   await Promise.allSettled(ids.map((id) => handleCaseDeletion(id)));
-
-  // Apply doctor updates in batches
-  const updateDoctorRecords = async () => {
-    for (const [doctorId, updateData] of Object.entries(doctorUpdates)) {
-      try {
-        const doctor = await GetDoctorById(doctorId);
-        if (!doctor) {
-          console.warn(`Doctor with ID ${doctorId} not found.`);
-          continue;
-        }
-
-        const updatedDoctorData = {
-          due: Math.max((doctor.due || 0) - updateData.due, 0),
-          totalCases: Math.max((doctor.totalCases || 0) - updateData.totalCases, 0),
-        };
-
-        await UpdateDoctor(doctorId, updatedDoctorData);
-      } catch (error) {
-        console.error(`Failed to update doctor with ID ${doctorId}:`, error);
-      }
-    }
-  };
-
-  // Execute the doctor updates
-  await updateDoctorRecords();
 };
 
 export const GetCases = async (): Promise<Case[]> => {

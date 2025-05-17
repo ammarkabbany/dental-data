@@ -47,7 +47,7 @@ export default function RootLayout({
                 forcedTheme="dark"
                 enableSystem={false}
               >
-                <Toaster richColors theme="light" position="bottom-right" />
+                <Toaster theme="dark" position="top-center" />
                 <Analytics />
                 <SpeedInsights />
                 {children}

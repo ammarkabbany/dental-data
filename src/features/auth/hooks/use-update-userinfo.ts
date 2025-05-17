@@ -3,7 +3,7 @@ import { AVATARS_BUCKET_ID } from "@/lib/constants";
 import { useAuth } from "@/providers/auth-provider";
 import { useMutation } from "@tanstack/react-query";
 import { ID } from "node-appwrite";
-import { toast } from "sonner";
+import { toastAPI } from "@/lib/ToastAPI";
 
 export const useUpdateUserInfo = () => {
   const { user } = useAuth();
@@ -41,10 +41,10 @@ export const useUpdateUserInfo = () => {
       }
     },
     onSuccess: () => {
-      toast.success("Account updated successfully");
+      toastAPI.success("Account updated");
     },
     onError: (error: Error) => {
-      toast.error(`Error updating account: ${error.message}`);
+      toastAPI.error(`Error updating account: ${error.message}`);
     },
   });
 };

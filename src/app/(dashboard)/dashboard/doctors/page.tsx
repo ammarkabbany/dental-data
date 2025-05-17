@@ -1,28 +1,31 @@
 "use client"
 import { ContentLayout } from "@/components/admin-panel/content-layout";
-import { DoctorCreateModal } from "@/components/doctors/create-doctor-modal";
+import { CreateDoctorModal } from "@/components/doctors/create-doctor-modal";
 import { DoctorsDataTable } from "@/components/doctors/data-table";
 import { Button } from "@/components/ui/button";
 import { usePermission } from "@/hooks/use-permissions";
 import { Modals, useModalStore } from "@/store/modal-store";
-import { Add01Icon, Doctor02Icon, UserIcon } from "@hugeicons/core-free-icons";
+import { Add01Icon, Doctor02Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { motion, AnimatePresence } from "framer-motion";
 import useTeamStore from "@/store/team-store";
 import { useDoctorsStore } from "@/store/doctors-store";
 
+export const runtime = 'edge'
+export const dynamic = 'force-dynamic'
+
 export default function DoctorsPage() {
-  const {openModal} = useModalStore();
-  const {userRole} = useTeamStore();
+  const { openModal } = useModalStore();
+  const { userRole } = useTeamStore();
   const canCreate = usePermission(userRole).checkPermission('doctors', 'create');
   const {doctors} = useDoctorsStore();
   const showEmptyState = (!doctors || doctors.length === 0);
 
   return (
     <>
-      <DoctorCreateModal />
+      <CreateDoctorModal />
       <ContentLayout title="Doctors">
-        <motion.div 
+        <motion.div
           className="flex flex-col sm:flex-row justify-between sm:items-center mb-8 gap-y-2"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -35,11 +38,11 @@ export default function DoctorsPage() {
             </p>
           </div>
           {canCreate && (
-            <Button 
-              className="transition" 
+            <Button
+              className="transition"
               onClick={() => openModal(Modals.CREATE_DOCTOR_MODAL)}
             >
-              <HugeiconsIcon icon={Add01Icon} className="mr-2" /> 
+              <HugeiconsIcon icon={Add01Icon} className="mr-2" />
               Add Doctor
             </Button>
           )}
@@ -73,7 +76,7 @@ export default function DoctorsPage() {
                 Start by adding doctors to your dental lab to manage cases and workflows efficiently.
               </p>
               {canCreate && (
-                <Button 
+                <Button
                   onClick={() => openModal(Modals.CREATE_DOCTOR_MODAL)}
                   className="transition-transform"
                 >

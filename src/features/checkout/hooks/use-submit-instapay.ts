@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import useTeamStore from "@/store/team-store";
 import { submitApplication } from "../actions";
 import { toast } from "sonner";
+import { toastAPI } from "@/lib/ToastAPI";
 
 export const useSubmitInstapay = () => {
   const { membership } = useTeamStore();
@@ -28,7 +29,7 @@ export const useSubmitInstapay = () => {
       }
     },
     onError: (err) => {
-      toast.error(err.message);
+      toastAPI.error(err.message);
     },
   });
 };

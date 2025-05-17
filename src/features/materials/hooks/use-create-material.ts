@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { CreateMaterial } from "../actions";
 import { Material } from "@/types";
 import useTeamStore from "@/store/team-store";
+import { toastAPI } from "@/lib/ToastAPI";
 
 
 export const useCreateMaterial = () => {
@@ -20,10 +21,10 @@ export const useCreateMaterial = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ['materials']})
-      toast.success('Material created successfully')
+      toastAPI.success('Material created')
     },
     // onError: (error) => {
-    //   toast.error(error.message)
+    //   toastAPI.error(error.message)
     // },
   })
 }

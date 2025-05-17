@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query"
 import { toast } from "sonner";
 import { Case } from "@/types";
 import { DeleteCase } from "../actions";
+import { toastAPI } from "@/lib/ToastAPI";
 
 
 export const useDeleteCase = () => {
@@ -10,10 +11,10 @@ export const useDeleteCase = () => {
       await DeleteCase(casesIds, teamId)
     },
     onSuccess: () => {
-      toast.success('Case deleted successfully')
+      toastAPI.success('Case deleted')
     },
     onError: (error) => {
-      console.error('Error creating case:', error)
+      console.error('Error deleting case:', error)
     },
   })
 }

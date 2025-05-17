@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner";
 import { Case } from "@/types";
 import { CreateCase } from "../actions";
+import { toastAPI } from "@/lib/ToastAPI";
 
 
 export const useCreateCase = () => {
@@ -15,10 +16,10 @@ export const useCreateCase = () => {
     },
     onSuccess: (data) => {
       // queryClient.setQueryData(['cases'], (oldData: any[]) => [data, ...oldData]);
-      toast.success('Case created successfully')
+      toastAPI.success('Case created successfully')
     },
     onError: (error) => {
-      toast.error(error.message);
+      toastAPI.error(error.message);
       console.error('Error creating case:', error)
     },
   })

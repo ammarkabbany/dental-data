@@ -4,6 +4,8 @@ import { databases } from "@/lib/appwrite/client";
 import { DATABASE_ID, DOCTORS_COLLECTION_ID } from "@/lib/constants";
 import { Query } from "appwrite";
 import { useDoctorsStore } from "@/store/doctors-store";
+import { ListDoctors } from "../actions";
+import { useTeam } from "@/providers/team-provider";
 
 export const useGetDoctors = () => {
   const {setDoctors} = useDoctorsStore();
@@ -21,6 +23,18 @@ export const useGetDoctors = () => {
     },
   });
 };
+
+export const useGetTableDoctors = () => {
+  const {currentTeam} = useTeam();
+  return useQuery({
+    queryKey: ["table_doctors"],
+    queryFn: async () => {
+      if (!currentTeam) return [];
+      const doctors = await ListDoctors(currentTeam.$id);
+      return doctors;
+    }
+  })
+}
 
 export const usePrefetchDoctors = () => {
   const queryClient = useQueryClient();

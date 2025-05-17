@@ -126,7 +126,11 @@ export const getColumns = (): ColumnDef<Case>[] => [
     },
     size: 180,
   },
-
+  {
+    accessorKey: "$createdAt",
+    size: 0,
+    enableHiding: false,
+  },
   {
     accessorKey: "patient",
     header: "Patient",

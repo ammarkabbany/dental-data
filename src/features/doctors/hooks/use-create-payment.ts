@@ -2,6 +2,7 @@ import { Payment } from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner";
 import { createPayment } from "../payments";
+import { toastAPI } from "@/lib/ToastAPI";
 
 export const useCreatePayment = () => {
   const queryClient = useQueryClient();
@@ -12,7 +13,7 @@ export const useCreatePayment = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ['doctors']})
-      toast.success('Payment created successfully')
+      toastAPI.success('Payment created')
     },
     onError: (error) => {
       console.error('Error creating payment:', error)

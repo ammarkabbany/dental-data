@@ -20,7 +20,7 @@ import {
 import Link from "next/link";
 import { Modals, useModalStore } from "@/store/modal-store";
 import { MaterialCreateModal } from "@/components/materials/create-material-modal";
-import { DoctorCreateModal } from "@/components/doctors/create-doctor-modal";
+import { CreateDoctorModal } from "@/components/doctors/create-doctor-modal";
 import useTeamStore from "@/store/team-store";
 import { useAuth } from "@/providers/auth-provider";
 
@@ -121,7 +121,7 @@ export default function DashboardPage() {
   return (
     <ContentLayout title="Overview">
       <MaterialCreateModal />
-      <DoctorCreateModal />
+      <CreateDoctorModal />
       <div className="space-y-4">
         {/* Welcome Card */}
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-green-600 via-lime-600 to-emerald-700 p-7 text-white shadow-xl shadow-lime-900/20">

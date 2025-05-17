@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { Template } from "@/types";
 import { UpdateTemplate } from "../actions";
 import useTeamStore from "@/store/team-store";
+import { toastAPI } from "@/lib/ToastAPI";
 
 
 export const useUpdateTemplate = () => {
@@ -19,7 +20,7 @@ export const useUpdateTemplate = () => {
       // queryClient.setQueryData(['templates'], (oldData: any[]) => {
       //    return oldData.map((c) => (c.$id === data?.$id ? data : c))
       // });
-      toast.success('Template updated successfully')
+      toastAPI.success('Template updated')
     },
     onError: (error) => {
       console.error('Error updating template:', error)
