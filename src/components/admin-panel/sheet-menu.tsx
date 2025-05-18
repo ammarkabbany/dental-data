@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/sheet";
 import { TeamSwitcher } from "../team-switcher";
 import Logo from "../logo";
+import { UserNav } from "./user-nav";
+import { Separator } from "../ui/separator";
 
 export function SheetMenu() {
   return (
@@ -37,6 +39,10 @@ export function SheetMenu() {
           </Button>
         </SheetHeader>
         <Menu isOpen />
+        <div className="pb-2">
+          <Separator className="my-2" />
+          <UserNav side="top" />
+        </div>
       </SheetContent>
     </Sheet>
   );

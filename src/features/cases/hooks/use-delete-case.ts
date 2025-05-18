@@ -11,7 +11,7 @@ export const useDeleteCase = () => {
       await DeleteCase(casesIds, teamId)
     },
     onSuccess: () => {
-      toastAPI.success('Case deleted')
+      toastAPI.success('Case(s) deleted')
     },
     onError: (error) => {
       console.error('Error deleting case:', error)

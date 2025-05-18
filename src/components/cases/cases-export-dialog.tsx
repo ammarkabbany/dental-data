@@ -7,13 +7,10 @@ import { Save } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -37,30 +34,27 @@ export function CasesExportDialog({
   exportOptions,
   setExportOptions,
 }: CasesExportOptions) {
-  const [open, setOpen] = useState(false);
-  const { openModal } = useModalStore();
+  const { openModal, isModalOpen, closeModal } = useModalStore();
   const [format, setFormat] = useState("print");
   // const [fileName, setFileName] = useState("export")
 
   const handleExport = (e: React.FormEvent) => {
     e.preventDefault();
-
-    openModal("print");
-    setOpen(false);
+    openModal("print")
   };
 
   return (
-    <ResponsiveModalWithTrigger
-      trigger={
-        <DialogTrigger asChild>
-          <Button className="transition" variant="secondary">
-            <Save className="mr-2 h-4 w-4" />
-            Export
-          </Button>
-        </DialogTrigger>
-      }
-      open={open}
-      onOpenChange={setOpen}
+    <ResponsiveModal
+      // trigger={
+      //   <DialogTrigger asChild>
+      //     <Button className="transition" variant="secondary">
+      //       <Save className="mr-2 h-4 w-4" />
+      //       Export
+      //     </Button>
+      //   </DialogTrigger>
+      // }
+      open={isModalOpen("cases-export")}
+      onOpenChange={() => closeModal("cases-export")}
     >
       <div className="p-7 space-y-4">
         <DialogHeader>
@@ -124,6 +118,6 @@ export function CasesExportDialog({
           </DialogFooter>
         </form>
       </div>
-    </ResponsiveModalWithTrigger>
+    </ResponsiveModal>
   );
 }

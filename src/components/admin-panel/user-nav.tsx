@@ -1,6 +1,6 @@
 "use client";
 
-import { FileText, Settings, SquareUserRound, UsersRoundIcon } from "lucide-react";
+import { ChevronDown, FileText, Settings, SquareUserRound, UsersRoundIcon } from "lucide-react";
 
 import {
   Tooltip,
@@ -19,17 +19,26 @@ import { useAuth } from "@/providers/auth-provider";
 import { UserAvatar } from "../user-avatar";
 import { shortenString } from "@/lib/format-utils";
 import Link from "next/link";
+import useTeamStore from "@/store/team-store";
 
-export function UserNav() {
+export function UserNav({side = "bottom"}: {side: "left" | "right" | "top" | "bottom"}) {
   const { logOut, user } = useAuth();
+  const {userRole} = useTeamStore();
 
   return (
     <DropdownMenu>
       <TooltipProvider disableHoverableContent>
         <Tooltip delayDuration={100}>
           <TooltipTrigger asChild>
-            <DropdownMenuTrigger className="hover:opacity-80 transition bg-white rounded-full">
-              <UserAvatar className="size-10 ring ring-offset-2 ring-offset-background" name={user?.name || ""} image={user?.avatar} />
+            <DropdownMenuTrigger className="w-full transition p-2 hover:bg-sidebar-accent rounded-sm focus-within:outline-none flex items-center justify-between gap-x-2">
+              <div className="flex items-center gap-2">
+                <UserAvatar className="size-10 ring-0 rounded" name={user?.name || ""} image={user?.avatar} />
+                <div className="flex flex-col items-start">
+                  <span className="">{user?.name}</span>
+                  {userRole && <span className="text-xs text-muted-foreground capitalize">Team {userRole}</span>}
+                </div>
+              </div>
+              <ChevronDown className="h-4 w-4 ml-2" />
             </DropdownMenuTrigger>
           </TooltipTrigger>
           <TooltipContent side="bottom">Profile</TooltipContent>
@@ -38,7 +47,8 @@ export function UserNav() {
 
       <DropdownMenuContent
         className="w-64 rounded-xl p-2 shadow-xl"
-        align="end"
+        align="center"
+        side={side}
         forceMount
       >
         <div className="flex items-center gap-3 p-2">
