@@ -21,7 +21,7 @@ import { shortenString } from "@/lib/format-utils";
 import Link from "next/link";
 import useTeamStore from "@/store/team-store";
 
-export function UserNav({side = "bottom"}: {side?: "left" | "right" | "top" | "bottom"}) {
+export function UserNav({side = "bottom", includeDetails = true}: {side?: "left" | "right" | "top" | "bottom", includeDetails?: boolean}) {
   const { logOut, user } = useAuth();
   const {userRole} = useTeamStore();
 
@@ -33,10 +33,10 @@ export function UserNav({side = "bottom"}: {side?: "left" | "right" | "top" | "b
             <DropdownMenuTrigger className="w-full transition p-2 hover:bg-sidebar-accent rounded-sm focus-within:outline-none flex items-center justify-between gap-x-2">
               <div className="flex items-center gap-2">
                 <UserAvatar className="size-10 ring-0 rounded" name={user?.name || ""} image={user?.avatar} />
-                <div className="flex flex-col items-start">
+                {includeDetails && <div className="flex flex-col items-start">
                   <span className="">{user?.name}</span>
                   {userRole && <span className="text-xs text-muted-foreground capitalize">Team {userRole}</span>}
-                </div>
+                </div>}
               </div>
               <ChevronDown className="h-4 w-4 ml-2" />
             </DropdownMenuTrigger>

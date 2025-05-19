@@ -43,7 +43,7 @@ export function FloatingDock({
           data-floating-dock="true"
         >
           <div className="flex items-center gap-2 bg-sidebar border rounded-xl shadow-lg px-4 py-3 relative backdrop-blur-sm">
-            <div className="absolute w-max -top-5 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground text-xs p-2 rounded-full">
+            <div className="absolute w-max -top-5 left-1/2 transform -translate-x-1/2 bg-sidebar-accent text-primary-foreground text-xs p-2 rounded-full">
               {selectedCases.length} selected
             </div>
 

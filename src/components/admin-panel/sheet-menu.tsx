@@ -32,8 +32,8 @@ export function SheetMenu() {
           >
             <SheetTitle asChild>
             <Link href={"/"} className="flex items-center select-none">
-              <Logo src="/old-fav.ico" className="size-16 mt-1" />
-              <span className="text-xl font-bold">DentaAuto</span>
+              <Logo src="/old-fav.ico" className="size-18 mt-1" />
+              <span className="text-2xl font-bold">DentaAuto</span>
             </Link>
             </SheetTitle>
           </Button>
