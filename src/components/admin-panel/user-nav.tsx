@@ -21,7 +21,7 @@ import { shortenString } from "@/lib/format-utils";
 import Link from "next/link";
 import useTeamStore from "@/store/team-store";
 
-export function UserNav({side = "bottom"}: {side: "left" | "right" | "top" | "bottom"}) {
+export function UserNav({side = "bottom"}: {side?: "left" | "right" | "top" | "bottom"}) {
   const { logOut, user } = useAuth();
   const {userRole} = useTeamStore();
 
