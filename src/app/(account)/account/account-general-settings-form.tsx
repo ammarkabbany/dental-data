@@ -25,7 +25,7 @@ export default function AccountGeneralSettingsForm() {
   // const canUpdate = usePermission(userRole).checkPermission("team", "update");
   const inputRef = useRef<HTMLInputElement>(null);
   const updateAccountSettings = z.object({
-    name: z.string().min(4, "Name must be at least 4 characters long").max(32, "Name must be at most 32 characters long"),
+    name: z.string().min(4, "Name must be at least 4 characters long").max(16, "Name must be at most 16 characters long"),
     image: z
       .union([
         z.instanceof(File),

@@ -1,11 +1,6 @@
 import {
-  ChevronDown,
   Search,
   Columns,
-  Filter,
-  Trash2,
-  FileDown,
-  SortAsc,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -34,11 +29,10 @@ import {
   Select,
   SelectContent,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { SelectIcon } from "@radix-ui/react-select";
+import { FloatingDock } from "./floating-dock";
 
 export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
   const [exportOptions, setExportOptions] = React.useState<{
@@ -51,8 +45,6 @@ export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
   const { userRole } = useTeamStore();
   const { doctors } = useDoctorsStore();
 
-  const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
-
   const currentDoctorFilterValue = table
     .getColumn("doctor")
     ?.getFilterValue() as string;
@@ -63,7 +55,7 @@ export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
   const selectedCases = table
     .getSelectedRowModel()
     .rows.map((row) => row.original)
-    .sort((a, b) => a.date.localeCompare(b.date));
+    .sort((a, b) => a.date.localeCompare(b.date)).splice(0, 100);
 
   const filtersCount = Object.values(table.getAllColumns()).filter((column) =>
     column.getIsFiltered()
@@ -75,6 +67,12 @@ export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
 
   return (
     <>
+      <FloatingDock
+        selectedCases={selectedCases}
+        onClearSelection={() => {
+          table.resetRowSelection();
+        }}
+      />
       <PrintComponent selectedCases={selectedCases} options={exportOptions} />
       <div className="flex flex-wrap items-center justify-between gap-4 py-4">
         <div className="flex flex-wrap items-center gap-2">
@@ -222,11 +220,12 @@ export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
             <SelectContent>
-              <Label className="px-2 py-1 text-sm font-medium">
+              <Label className="p-2 text-sm font-medium">
                 Sort by
               </Label>
               <SelectItem
                 value="date"
+                className="mt-1"
               >
                 Date
               </SelectItem>
@@ -239,13 +238,16 @@ export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
           </Select>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          {canDelete && selectedCases.length > 0 && (
-            <DeleteCaseModal
-              cases={selectedCases}
-            />
-          )}
+        {canDelete && selectedCases.length > 0 && (
+          <DeleteCaseModal
+            cases={selectedCases}
+            onDelete={() => {
+              table.resetRowSelection();
+            }}
+          />
+        )}
 
+        <div className="flex flex-wrap items-center gap-2">
           {canExport && (
             <CasesExportDialog
               exportOptions={exportOptions}

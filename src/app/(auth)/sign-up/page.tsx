@@ -51,7 +51,7 @@ export default function RegisterPage() {
   });
 
   if (isLoading) {
-    return <main className="bg-gradient-to-b from-background to-muted/30">
+    return <main className="">
       <div className="flex items-center justify-center min-h-screen">
         <LoadingSpinner />
       </div>
@@ -68,10 +68,12 @@ export default function RegisterPage() {
   };
 
   return (
-    <Card className="max-w-md w-full">
+    <Card className="max-w-md w-full from-background via-sidebar/45 to-sidebar bg-gradient-to-b">
       <CardHeader className="p-7 flex items-center justify-center">
         <CardTitle className="text-xl">Sign Up</CardTitle>
-        <CardDescription>Register a new account</CardDescription>
+        <CardDescription>
+          Create an account to get started
+        </CardDescription>
       </CardHeader>
       <CardContent className="p-7">
         <Form {...form}>

@@ -6,6 +6,8 @@ import { useStore } from "@/hooks/use-store";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import Logo from "../logo";
+import { UserNav } from "./user-nav";
+import { Separator } from "../ui/separator";
 
 export function Sidebar() {
   const sidebar = useStore(useSidebar, (x) => x);
@@ -59,6 +61,10 @@ export function Sidebar() {
           </Link>
         </Button>
         <Menu isOpen={getOpenState()} />
+        <div>
+          <Separator className="my-2" />
+          <UserNav side="top" />
+        </div>
       </div>
       {/* <div className="h-10 w-full" />
       <div className="absolute left-0 bottom-0 px-2 z-10 w-full h-10">

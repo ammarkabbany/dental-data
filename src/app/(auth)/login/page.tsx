@@ -51,7 +51,7 @@ export default function LoginPage() {
   });
 
   if (isLoading) {
-    return <main className="bg-gradient-to-b from-background to-muted/30">
+    return <main className="">
       <div className="flex items-center justify-center min-h-screen">
         <LoadingSpinner />
       </div>
@@ -70,10 +70,12 @@ export default function LoginPage() {
   };
 
   return (
-    <Card className="max-w-md w-full rounded-none sm:rounded-xl">
+    <Card className="max-w-md w-full rounded-none sm:rounded-xl from-background via-sidebar/45 to-sidebar bg-gradient-to-b">
       <CardHeader className="p-7 flex items-center justify-center">
         <CardTitle className="text-xl">Login</CardTitle>
-        <CardDescription>Sign in to your account</CardDescription>
+        <CardDescription>
+          Enter your credentials to access your account
+        </CardDescription>
       </CardHeader>
       <CardContent className="p-7">
         <Form {...form}>
