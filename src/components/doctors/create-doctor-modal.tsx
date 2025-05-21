@@ -32,8 +32,6 @@ export const CreateDoctorModal = () => {
     resolver: zodResolver(createDoctorSchema),
     defaultValues: {
       name: "",
-      due: 0,
-      totalCases: 0,
     }
   });
 
@@ -77,48 +75,6 @@ export const CreateDoctorModal = () => {
                     </FormItem>
                   )}
                 />
-                <div className="grid grid-cols-2 gap-3">
-                <FormField
-                  control={form.control}
-                  name="due"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Due</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          {...field}
-                          onChange={(e) => {
-                            field.onChange(e.target.valueAsNumber);
-                          }}
-                          placeholder="Enter number"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="totalCases"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Total Cases</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          {...field}
-                          onChange={(e) => {
-                            field.onChange(e.target.valueAsNumber);
-                          }}
-                          placeholder="Enter number"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                </div>
               </div>
               <Separator className="mt-2" />
               <div className="flex items-center justify-between mt-4">
