@@ -124,7 +124,7 @@ export const getColumns = (): ColumnDef<Case>[] => [
         </div>
       );
     },
-    size: 180,
+    size: 250,
   },
   {
     accessorKey: "$createdAt",
@@ -214,7 +214,7 @@ export const getColumns = (): ColumnDef<Case>[] => [
         </div>
       );
     },
-    size: 130,
+    size: 150,
   },
   {
     accessorKey: "shade",

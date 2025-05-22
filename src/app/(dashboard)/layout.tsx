@@ -13,6 +13,8 @@ import RedirectToAuth from "@/components/auth/custom-auth-redirect";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import { useTeam } from "@/providers/team-provider";
 import RedirectToOnboarding from "@/components/auth/custom-onboard-redirect";
+import { useAuth } from "@/providers/auth-provider";
+import { toastAPI } from "@/lib/ToastAPI";
 
 export default function DashboardLayout({
   children,
@@ -21,6 +23,7 @@ export default function DashboardLayout({
 }) {
   const queryClient = useQueryClient();
   const { currentTeam, isLoading, isAuthenticated } = useTeam();
+  const {user} = useAuth();
 
   // Handle real-time updates
   useRealtimeUpdates(CASES_COLLECTION_ID, (payload) => {
@@ -28,14 +31,17 @@ export default function DashboardLayout({
     const caseData: Case = payload.payload; // The updated/created/deleted case
 
     if (events.includes("databases.*.collections.*.documents.*.create")) {
-      queryClient.setQueryData(['cases'], (oldData: any[]) => [caseData, ...oldData]);
+      queryClient.setQueryData(['cases'], (oldData: any[]) => oldData && oldData.length > 0 ? [caseData, ...oldData] : [caseData]);
+      if (caseData.userId !== user?.$id) {
+        toastAPI.success("New case created by team");
+      }
     }
     else if (
       events.includes("databases.*.collections.*.documents.*.update")
     ) {
       // Update the existing case in the cached data
       queryClient.setQueryData(["cases"], (oldData: any[]) =>
-        oldData.map((c) => (c.$id === caseData.$id ? caseData : c))
+        oldData && oldData.length > 0 ? oldData.map((c) => (c.$id === caseData.$id ? caseData : c)) : [caseData]
       );
     }
     else if (
@@ -43,7 +49,7 @@ export default function DashboardLayout({
     ) {
       //   // Remove the deleted case from the cached data
       queryClient.setQueryData(["cases"], (oldData: any[]) =>
-        oldData.filter((c) => c.$id !== caseData.$id)
+        oldData && oldData.length > 0 ? oldData.filter((c) => c.$id !== caseData.$id) : []
       );
     }
     // queryClient.refetchQueries({ queryKey: ["dashboard"] });

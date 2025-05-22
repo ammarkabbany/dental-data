@@ -8,6 +8,7 @@ export const useGetAdminCases = () => {
       const cases = await getAllCases();
       return cases;
     },
-    retry: false
+    retry: false,
+    staleTime: 1000 * 60 * 5,
   });
 };

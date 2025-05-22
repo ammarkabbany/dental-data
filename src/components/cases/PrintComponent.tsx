@@ -89,7 +89,7 @@ const PrintableTable = React.forwardRef<HTMLDivElement, PrintableTableProps>(
 
                 return (
                   <TableRow key={caseItem.$id}>
-                     {options['showClient'] && <TableCell className="text-start max-w-36">
+                     {options['showClient'] && <TableCell className="text-start max-w-[200px]">
                       {doctor}
                     </TableCell>}
                     <TableCell className="max-w-28">{caseItem.date}</TableCell>

@@ -6,7 +6,7 @@ import {
 } from "@/lib/appwrite/appwrite";
 import { CASES_COLLECTION_ID, DATABASE_ID } from "@/lib/constants";
 import { Case } from "@/types";
-import { ID, Permission, Query, Role } from "node-appwrite";
+import { AppwriteException, ID, Permission, Query, Role } from "node-appwrite";
 import {
   GetDoctorById,
   UpdateDoctor,
@@ -44,55 +44,56 @@ export const CreateCase = async (
     };
   }
 
-  const document = await databases.createDocument<Case>(
-    DATABASE_ID,
-    CASES_COLLECTION_ID,
-    ID.unique(),
-    {
-      teamId,
-      userId,
-      ...data,
-      patient: data.patient || "-",
-      shade: data.shade || "-",
-      data: JSON.stringify(data.data),
-    },
-    [
-      Permission.read(Role.team(teamId)),
-      Permission.update(Role.team(teamId)),
-      Permission.write(Role.team(teamId, "owner")),
-      Permission.write(Role.team(teamId, "admin")),
-    ]
-  );
-  // update doctor
-  // const doctor = await GetDoctorById(document.doctorId, [
-  //   Query.select(["$id", "due", "totalCases"]),
-  // ]);
-  // if (doctor) {
-  //   const due = document.due;
-  //   await UpdateDoctor(doctor.$id, {
-  //     due: Math.max(0, doctor.due + due),
-  //     totalCases: Math.max(0, doctor.totalCases + 1),
-  //   });
-  // }
-  // update team
-  if (team) {
-    await updateTeam(document.teamId, {
-      casesUsed: Math.max(0, (team.casesUsed || 0) + 1),
+  try {
+    const document = await databases.createDocument<Case>(
+      DATABASE_ID,
+      CASES_COLLECTION_ID,
+      ID.unique(),
+      {
+        teamId,
+        userId,
+        ...data,
+        patient: data.patient || "-",
+        shade: data.shade || "-",
+        data: JSON.stringify(data.data),
+      },
+      [
+        Permission.read(Role.team(teamId)),
+        Permission.update(Role.team(teamId)),
+        Permission.write(Role.team(teamId, "owner")),
+        Permission.write(Role.team(teamId, "admin")),
+      ]
+    );
+    if (team) {
+      await updateTeam(document.teamId, {
+        casesUsed: Math.max(0, (team.casesUsed || 0) + 1),
+      });
+    }
+  
+    await LogAuditEvent({
+      userId: document.userId,
+      teamId: document.teamId,
+      action: "CREATE",
+      resource: "CASE",
+      resourceId: document.$id,
+      changes: {
+        after: document,
+        before: undefined,
+      },
+      timestamp: new Date().toISOString(),
     });
+  } catch (error) {
+    if (error instanceof AppwriteException) {
+      return {
+        success: false,
+        message: error.message,
+      };
+    }
+    return {
+      success: false,
+      message: "An unknown error occurred.",
+    };
   }
-
-  await LogAuditEvent({
-    userId: document.userId,
-    teamId: document.teamId,
-    action: "CREATE",
-    resource: "CASE",
-    resourceId: document.$id,
-    changes: {
-      after: document,
-      before: undefined,
-    },
-    timestamp: new Date().toISOString(),
-  });
 
   return {
     success: true,
