@@ -139,6 +139,7 @@ export function DoctorsDataTable({ data = [] }: DataTableProps) {
         <SearchInput
           className=""
           placeholder="Search doctors..."
+          type="text"
           value={table.getState().globalFilter || ""}
           onChange={(event) => {table.setGlobalFilter(event.target.value)}}
           onClear={() => {table.setGlobalFilter(undefined)}}
@@ -159,7 +160,7 @@ export function DoctorsDataTable({ data = [] }: DataTableProps) {
                       <TableHead
                       key={header.id}
                       style={{ width: `${header.getSize()}px` }}
-                      className="relative h-9 select-none bg-sidebar border-y border-border first:border-l first:rounded-l-lg last:border-r last:rounded-r-lg"
+                      className="relative h-9 text-base select-none bg-sidebar border-y border-border first:border-l first:rounded-l-lg last:border-r last:rounded-r-lg"
                     >
                         {header.isPlaceholder
                           ? null

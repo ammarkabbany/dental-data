@@ -26,7 +26,7 @@ export function SheetMenu() {
       <SheetContent className="sm:w-72 px-3 h-full flex flex-col overflow-y-auto border border-sidebar-border bg-sidebar" side="left">
         <SheetHeader>
           <Button
-            className="flex justify-start items-center pb-2 pt-1"
+            className="flex justify-start items-center pt-1"
             variant="ghost"
             asChild
           >
@@ -38,6 +38,7 @@ export function SheetMenu() {
             </SheetTitle>
           </Button>
         </SheetHeader>
+        <Separator />
         <Menu isOpen />
         <div className="pb-2">
           <Separator className="my-2" />

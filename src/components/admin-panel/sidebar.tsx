@@ -25,7 +25,7 @@ export function Sidebar() {
       <div
         onMouseEnter={() => setIsHover(true)}
         onMouseLeave={() => setIsHover(false)}
-        className="relative h-full flex flex-col px-3 py-3 gap-y-8"
+        className="relative h-full flex flex-col px-3 py-3 gap-y-4"
       >
         <Button
           className={cn(
@@ -35,31 +35,12 @@ export function Sidebar() {
           variant="ghost"
           asChild
         >
-          {/* <Link href="/dashboard" className="flex items-center justify-start">
-            {/* <Image
-              src={"/old-fav.ico"}
-              width={86}
-              height={86}
-              alt="logo"
-              // layout="static"
-              className="size-[86px] object-cover"
-            />
-            <h1
-              className={cn(
-                "font-bold text-2xl whitespace-nowrap dark:text-[#e3bad1] transition-[transform,opacity,display] ease-in-out duration-300",
-                !getOpenState()
-                  ? "-translate-x-96 opacity-0 hidden"
-                  : "translate-x-0 opacity-100"
-              )}
-            >
-              DentaFlow
-            </h1>
-          </Link> */}
           <Link href={"/"} className="flex items-center select-none mt-2">
             <Logo src="/old-fav.ico" className="size-18" w={72} h={72} />
             <span className="text-2xl font-bold tracking-wide -translate-x-2">DentaAuto</span>
           </Link>
         </Button>
+        <Separator />
         <Menu isOpen={getOpenState()} />
         <div>
           <Separator className="my-2" />

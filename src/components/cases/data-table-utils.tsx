@@ -1,7 +1,4 @@
-import {
-  Search,
-  Columns,
-} from "lucide-react";
+import { Search, Columns } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -33,6 +30,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { FloatingDock } from "./floating-dock";
+import { SearchInput } from "../search-input";
 
 export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
   const [exportOptions, setExportOptions] = React.useState<{
@@ -41,6 +39,15 @@ export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
     showClient: true,
     showShade: true,
   });
+
+  const { pageIndex, pageSize } = table.getState().pagination;
+
+  const totalFilteredRows = table.getFilteredRowModel().rows.length;
+
+  const itemsSeenSoFar = Math.min(
+    (pageIndex + 1) * pageSize,
+    totalFilteredRows
+  );
 
   const { userRole } = useTeamStore();
   const { doctors } = useDoctorsStore();
@@ -55,7 +62,8 @@ export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
   const selectedCases = table
     .getSelectedRowModel()
     .rows.map((row) => row.original)
-    .sort((a, b) => a.date.localeCompare(b.date)).splice(0, 100);
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .splice(0, 100);
 
   const filtersCount = Object.values(table.getAllColumns()).filter((column) =>
     column.getIsFiltered()
@@ -76,6 +84,17 @@ export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
       <PrintComponent selectedCases={selectedCases} options={exportOptions} />
       <div className="flex flex-wrap items-center justify-between gap-4 py-4">
         <div className="flex flex-wrap items-center gap-2">
+          <SearchInput
+            placeholder="Search patients..."
+            value={
+              (table.getColumn("patient")?.getFilterValue() as string) ?? ""
+            }
+            onChange={(event) =>
+              table.getColumn("patient")?.setFilterValue(event.target.value)
+            }
+            onClear={() => table.getColumn("patient")?.setFilterValue("")}
+            className="w-[300px]"
+          />
           <Button
             onClick={() => table.toggleAllRowsSelected()}
             variant="outline"
@@ -128,44 +147,54 @@ export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
             clearFilters={clearFilters}
           >
             <div className="space-y-4">
-              <div className="grid gap-2">
-                <Label className="text-sm font-medium">Patient</Label>
-                <Input
-                  type="search"
-                  placeholder="Search patients..."
-                  value={
-                    (table.getColumn("patient")?.getFilterValue() as string) ??
-                    ""
-                  }
-                  onChange={(event) =>
-                    table
-                      .getColumn("patient")
-                      ?.setFilterValue(event.target.value)
-                  }
-                  className="h-9"
-                >
-                  <Input.Group>
-                    <Input.LeftIcon>
-                      <Search className="h-4 w-4 text-muted-foreground" />
-                    </Input.LeftIcon>
-                  </Input.Group>
-                </Input>
-              </div>
-
-              <div className="grid gap-2">
-                <Label className="text-sm font-medium">Date Range</Label>
-                <DatePicker
-                  date={currentDateFilterValue}
-                  setDate={(newValue: any) => {
-                    if (newValue === currentDateFilterValue) {
-                      table.getColumn("date")?.setFilterValue(null);
-                      return;
+              <div className="grid gap-2 grid-cols-2">
+                <div className="grid gap-2">
+                  <Label className="text-sm font-medium">Date Range</Label>
+                  <DatePicker
+                    date={currentDateFilterValue}
+                    setDate={(newValue: any) => {
+                      if (newValue === currentDateFilterValue) {
+                        table.getColumn("date")?.setFilterValue(null);
+                        return;
+                      }
+                      table.getColumn("date")?.setFilterValue(newValue);
+                    }}
+                    mode="range"
+                    className="h-9"
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label className="text-sm font-medium">Sort by</Label>
+                  <Select
+                    onValueChange={(value) => {
+                      if (value === "date") {
+                        table.getColumn("date")?.toggleSorting(true);
+                      }
+                      if (value === "$createdAt") {
+                        table.getColumn("$createdAt")?.toggleSorting(true);
+                      }
+                    }}
+                    defaultValue="date"
+                    value={
+                      table.getColumn("date")?.getIsSorted()
+                        ? "date"
+                        : table.getColumn("$createdAt")?.getIsSorted()
+                          ? "$createdAt"
+                          : "date"
                     }
-                    table.getColumn("date")?.setFilterValue(newValue);
-                  }}
-                  mode="range"
-                  className="h-9"
-                />
+                  >
+                    <SelectTrigger className="">
+                      <SelectValue placeholder="Sort by" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <Label className="p-2 text-sm font-medium">Sort by</Label>
+                      <SelectItem value="date" className="mt-1">
+                        Date
+                      </SelectItem>
+                      <SelectItem value="$createdAt">Most Recent</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
               <div className="grid gap-2">
@@ -199,43 +228,6 @@ export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
             <SortAsc />
             Show New
           </Button> */}
-          <Select
-            onValueChange={(value) => {
-              if (value === "date") {
-                table.getColumn("date")?.toggleSorting(true);
-              }
-              if (value === "$createdAt") {
-                table.getColumn("$createdAt")?.toggleSorting(true);
-              }
-            }}
-            defaultValue="date"
-            value={
-              table.getColumn("date")?.getIsSorted() ? "date" : 
-              table.getColumn("$createdAt")?.getIsSorted()
-                ? "$createdAt"
-                : "date"
-            }
-          >
-            <SelectTrigger className="w-[150px]">
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent>
-              <Label className="p-2 text-sm font-medium">
-                Sort by
-              </Label>
-              <SelectItem
-                value="date"
-                className="mt-1"
-              >
-                Date
-              </SelectItem>
-              <SelectItem
-                value="$createdAt"
-              >
-                Most Recent
-              </SelectItem>
-            </SelectContent>
-          </Select>
         </div>
 
         {canDelete && selectedCases.length > 0 && (
@@ -255,6 +247,9 @@ export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
             />
           )}
         </div>
+        <p className="ml-auto text-muted-foreground">
+          Showing {itemsSeenSoFar} of {table.getRowCount()} cases
+        </p>
       </div>
     </>
   );

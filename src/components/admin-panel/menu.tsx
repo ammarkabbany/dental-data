@@ -53,7 +53,6 @@ export function Menu({ isOpen }: MenuProps) {
       >
         <div className="space-y-1">
           <TeamSwitcher />
-          <Separator className="my-2" />
           <h3 className="px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             Dashboard
           </h3>

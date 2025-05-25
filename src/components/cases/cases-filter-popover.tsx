@@ -26,7 +26,7 @@ export function CasesFiltersPopover({clearFilters, children, indicator = 0}: {cl
           <Badge variant={"default"}>{indicator}</Badge>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80">
+      <PopoverContent className="w-[400px]">
         <div className="grid gap-4">
           <div className="space-y-2">
             <h4 className="font-medium leading-none">Filters</h4>

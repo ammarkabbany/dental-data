@@ -123,7 +123,7 @@ export function AuditLogTable() {
                       <TableHead
                         key={header.id}
                         style={{ width: `${header.getSize()}px` }}
-                        className="relative h-9 select-none bg-sidebar border-y border-border first:border-l first:rounded-l-lg last:border-r last:rounded-r-lg"
+                        className="relative h-9 text-base select-none bg-sidebar border-y border-border first:border-l first:rounded-l-lg last:border-r last:rounded-r-lg"
                       >
                         {header.isPlaceholder
                           ? null

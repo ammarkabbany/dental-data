@@ -17,15 +17,12 @@ import RedirectToAuth from "@/components/auth/custom-auth-redirect";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import RedirectToOnboarding from "@/components/auth/custom-onboard-redirect";
 import { UserAvatar } from "@/components/user-avatar";
-import { CheckoutDialog } from "./billing/checkout-dialog";
 import { useState } from "react";
 
 export default function TeamPage() {
   const { isLoading, isAuthenticated } = useTeam();
   const { userRole, currentAppwriteTeam: appwriteTeam, currentTeam } = useTeamStore();
   const canUpdate = usePermission(userRole).checkPermission('team', 'update');
-
-  const [showRenewDialog, setShowRenewDialog] = useState(false);
 
   const {
     data: plan,
@@ -213,7 +210,6 @@ export default function TeamPage() {
                       variant="link"
                       size="sm"
                       className="mt-2 p-0 h-auto text-primary"
-                      onClick={() => setShowRenewDialog(true)}
                     >
                       Renew plan
                     </Button>
@@ -250,13 +246,6 @@ export default function TeamPage() {
           </motion.div>
         </motion.div>
       </div>
-
-      {plan && <CheckoutDialog
-        isOpen={showRenewDialog}
-        onClose={() => setShowRenewDialog(false)}
-        planName={plan.name}
-        price={plan.price}
-      />}
     </main>
   );
 }

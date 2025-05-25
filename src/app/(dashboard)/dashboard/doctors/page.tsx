@@ -39,10 +39,11 @@ export default function DoctorsPage() {
           </div>
           {canCreate && (
             <Button
-              className="transition"
+              className="transition hover:cursor-pointer"
+              size={"lg"}
               onClick={() => openModal(Modals.CREATE_DOCTOR_MODAL)}
             >
-              <HugeiconsIcon icon={Add01Icon} className="mr-2" />
+              {/* <HugeiconsIcon icon={Add01Icon} className="mr-2" /> */}
               Add Doctor
             </Button>
           )}

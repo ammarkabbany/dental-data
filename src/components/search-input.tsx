@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { SearchIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import * as React from "react";
+import { cn } from "@/lib/utils";
 
 interface SearchInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   onClear?: () => void;
@@ -21,7 +22,7 @@ export function SearchInput({
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="relative w-full sm:max-w-sm"
+      className={cn("relative w-full sm:max-w-sm", className)}
     >
       <Input.Group>
         <Input

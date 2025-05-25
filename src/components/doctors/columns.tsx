@@ -35,21 +35,21 @@ export const getColumns = (
     {
       accessorKey: "doctor",
       header: "Doctor",
-      accessorFn: (row) => {
-        const doctor = row;
-        const doctorName = doctor?.name || "Unknown";
-        return doctorName.length > 25
-          ? doctorName.substring(0, 25) + "..."
-          : doctorName;
-      },
+      // accessorFn: (row) => {
+      //   const doctor = row;
+      //   const doctorName = doctor?.name || "Unknown";
+      //   return doctorName.length > 25
+      //     ? doctorName.substring(0, 25) + "..."
+      //     : doctorName;
+      // },
       cell: ({ row }) => {
         const now = new Date();
         const createdAt = new Date(row.original.$createdAt);
         const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
         const isRecent = createdAt >= fiveMinutesAgo;
-        const doctor: string = row.getValue("doctor");
+        const doctor: string = row.original.name
         return (
-          <div className="capitalize flex items-center gap-2">
+          <div className="capitalize flex items-center gap-2 text-ellipsis truncate">
             {doctor}
             {isRecent && (
               <Badge className="ml-1" variant="info">

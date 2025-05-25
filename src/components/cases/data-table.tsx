@@ -132,7 +132,7 @@ export function CasesDataTable({ data = [] }: DataTableProps) {
         <ScrollArea 
           id="table-scroll-area" 
           className="h-[660px] overflow-auto"
-          type="scroll"
+          type="hover"
         >
           <Table className="table-fixed border-separate border-spacing-0 [&_tr:not(:last-child)_td]:border-b">
             <TableHeader className="sticky z-30 top-0 bg-accent !rounded-full">
@@ -143,7 +143,7 @@ export function CasesDataTable({ data = [] }: DataTableProps) {
                       <TableHead
                       key={header.id}
                       style={{ width: `${header.getSize()}px` }}
-                      className="relative h-9 select-none bg-sidebar border-y border-border first:border-l first:rounded-l-lg last:border-r last:rounded-r-lg"
+                      className="relative h-9 text-base select-none bg-sidebar border-y border-border first:border-l first:rounded-l-lg last:border-r last:rounded-r-lg"
                     >
                         {header.isPlaceholder
                           ? null

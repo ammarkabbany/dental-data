@@ -61,12 +61,11 @@ export const getColumns = (): ColumnDef<Case>[] => [
         variant="ghost"
         size="sm"
         className={cn(
-          "-ml-3 h-8 data-[state=open]:bg-accent",
+          "-ml-3 h-8 data-[state=open]:bg-accent text-base",
           column.getIsSorted() && "text-primary hover:text-primary/75"
         )}
         onClick={() => column.toggleSorting()}
       >
-        <Calendar className="mr-2 h-4 w-4" />
         Date
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
@@ -96,12 +95,11 @@ export const getColumns = (): ColumnDef<Case>[] => [
         variant="ghost"
         size="sm"
         className={cn(
-          "-ml-3 h-8 data-[state=open]:bg-accent",
+          "-ml-3 h-8 data-[state=open]:bg-accent text-base",
           column.getIsSorted() && "text-primary hover:text-primary/75"
         )}
         onClick={() => column.toggleSorting()}
       >
-        <HugeiconsIcon icon={Doctor02Icon} className="mr-2 h-4 w-4" />
         Doctor
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
@@ -146,7 +144,6 @@ export const getColumns = (): ColumnDef<Case>[] => [
     accessorKey: "data",
     header: () => {
       return <div className="ml-[60px] inline-flex items-center gap-2">
-        <HugeiconsIcon icon={DentalToothIcon} className="size-4" />
         Data
       </div>
     },
@@ -202,7 +199,6 @@ export const getColumns = (): ColumnDef<Case>[] => [
     },
     header: () => (
       <div className="flex items-center gap-2">
-        <CubeIcon className="h-4 w-4" />
         <span>Material</span>
       </div>
     ),
@@ -220,7 +216,6 @@ export const getColumns = (): ColumnDef<Case>[] => [
     accessorKey: "shade",
     header: () => (
       <div className="flex items-center gap-2">
-        <Palette className="h-4 w-4" />
         <span>Shade</span>
       </div>
     ),
@@ -238,7 +233,6 @@ export const getColumns = (): ColumnDef<Case>[] => [
     accessorKey: "note",
     header: () => (
       <div className="flex items-center gap-2">
-        <FileText className="h-4 w-4" />
         <span>Note</span>
       </div>
     ),
