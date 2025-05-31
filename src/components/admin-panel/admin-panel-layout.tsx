@@ -5,6 +5,7 @@ import { Sidebar } from "@/components/admin-panel/sidebar";
 import { useSidebar } from "@/hooks/use-sidebar";
 import { useStore } from "@/hooks/use-store";
 import { cn } from "@/lib/utils";
+import { DashboardCommand } from "./dashboard-command";
 
 export default function AdminPanelLayout({
   children
@@ -16,6 +17,7 @@ export default function AdminPanelLayout({
   const { getOpenState, settings } = sidebar;
   return (
     <>
+      <DashboardCommand />
       <Sidebar />
       <main
         className={cn(

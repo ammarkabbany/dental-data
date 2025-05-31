@@ -43,4 +43,5 @@ export enum Modals {
   UPDATE_CASE_MODAL = 'update-case-modal',
   CREATE_TEMPLATE_MODAL = 'update-template-modal',
   UPDATE_TEMPLATE_MODAL = 'update-template-modal',
+  DASHBOARD_COMMAND_MODAL = 'dashboard-command-modal',
 }

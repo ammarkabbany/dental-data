@@ -70,8 +70,8 @@ export default function LoginPage() {
   };
 
   return (
-    <Card className="max-w-md w-full rounded-none sm:rounded-xl from-background via-sidebar/45 to-sidebar bg-gradient-to-b">
-      <CardHeader className="p-7 flex items-center justify-center">
+    <Card className="max-w-md w-full rounded-none sm:rounded-xl shadow-lg shadow-primary/55">
+      <CardHeader className="p-7 flex flex-col items-center justify-center">
         <CardTitle className="text-xl">Login</CardTitle>
         <CardDescription>
           Enter your credentials to access your account

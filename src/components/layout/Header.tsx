@@ -4,11 +4,9 @@ import { Button } from "../ui/button";
 import { UserNav } from "../admin-panel/user-nav";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function Header({ children }: { children?: React.ReactNode }) {
   const { isAuthenticated, handleLogin } = useAuth();
-  const isMobile = useIsMobile();
   const handleSignUp = () => {
     redirect("/sign-up");
   }
@@ -25,7 +23,7 @@ export default function Header({ children }: { children?: React.ReactNode }) {
 
         <div className="flex items-center gap-4">
           {isAuthenticated ? (
-            <UserNav includeDetails={!isMobile} />
+            <UserNav includeDetails={false} />
           ) : (
             <>
               <Button onClick={() => handleLogin()} variant="ghost" className="transition" size="sm">

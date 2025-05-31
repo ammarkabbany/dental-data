@@ -30,7 +30,7 @@ export function UserNav({side = "bottom", includeDetails = true}: {side?: "left"
       <TooltipProvider disableHoverableContent>
         <Tooltip delayDuration={100}>
           <TooltipTrigger asChild>
-            <DropdownMenuTrigger className="w-full transition p-2 hover:bg-sidebar-accent rounded-sm focus-within:outline-none flex items-center justify-between gap-x-2">
+            <DropdownMenuTrigger className="w-full transition p-1 hover:bg-sidebar-accent hover:opacity-75 duration-300 rounded-sm focus-within:outline-none flex items-center justify-between gap-x-2">
               <div className="flex items-center gap-2">
                 <UserAvatar className="size-10 ring-0 rounded" name={user?.name || ""} image={user?.avatar} />
                 {includeDetails && <div className="flex flex-col items-start">
@@ -38,7 +38,7 @@ export function UserNav({side = "bottom", includeDetails = true}: {side?: "left"
                   {userRole && <span className="text-xs text-muted-foreground capitalize">Team {userRole}</span>}
                 </div>}
               </div>
-              <ChevronDown className="h-4 w-4 ml-2" />
+              {includeDetails && <ChevronDown className="h-4 w-4 ml-2" />}
             </DropdownMenuTrigger>
           </TooltipTrigger>
           <TooltipContent side="bottom">Profile</TooltipContent>
@@ -46,7 +46,7 @@ export function UserNav({side = "bottom", includeDetails = true}: {side?: "left"
       </TooltipProvider>
 
       <DropdownMenuContent
-        className="w-64 rounded-xl p-2 shadow-xl"
+        className="w-64 p-2 shadow-xl dark:from-background dark:to-accent bg-gradient-to-t"
         align="center"
         side={side}
         forceMount
