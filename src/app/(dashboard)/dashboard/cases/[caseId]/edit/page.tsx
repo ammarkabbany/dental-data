@@ -1,7 +1,7 @@
 // src/app/(dashboard)/dashboard/cases/[caseId]/edit/page.tsx
 "use client";
 
-import { useParams } from 'next/navigation';
+import { useParams } from "next/navigation";
 import { useGetCaseById } from "@/features/cases/hooks/use-get-case-by-id";
 // PageLoader is removed as EditCaseFormSkeleton replaces it for this page
 import NotFound from "@/components/notFound";
@@ -16,10 +16,13 @@ export default function EditCasePage() {
   const caseId = params.caseId as string;
   const { data: caseData, isLoading, isError } = useGetCaseById(caseId);
 
-  const pageTitle = isLoading ? "Loading Case..." :
-                    isError ? "Error" :
-                    !caseData ? "Case Not Found" :
-                    `Edit Case: ${caseData.patient || caseId}`;
+  const pageTitle = isLoading
+    ? "Loading Case..."
+    : isError
+      ? "Error"
+      : !caseData
+        ? "Case Not Found"
+        : `Edit Case: ${caseData.patient || caseId}`;
 
   if (isLoading) {
     return (
@@ -39,8 +42,9 @@ export default function EditCasePage() {
             <Terminal className="h-4 w-4" />
             <AlertTitle>Error Fetching Case Data</AlertTitle>
             <AlertDescription>
-              There was a problem retrieving the case details. Please ensure the Case ID is correct or try again later.
-              If the problem persists, contact support.
+              There was a problem retrieving the case details. Please ensure the
+              Case ID is correct or try again later. If the problem persists,
+              contact support.
             </AlertDescription>
           </Alert>
         </div>
@@ -54,7 +58,11 @@ export default function EditCasePage() {
         <div className="container mx-auto py-10">
           {/* Assuming NotFound component is styled appropriately.
               If not, wrap it or style it here for better presentation. */}
-          <NotFound message="The case you are looking for could not be found or you do not have permission to view it." />
+          <NotFound
+            title="Case Not Found"
+            href="/dashboard/cases"
+            message="The case you are looking for could not be found or you do not have permission to view it."
+          />
         </div>
       </ContentLayout>
     );

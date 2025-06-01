@@ -1,4 +1,4 @@
-import { Columns } from "lucide-react"; // Removed Search import as SearchInput is used
+import { Search, Columns } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -10,9 +10,9 @@ import { type Table } from "@tanstack/react-table";
 import { type Case } from "@/types";
 import * as React from "react";
 import { Label } from "@/components/ui/label";
-// import { Input } from "../ui/input"; // Not directly used, SearchInput handles it
+import { Input } from "../ui/input";
 import { CasesFiltersPopover } from "./cases-filter-popover";
-import { DatePicker, type DateRange } from "../date-picker"; // Ensure DateRange is exported or defined
+import { DatePicker } from "../date-picker";
 import PrintComponent from "./PrintComponent";
 import { CustomComboBox } from "../custom-combobox";
 import { CasesExportDialog } from "./cases-export-dialog";
@@ -31,14 +31,8 @@ import {
 } from "../ui/select";
 import { FloatingDock } from "./floating-dock";
 import { SearchInput } from "../search-input";
-import { useCasesTableStore, selectQueryFilters } from '@/store/cases-table-store';
 
-interface CasesDataTableUtilsProps {
-  table: Table<Case>;
-  isLoading?: boolean; // Added isLoading prop
-}
-
-export default function CasesDataTableUtils({ table, isLoading }: CasesDataTableUtilsProps) {
+export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
   const [exportOptions, setExportOptions] = React.useState<{
     [key: string]: boolean;
   }>({
@@ -46,46 +40,36 @@ export default function CasesDataTableUtils({ table, isLoading }: CasesDataTable
     showShade: true,
   });
 
-  // Zustand store integration
-  const storeGlobalFilter = useCasesTableStore(state => state.globalFilter);
-  const setStoreGlobalFilter = useCasesTableStore(state => state.setGlobalFilter);
-
-  const storeColumnVisibility = useCasesTableStore(state => state.columnVisibility);
-  // setStoreColumnVisibility is called via table.getColumn(id).toggleVisibility() which triggers onColumnVisibilityChange in data-table.tsx
-
-  const storeColumnFilters = useCasesTableStore(selectQueryFilters);
-  const setStoreSpecificColumnFilter = useCasesTableStore(state => state.setSpecificColumnFilter);
-  const removeStoreSpecificColumnFilter = useCasesTableStore(state => state.removeSpecificColumnFilter);
-
-  const storeSorting = useCasesTableStore(state => state.sorting);
-  const setStoreSorting = useCasesTableStore(state => state.setSorting);
-
-  const resetStoreFilters = useCasesTableStore(state => state.resetFilters);
-
-
   const { pageIndex, pageSize } = table.getState().pagination;
-  // totalFilteredRows is not available with manualFiltering, use total from server
-  const totalRows = useCasesTableStore(state => state.pagination.totalRows); // Assuming totalRows is added to store if needed here
-                                                                            // Or, better, get it from casesData.total in parent component if needed for display
+
+  const totalFilteredRows = table.getFilteredRowModel().rows.length;
 
   const itemsSeenSoFar = Math.min(
     (pageIndex + 1) * pageSize,
-    totalRows || 0 // Use totalRows from store or server if available
+    totalFilteredRows
   );
 
   const { userRole } = useTeamStore();
   const { doctors } = useDoctorsStore();
 
+  const currentDoctorFilterValue = table
+    .getColumn("doctor")
+    ?.getFilterValue() as string;
+  const currentDateFilterValue = table
+    .getColumn("date")
+    ?.getFilterValue() as string;
+
   const selectedCases = table
     .getSelectedRowModel()
     .rows.map((row) => row.original)
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()) // Sort by date object
-    .slice(0, 100);
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .splice(0, 100);
 
-  const activeFilterCount = Object.entries(storeColumnFilters).filter(
-    ([key, value]) => value !== undefined && value !== '' && !(key === 'search' && !value)
+  const filtersCount = Object.values(table.getAllColumns()).filter((column) =>
+    column.getIsFiltered()
   ).length;
 
+  const clearFilters = () => table.resetColumnFilters();
   const canExport = usePermission(userRole).checkPermission("export", "has");
   const canDelete = usePermission(userRole).checkPermission("cases", "delete");
 
@@ -94,7 +78,7 @@ export default function CasesDataTableUtils({ table, isLoading }: CasesDataTable
       <FloatingDock
         selectedCases={selectedCases}
         onClearSelection={() => {
-          table.resetRowSelection(true); // Pass true to reset dependent states like lastRowSelected
+          table.resetRowSelection();
         }}
       />
       <PrintComponent selectedCases={selectedCases} options={exportOptions} />
@@ -102,16 +86,18 @@ export default function CasesDataTableUtils({ table, isLoading }: CasesDataTable
         <div className="flex flex-wrap items-center gap-2">
           <SearchInput
             placeholder="Search patients..."
-            value={storeGlobalFilter}
-            onChange={(event) => setStoreGlobalFilter(event.target.value)}
-            onClear={() => setStoreGlobalFilter("")}
+            value={
+              (table.getColumn("patient")?.getFilterValue() as string) ?? ""
+            }
+            onChange={(event) =>
+              table.getColumn("patient")?.setFilterValue(event.target.value)
+            }
+            onClear={() => table.getColumn("patient")?.setFilterValue("")}
             className="w-[300px]"
-            disabled={isLoading}
           />
           <Button
             onClick={() => table.toggleAllRowsSelected()}
             variant="outline"
-            disabled={isLoading}
             className={cn(
               "transition-all duration-200",
               table.getIsAllRowsSelected() &&
@@ -126,7 +112,6 @@ export default function CasesDataTableUtils({ table, isLoading }: CasesDataTable
               <Button
                 variant="outline"
                 className="gap-2 transition-all duration-200"
-                disabled={isLoading}
               >
                 <Columns className="h-4 w-4" />
                 <span>Columns</span>
@@ -134,7 +119,7 @@ export default function CasesDataTableUtils({ table, isLoading }: CasesDataTable
                   variant="default"
                   className="ml-1 text-secondary-foreground"
                 >
-                  {table.getVisibleFlatColumns().filter(c => c.getCanHide()).length}
+                  {table.getVisibleFlatColumns().length - 2}
                 </Badge>
               </Button>
             </DropdownMenuTrigger>
@@ -147,7 +132,7 @@ export default function CasesDataTableUtils({ table, isLoading }: CasesDataTable
                     key={column.id}
                     className="capitalize"
                     checked={column.getIsVisible()}
-                    onCheckedChange={(value) => // This correctly calls onColumnVisibilityChange in data-table.tsx
+                    onCheckedChange={(value) =>
                       column.toggleVisibility(!!value)
                     }
                   >
@@ -158,21 +143,21 @@ export default function CasesDataTableUtils({ table, isLoading }: CasesDataTable
           </DropdownMenu>
 
           <CasesFiltersPopover
-            indicator={activeFilterCount}
-            clearFilters={resetStoreFilters}
-            disabled={isLoading}
+            indicator={filtersCount}
+            clearFilters={clearFilters}
           >
             <div className="space-y-4">
               <div className="grid gap-2 grid-cols-2">
                 <div className="grid gap-2">
                   <Label className="text-sm font-medium">Date Range</Label>
                   <DatePicker
-                    date={{ from: storeColumnFilters.dateFrom ? new Date(storeColumnFilters.dateFrom) : undefined, to: storeColumnFilters.dateTo ? new Date(storeColumnFilters.dateTo) : undefined }}
-                    setDate={(newValue: DateRange | undefined) => {
-                      if (newValue?.from) setStoreSpecificColumnFilter('dateFrom', newValue.from.toISOString().split('T')[0]);
-                      else removeStoreSpecificColumnFilter('dateFrom');
-                      if (newValue?.to) setStoreSpecificColumnFilter('dateTo', newValue.to.toISOString().split('T')[0]);
-                      else removeStoreSpecificColumnFilter('dateTo');
+                    date={currentDateFilterValue}
+                    setDate={(newValue: any) => {
+                      if (newValue === currentDateFilterValue) {
+                        table.getColumn("date")?.setFilterValue(null);
+                        return;
+                      }
+                      table.getColumn("date")?.setFilterValue(newValue);
                     }}
                     mode="range"
                     className="h-9"
@@ -182,25 +167,31 @@ export default function CasesDataTableUtils({ table, isLoading }: CasesDataTable
                   <Label className="text-sm font-medium">Sort by</Label>
                   <Select
                     onValueChange={(value) => {
-                      const isDesc = storeSorting[0]?.id === value ? !storeSorting[0]?.desc : false;
-                      if (value === "clear") {
-                         setStoreSorting([]); // Clear sorting
-                      } else {
-                         setStoreSorting([{ id: value, desc: isDesc }]);
+                      if (value === "date") {
+                        table.getColumn("date")?.toggleSorting(true);
+                      }
+                      if (value === "$createdAt") {
+                        table.getColumn("$createdAt")?.toggleSorting(true);
                       }
                     }}
-                    value={storeSorting[0]?.id || "date"} // Default to 'date' or the current sort column
+                    defaultValue="date"
+                    value={
+                      table.getColumn("date")?.getIsSorted()
+                        ? "date"
+                        : table.getColumn("$createdAt")?.getIsSorted()
+                          ? "$createdAt"
+                          : "date"
+                    }
                   >
                     <SelectTrigger className="">
                       <SelectValue placeholder="Sort by" />
                     </SelectTrigger>
                     <SelectContent>
                       <Label className="p-2 text-sm font-medium">Sort by</Label>
-                      <SelectItem value="date" className="mt-1">Date</SelectItem>
-                      <SelectItem value="$createdAt">Created Date</SelectItem>
-                      <SelectItem value="patient">Patient Name</SelectItem>
-                      <SelectItem value="due">Amount Due</SelectItem>
-                       <SelectItem value="clear" className="text-destructive">Clear Sort</SelectItem>
+                      <SelectItem value="date" className="mt-1">
+                        Date
+                      </SelectItem>
+                      <SelectItem value="$createdAt">Most Recent</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -210,36 +201,40 @@ export default function CasesDataTableUtils({ table, isLoading }: CasesDataTable
                 <Label className="text-sm font-medium">Doctor</Label>
                 <CustomComboBox
                   label="doctor"
-                  // value={storeColumnFilters.doctorId || ""} // Ensure CustomComboBox handles empty string or null correctly
-                  value={doctors?.find(doc => doc.$id === storeColumnFilters.doctorId)?.name || ""}
-                  action={(newValue) => { // newValue here is expected to be the doctor's name from ComboBox
-                    const selectedDoctor = doctors?.find(doc => doc.name === newValue);
-                    if (selectedDoctor) {
-                       if (storeColumnFilters.doctorId === selectedDoctor.$id) {
-                        removeStoreSpecificColumnFilter('doctorId');
-                      } else {
-                        setStoreSpecificColumnFilter('doctorId', selectedDoctor.$id);
-                      }
-                    } else if (!newValue) { // Handle clear selection if ComboBox passes empty/null
-                        removeStoreSpecificColumnFilter('doctorId');
+                  value={currentDoctorFilterValue}
+                  action={(newValue) => {
+                    if (newValue === currentDoctorFilterValue) {
+                      table.getColumn("doctor")?.setFilterValue(null);
+                      return;
                     }
+                    table.getColumn("doctor")?.setFilterValue(newValue);
                   }}
                   variant="secondary"
                   className="h-9"
-                  values={doctors?.map(doc => ({ name: doc.name, $id: doc.$id })) || []} // Pass items with id and name
-                  // previewValue={doctors?.find(doc => doc.$id === storeColumnFilters.doctorId)?.name || "Select Doctor"}
+                  values={doctors || []}
                 />
               </div>
-               {/* TODO: Add Material Filter similar to Doctor */}
             </div>
           </CasesFiltersPopover>
+          {/* <Button
+            onClick={() => table.getColumn("$createdAt")?.toggleSorting()}
+            variant="outline"
+            className={cn(
+              "transition-all duration-200",
+              table.getIsAllRowsSelected() &&
+                "bg-primary text-primary-foreground hover:bg-primary/90"
+            )}
+          >
+            <SortAsc />
+            Show New
+          </Button> */}
         </div>
 
         {canDelete && selectedCases.length > 0 && (
           <DeleteCaseModal
             cases={selectedCases}
             onDelete={() => {
-              table.resetRowSelection(true);
+              table.resetRowSelection();
             }}
           />
         )}
@@ -249,15 +244,12 @@ export default function CasesDataTableUtils({ table, isLoading }: CasesDataTable
             <CasesExportDialog
               exportOptions={exportOptions}
               setExportOptions={setExportOptions}
-              disabled={isLoading}
             />
           )}
         </div>
-        {!isLoading && (
-          <p className="ml-auto text-muted-foreground">
-            Showing {itemsSeenSoFar} of {totalRows || table.getRowCount()} cases
-          </p>
-        )}
+        <p className="ml-auto text-muted-foreground">
+          Showing {itemsSeenSoFar} of {table.getRowCount()} cases
+        </p>
       </div>
     </>
   );

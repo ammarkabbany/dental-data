@@ -527,7 +527,7 @@ export const EditCaseForm = ({ selectedCase }: EditCaseFormProps) => {
                     type="submit"
                     size={"lg"}
                     variant="default"
-                    disabled={isPending || !form.formState.isDirty} // Disable if not dirty
+                    disabled={isPending}
                   >
                     Save Changes
                   </Button>

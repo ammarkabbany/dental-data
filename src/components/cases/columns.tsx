@@ -249,6 +249,7 @@ export const getColumns = (): ColumnDef<Case>[] => [
     header: () => <span className="text-start">Actions</span>,
     cell: ({ row }) => {
       const _case: Case = row.original;
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const router = useRouter(); // Added router instance
       return (
         <DropdownMenu>
