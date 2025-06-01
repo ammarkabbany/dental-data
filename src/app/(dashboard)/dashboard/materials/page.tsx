@@ -11,6 +11,7 @@ import { useMaterialsStore } from "@/store/material-store";
 import { MaterialCreateModal } from "@/components/materials/create-material-modal";
 import { CubeIcon } from "@radix-ui/react-icons";
 import { MaterialsDataTable } from "@/components/materials/DataTable/materials-data-table";
+import { useOnboardingStore } from '@/store/onboarding-store'; // Import onboarding store
 
 export default function MaterialsPage() {
   const {openModal} = useModalStore();
@@ -18,6 +19,7 @@ export default function MaterialsPage() {
   const canCreate = usePermission(userRole).checkPermission('materials', 'create');
   const {materials} = useMaterialsStore();
   const showEmptyState = (!materials || materials.length === 0);
+  const { isOnboardingComplete, checklistItems } = useOnboardingStore(); // Get onboarding state
 
   return (
     <>
@@ -74,6 +76,13 @@ export default function MaterialsPage() {
               <p className="text-muted-foreground mb-6 max-w-sm mx-auto">
                 Start by adding materials to your dental lab to manage cases and workflows efficiently.
               </p>
+              {/* === NEW ONBOARDING HINT === */}
+              {!isOnboardingComplete && !checklistItems.addedFirstMaterial && (
+                <p className="text-sm text-primary mb-4 font-semibold">
+                  Tip: Adding your first material is a great next step for your onboarding!
+                </p>
+              )}
+              {/* === END NEW ONBOARDING HINT === */}
               {canCreate && (
                 <Button 
                   onClick={() => openModal(Modals.CREATE_MATERIAL_MODAL)}

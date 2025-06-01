@@ -7,6 +7,7 @@ import { account } from '@/lib/appwrite/client';
 import { getCurrent } from '@/features/auth/queries';
 import { useQueryClient } from '@tanstack/react-query';
 import { NEXT_URL } from '@/lib/constants';
+import { useOnboardingStore } from '@/store/onboarding-store'; // Added import
 import { User } from '@/types';
 import { redirect, RedirectType } from 'next/navigation';
 
@@ -43,6 +44,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     if (isAuthenticated && !isLoading) {
       refreshUser();
+      // Hydrate onboarding state when user is authenticated
+      useOnboardingStore.getState().hydrateOnboardingState(); // Added hydration call
     } else if (!isAuthenticated) {
       setUser(null);
     }

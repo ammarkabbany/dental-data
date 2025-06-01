@@ -10,6 +10,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { motion, AnimatePresence } from "framer-motion";
 import useTeamStore from "@/store/team-store";
 import { useDoctorsStore } from "@/store/doctors-store";
+import { useOnboardingStore } from '@/store/onboarding-store'; // Import onboarding store
 
 export const runtime = 'edge'
 export const dynamic = 'force-dynamic'
@@ -20,6 +21,7 @@ export default function DoctorsPage() {
   const canCreate = usePermission(userRole).checkPermission('doctors', 'create');
   const {doctors} = useDoctorsStore();
   const showEmptyState = (!doctors || doctors.length === 0);
+  const { isOnboardingComplete, checklistItems } = useOnboardingStore(); // Get onboarding state
 
   return (
     <>
@@ -76,6 +78,13 @@ export default function DoctorsPage() {
               <p className="text-muted-foreground mb-6 max-w-sm mx-auto">
                 Start by adding doctors to your dental lab to manage cases and workflows efficiently.
               </p>
+              {/* === NEW ONBOARDING HINT === */}
+              {!isOnboardingComplete && !checklistItems.addedFirstDoctor && (
+                <p className="text-sm text-primary mb-4 font-semibold">
+                  Tip: Adding your first doctor is a great next step for your onboarding!
+                </p>
+              )}
+              {/* === END NEW ONBOARDING HINT === */}
               {canCreate && (
                 <Button
                   onClick={() => openModal(Modals.CREATE_DOCTOR_MODAL)}

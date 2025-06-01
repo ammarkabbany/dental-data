@@ -8,6 +8,7 @@ import Link from "next/link";
 import Logo from "../logo";
 import { UserNav } from "./user-nav";
 import { Separator } from "../ui/separator";
+import GettingStartedSidebar from "@/components/onboarding/GettingStartedSidebar"; // Import GettingStartedSidebar
 
 export function Sidebar() {
   const sidebar = useStore(useSidebar, (x) => x);
@@ -42,6 +43,7 @@ export function Sidebar() {
         </Button>
         <Separator />
         <Menu isOpen={getOpenState()} />
+        <GettingStartedSidebar /> {/* Add GettingStartedSidebar here */}
         <div>
           <Separator className="my-2" />
           <UserNav side="top" />

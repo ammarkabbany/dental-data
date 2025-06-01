@@ -17,9 +17,12 @@ import { Separator } from "../ui/separator";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useCreateDoctor } from "@/features/doctors/hooks/use-create-doctor";
+import { useOnboardingStore } from "@/store/onboarding-store"; // Import onboarding store
 
 export const CreateDoctorModal = () => {
   const { isModalOpen, closeModal } = useModalStore();
+  // Onboarding store
+  const { checklistItems, completeChecklistItem } = useOnboardingStore();
 
   const {mutate, isPending, error} = useCreateDoctor();
 
@@ -38,6 +41,10 @@ export const CreateDoctorModal = () => {
   const onSubmit = (values: z.infer<typeof createDoctorSchema>) => {
     mutate({data: values}, {
       onSuccess: () => {
+        // Complete checklist item for adding a doctor
+        if (!checklistItems.addedFirstDoctor) {
+          completeChecklistItem('addedFirstDoctor');
+        }
         form.reset();
         closeModal(Modals.CREATE_DOCTOR_MODAL);
       }

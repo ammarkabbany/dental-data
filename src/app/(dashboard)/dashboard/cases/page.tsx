@@ -10,12 +10,14 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
 import useTeamStore from "@/store/team-store";
+import { useOnboardingStore } from '@/store/onboarding-store'; // Import onboarding store
 
 export default function CasesPage() {
   const {userRole} = useTeamStore();
   const canCreate = usePermission(userRole).checkPermission('cases', 'create');
   const { data: cases, isLoading } = useGetCases();
   const showEmptyState = !isLoading && (!cases || cases.length === 0);
+  const { isOnboardingComplete, checklistItems } = useOnboardingStore(); // Get onboarding state
 
   return (
     <ContentLayout title="Cases">
@@ -68,6 +70,13 @@ export default function CasesPage() {
             <p className="text-muted-foreground mb-6 max-w-sm mx-auto">
               Start managing your dental cases by creating your first case.
             </p>
+            {/* === NEW ONBOARDING HINT === */}
+            {!isOnboardingComplete && !checklistItems.createdFirstCase && (
+              <p className="text-sm text-primary mb-4 font-semibold">
+                Tip: Creating your first case is a great next step for your onboarding!
+              </p>
+            )}
+            {/* === END NEW ONBOARDING HINT === */}
             {canCreate && (
               <Button asChild>
                 <Link href="/dashboard/cases/new">
