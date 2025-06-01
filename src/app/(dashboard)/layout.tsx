@@ -15,6 +15,8 @@ import { useTeam } from "@/providers/team-provider";
 import RedirectToOnboarding from "@/components/auth/custom-onboard-redirect";
 import { useAuth } from "@/providers/auth-provider";
 import { toastAPI } from "@/lib/ToastAPI";
+import { CreateDoctorModal } from "@/components/doctors/create-doctor-modal";
+import { MaterialCreateModal } from "@/components/materials/create-material-modal";
 
 export default function DashboardLayout({
   children,
@@ -95,6 +97,8 @@ export default function DashboardLayout({
     <>
       {isAuthenticated ? (
         <AdminPanelLayout>
+          <CreateDoctorModal />
+          <MaterialCreateModal />
           <DataFetcher />
           {children}
         </AdminPanelLayout>

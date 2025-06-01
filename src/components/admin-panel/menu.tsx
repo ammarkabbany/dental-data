@@ -46,7 +46,7 @@ export function Menu({ isOpen }: MenuProps) {
   const sidebarRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className="relative h-full no-scrollbar overflow-y-auto flex flex-col gap-y-8">
+    <div className="relative h-full overflow-y-auto flex flex-col gap-y-8">
       <ScrollArea
         ref={sidebarRef}
         className="[&>div>div[style]]:!block relative"

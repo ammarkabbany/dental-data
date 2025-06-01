@@ -10,7 +10,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Modals } from '@/store/modal-store';
 
 // Define a type for checklist item keys for clarity
-type ChecklistItemKey = keyof ReturnType<typeof useOnboardingStore>['checklistItems'];
+type OnboardingStore = ReturnType<typeof useOnboardingStore.getState>;
+type ChecklistItemKey = keyof OnboardingStore['checklistItems'];
 
 const WelcomeChecklist = () => {
   const {
