@@ -1,35 +1,70 @@
 // src/app/(dashboard)/dashboard/cases/[caseId]/edit/page.tsx
 "use client";
 
-import { useParams, notFound } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useGetCaseById } from "@/features/cases/hooks/use-get-case-by-id";
-import PageLoader from "@/components/page-loader";
-import NotFound from "@/components/notFound"; // Assuming you have a more generic NotFound component
+// PageLoader is removed as EditCaseFormSkeleton replaces it for this page
+import NotFound from "@/components/notFound";
 import { EditCaseForm } from "@/components/cases/edit-case-form";
+import { ContentLayout } from "@/components/admin-panel/content-layout";
+import { EditCaseFormSkeleton } from "@/components/cases/edit-case-form-skeleton"; // Import Skeleton
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"; // For error display
+import { Terminal } from "lucide-react"; // For error display
 
 export default function EditCasePage() {
   const params = useParams();
   const caseId = params.caseId as string;
   const { data: caseData, isLoading, isError } = useGetCaseById(caseId);
 
+  const pageTitle = isLoading ? "Loading Case..." :
+                    isError ? "Error" :
+                    !caseData ? "Case Not Found" :
+                    `Edit Case: ${caseData.patient || caseId}`;
+
   if (isLoading) {
-    return <PageLoader />;
+    return (
+      <ContentLayout title={pageTitle}>
+        <div className="container mx-auto">
+          <EditCaseFormSkeleton />
+        </div>
+      </ContentLayout>
+    );
   }
 
   if (isError) {
-    // You might want a more user-friendly error display here
-    return <div className="container mx-auto py-8 text-center">Error fetching case data. Please try again later.</div>;
+    return (
+      <ContentLayout title={pageTitle}>
+        <div className="container mx-auto py-10 flex justify-center">
+          <Alert variant="destructive" className="w-full max-w-lg">
+            <Terminal className="h-4 w-4" />
+            <AlertTitle>Error Fetching Case Data</AlertTitle>
+            <AlertDescription>
+              There was a problem retrieving the case details. Please ensure the Case ID is correct or try again later.
+              If the problem persists, contact support.
+            </AlertDescription>
+          </Alert>
+        </div>
+      </ContentLayout>
+    );
   }
 
   if (!caseData) {
-    // Using the imported NotFound component or next/navigation's notFound
-    return <NotFound />;
+    return (
+      <ContentLayout title={pageTitle}>
+        <div className="container mx-auto py-10">
+          {/* Assuming NotFound component is styled appropriately.
+              If not, wrap it or style it here for better presentation. */}
+          <NotFound message="The case you are looking for could not be found or you do not have permission to view it." />
+        </div>
+      </ContentLayout>
+    );
   }
 
   return (
-    <div className="container mx-auto py-8">
-      {/* The EditCaseForm will contain its own title like "Edit Case Details" */}
-      <EditCaseForm selectedCase={caseData} />
-    </div>
+    <ContentLayout title={pageTitle}>
+      <div className="container mx-auto">
+        <EditCaseForm selectedCase={caseData} />
+      </div>
+    </ContentLayout>
   );
 }

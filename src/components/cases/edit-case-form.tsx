@@ -343,7 +343,7 @@ export const EditCaseForm = ({ selectedCase }: EditCaseFormProps) => {
           // onCancel(); // onCancel now includes router.back()
           // Potentially show a success toast here
           console.log("Case updated successfully!");
-          router.push(`/dashboard/cases/${selectedCase.$id}`); // Navigate to case detail page or dashboard
+          router.push("/dashboard/cases"); // Navigate to cases list page
         },
         onError: () => {
           // Potentially show an error toast here
