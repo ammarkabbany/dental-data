@@ -1,11 +1,11 @@
 import { type ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal, Calendar, User2, Palette, FileText } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal, Calendar, User2, Palette, FileText, EditIcon } from "lucide-react"; // Added EditIcon
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Case, Tooth, ToothCollection } from "@/types";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import { EditCaseModal } from "./edit-case-modal";
+// Removed EditCaseModal import
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { CubeIcon } from "@radix-ui/react-icons";
@@ -13,6 +13,7 @@ import { useDoctorsStore } from "@/store/doctors-store";
 import { useMaterialsStore } from "@/store/material-store";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { DentalToothIcon, Doctor02Icon } from "@hugeicons/core-free-icons";
+import { useRouter } from "next/navigation"; // Added useRouter
 
 export const getColumns = (): ColumnDef<Case>[] => [
   {
@@ -248,6 +249,7 @@ export const getColumns = (): ColumnDef<Case>[] => [
     header: () => <span className="text-start">Actions</span>,
     cell: ({ row }) => {
       const _case: Case = row.original;
+      const router = useRouter(); // Added router instance
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -261,9 +263,15 @@ export const getColumns = (): ColumnDef<Case>[] => [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-[160px]">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem asChild>
-              <EditCaseModal selectedCase={_case} />
+            <DropdownMenuItem
+              onSelect={(e) => e.preventDefault()}
+              onClick={() => router.push(`/dashboard/cases/${_case.$id}/edit`)}
+              className="cursor-pointer"
+            >
+              <EditIcon size={16} className="mr-2 opacity-60" aria-hidden="true" />
+              Edit
             </DropdownMenuItem>
+            {/* Add other actions like Delete, View Details etc. here if needed, following the pattern */}
           </DropdownMenuContent>
         </DropdownMenu>
       )
