@@ -266,7 +266,7 @@ export const EditCaseForm = ({ selectedCase }: EditCaseFormProps) => {
           `data.${region}.${secondRegion}`,
           currentQuadrantTeeth.filter((tooth: Tooth) => tooth.label !== label)
         );
-        handleDue("remove", materialId);
+        handleDue("remove", currentQuadrantTeeth.find((t: Tooth) => t.label === label)?.materialId || materialId);
       }
     } else {
       console.warn(`Invalid region or quadrant for tooth ${label}: ${region} ${secondRegion}`);

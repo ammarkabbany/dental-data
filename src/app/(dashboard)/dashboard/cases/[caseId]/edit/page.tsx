@@ -22,7 +22,7 @@ export default function EditCasePage() {
       ? "Error"
       : !caseData
         ? "Case Not Found"
-        : `Edit Case: ${caseData.patient || caseId}`;
+        : `Edit Case: ${caseId}`;
 
   if (isLoading) {
     return (
