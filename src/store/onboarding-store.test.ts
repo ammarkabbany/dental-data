@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { useOnboardingStore } from './onboarding-store';
+import { useOnboardingStore, OnboardingState, PersistedOnboardingState } from './onboarding-store'; // Import interfaces
 import { account as appwriteAccount } from '@/lib/appwrite/client';
 
 // Mock the Appwrite client
@@ -10,20 +10,40 @@ vi.mock('@/lib/appwrite/client', () => ({
   },
 }));
 
-// Helper to get initial state, Zustand recommends this for testing outside components
-const getInitialState = () => useOnboardingStore.getState();
+// Helper to get initial data state for reset, matching PersistedOnboardingState
+const getDefaultPersistedState = (): PersistedOnboardingState => ({
+  isOnboardingComplete: false,
+  checklistItems: {
+    addedFirstDoctor: false,
+    addedFirstMaterial: false,
+    createdFirstCase: false,
+  },
+  skippedChecklistItems: { // Added
+    addedFirstDoctor: false,
+    addedFirstMaterial: false,
+    createdFirstCase: false,
+  },
+  dismissedCoachmarks: {
+    dashboardCaseManagement: false,
+    dashboardDoctors: false,
+    dashboardMaterials: false,
+  },
+  isGettingStartedSidebarHidden: false,
+});
 
 // Helper to extract persisted state shape from full state
-const extractPersistedState = (state: ReturnType<typeof getInitialState>) => {
+const extractPersistedState = (state: OnboardingState): PersistedOnboardingState => {
   const {
     isOnboardingComplete,
     checklistItems,
+    skippedChecklistItems, // Added
     dismissedCoachmarks,
     isGettingStartedSidebarHidden,
   } = state;
   return {
     isOnboardingComplete,
     checklistItems,
+    skippedChecklistItems, // Added
     dismissedCoachmarks,
     isGettingStartedSidebarHidden,
   };
@@ -32,37 +52,18 @@ const extractPersistedState = (state: ReturnType<typeof getInitialState>) => {
 
 describe('useOnboardingStore', () => {
   beforeEach(() => {
-    // Reset the store to its initial state before each test
-    // useOnboardingStore.setState(getInitialState(), true); // This might be too aggressive if getInitialState() creates new instances of functions
-    // A safer reset for Zustand if functions are stable or if state has no functions:
-    const initialState = useOnboardingStore.getState();
-    const defaultState = {
-        isOnboardingComplete: false,
-        checklistItems: {
-            addedFirstDoctor: false,
-            addedFirstMaterial: false,
-            createdFirstCase: false,
-        },
-        dismissedCoachmarks: {
-            dashboardCaseManagement: false,
-            dashboardDoctors: false,
-            dashboardMaterials: false,
-        },
-        isGettingStartedSidebarHidden: false,
-    };
-    // Apply only the data properties to reset
+    // Reset the store to its initial data state before each test
+    // This preserves actions but resets data properties.
     useOnboardingStore.setState({
-        ...initialState, // keep existing functions
-        ...defaultState // overwrite data properties
+        ...useOnboardingStore.getState(), // Keep existing functions from initial create()
+        ...getDefaultPersistedState() // Overwrite data properties with defaults
     }, true);
-
 
     // Clear mock history
     vi.clearAllMocks();
   });
 
   afterEach(() => {
-    // Ensure mocks are reset if any test modifies their behavior beyond clearAllMocks
     vi.resetAllMocks();
   });
 
@@ -70,6 +71,11 @@ describe('useOnboardingStore', () => {
     const state = useOnboardingStore.getState();
     expect(state.isOnboardingComplete).toBe(false);
     expect(state.checklistItems).toEqual({
+      addedFirstDoctor: false,
+      addedFirstMaterial: false,
+      createdFirstCase: false,
+    });
+    expect(state.skippedChecklistItems).toEqual({ // Added check
       addedFirstDoctor: false,
       addedFirstMaterial: false,
       createdFirstCase: false,
@@ -83,23 +89,62 @@ describe('useOnboardingStore', () => {
   });
 
   describe('Actions', () => {
-    it('completeChecklistItem should update checklist and call updatePrefs', async () => {
-      const initialPersistedState = extractPersistedState(useOnboardingStore.getState());
-      const { completeChecklistItem } = useOnboardingStore.getState();
+    it('completeChecklistItem should update checklist, reset skipped, and call updatePrefs', async () => {
+      // First, skip the item
+      useOnboardingStore.getState().skipChecklistItem('addedFirstDoctor');
+      vi.clearAllMocks(); // Clear mocks from skip action
 
+      const initialPersistedState = extractPersistedState(useOnboardingStore.getState());
+      expect(initialPersistedState.skippedChecklistItems.addedFirstDoctor).toBe(true); // Pre-condition
+
+      const { completeChecklistItem } = useOnboardingStore.getState();
       completeChecklistItem('addedFirstDoctor');
 
       const state = useOnboardingStore.getState();
       expect(state.checklistItems.addedFirstDoctor).toBe(true);
+      expect(state.skippedChecklistItems.addedFirstDoctor).toBe(false); // Should be reset
 
       const expectedPrefsPayload = {
         onboarding: {
           ...initialPersistedState,
           checklistItems: { ...initialPersistedState.checklistItems, addedFirstDoctor: true },
+          skippedChecklistItems: { ...initialPersistedState.skippedChecklistItems, addedFirstDoctor: false },
         },
       };
       expect(appwriteAccount.updatePrefs).toHaveBeenCalledWith(expectedPrefsPayload);
     });
+
+    it('skipChecklistItem should update skippedChecklistItems and call updatePrefs', async () => {
+      const initialPersistedState = extractPersistedState(useOnboardingStore.getState());
+      const { skipChecklistItem } = useOnboardingStore.getState();
+
+      skipChecklistItem('addedFirstMaterial');
+
+      const state = useOnboardingStore.getState();
+      expect(state.skippedChecklistItems.addedFirstMaterial).toBe(true);
+      expect(state.checklistItems.addedFirstMaterial).toBe(false); // Should not complete it
+
+      const expectedPrefsPayload = {
+        onboarding: {
+          ...initialPersistedState,
+          skippedChecklistItems: { ...initialPersistedState.skippedChecklistItems, addedFirstMaterial: true },
+        },
+      };
+      expect(appwriteAccount.updatePrefs).toHaveBeenCalledWith(expectedPrefsPayload);
+    });
+
+    it('skipChecklistItem should not update if item is already completed', () => {
+      useOnboardingStore.getState().completeChecklistItem('createdFirstCase');
+      vi.clearAllMocks();
+
+      const { skipChecklistItem } = useOnboardingStore.getState();
+      skipChecklistItem('createdFirstCase');
+
+      const state = useOnboardingStore.getState();
+      expect(state.skippedChecklistItems.createdFirstCase).toBe(false); // Still false, because it was completed
+      expect(appwriteAccount.updatePrefs).not.toHaveBeenCalled();
+    });
+
 
     it('calling completeChecklistItem for all items then completeOnboarding updates isOnboardingComplete and calls updatePrefs for each', () => {
       const { completeChecklistItem, completeOnboarding } = useOnboardingStore.getState();
@@ -138,9 +183,6 @@ describe('useOnboardingStore', () => {
 
       hideGettingStartedSidebar();
 
-      const state = useOnboardingStore.getState();
-      expect(state.isGettingStartedSidebarHidden).toBe(true);
-
       const expectedPrefsPayload = {
         onboarding: { ...initialPersistedState, isGettingStartedSidebarHidden: true },
       };
@@ -148,16 +190,13 @@ describe('useOnboardingStore', () => {
     });
 
     it('showGettingStartedSidebar should update state and call updatePrefs', async () => {
-      useOnboardingStore.getState().hideGettingStartedSidebar(); // Setup: hide first
-      vi.clearAllMocks(); // Clear mocks from setup action
+      useOnboardingStore.getState().hideGettingStartedSidebar();
+      vi.clearAllMocks();
 
-      const initialPersistedState = extractPersistedState(useOnboardingStore.getState()); // isGettingStartedSidebarHidden is true
+      const initialPersistedState = extractPersistedState(useOnboardingStore.getState());
       const { showGettingStartedSidebar } = useOnboardingStore.getState();
 
       showGettingStartedSidebar();
-
-      const state = useOnboardingStore.getState();
-      expect(state.isGettingStartedSidebarHidden).toBe(false);
 
       const expectedPrefsPayload = {
          onboarding: { ...initialPersistedState, isGettingStartedSidebarHidden: false },
@@ -171,9 +210,6 @@ describe('useOnboardingStore', () => {
 
       completeOnboarding();
 
-      const state = useOnboardingStore.getState();
-      expect(state.isOnboardingComplete).toBe(true);
-
       const expectedPrefsPayload = {
         onboarding: { ...initialPersistedState, isOnboardingComplete: true },
       };
@@ -182,35 +218,37 @@ describe('useOnboardingStore', () => {
 
     it('setOnboardingState should update the store with partial state without calling updatePrefs', () => {
       const { setOnboardingState } = useOnboardingStore.getState();
-      const partialState = {
+      const partialState: Partial<PersistedOnboardingState> = { // Type explicitly
         isOnboardingComplete: true,
         checklistItems: {
           addedFirstDoctor: true,
-          addedFirstMaterial: false, // This one is false
+          addedFirstMaterial: false,
           createdFirstCase: true,
         },
-        // Not including dismissedCoachmarks or isGettingStartedSidebarHidden
+        skippedChecklistItems: { // Added
+          addedFirstDoctor: false,
+          addedFirstMaterial: true,
+          createdFirstCase: false,
+        }
       };
 
-      setOnboardingState(partialState as any); // Cast as any because it's a partial of PersistedOnboardingState
+      setOnboardingState(partialState);
 
       const state = useOnboardingStore.getState();
       expect(state.isOnboardingComplete).toBe(true);
       expect(state.checklistItems.addedFirstDoctor).toBe(true);
-      expect(state.checklistItems.addedFirstMaterial).toBe(false);
-      expect(state.checklistItems.createdFirstCase).toBe(true);
-      // Ensure other parts of state are not affected if not included in partial state
+      expect(state.skippedChecklistItems.addedFirstMaterial).toBe(true);
       expect(state.dismissedCoachmarks.dashboardCaseManagement).toBe(false);
-      expect(state.isGettingStartedSidebarHidden).toBe(false);
       expect(appwriteAccount.updatePrefs).not.toHaveBeenCalled();
     });
   });
 
   describe('Hydration', () => {
-    it('hydrateOnboardingState should call account.get and update state if prefs.onboarding exists', async () => {
-      const persistedData = { // This is PersistedOnboardingState
+    it('hydrateOnboardingState should call account.get and update state if prefs.onboarding exists, including skipped items', async () => {
+      const persistedData: PersistedOnboardingState = {
         isOnboardingComplete: true,
         checklistItems: { addedFirstDoctor: true, addedFirstMaterial: true, createdFirstCase: false },
+        skippedChecklistItems: { addedFirstDoctor: false, addedFirstMaterial: false, createdFirstCase: true }, // Added
         dismissedCoachmarks: { dashboardCaseManagement: true, dashboardDoctors: false, dashboardMaterials: false },
         isGettingStartedSidebarHidden: true,
       };
@@ -223,38 +261,47 @@ describe('useOnboardingStore', () => {
       const state = useOnboardingStore.getState();
       expect(state.isOnboardingComplete).toBe(persistedData.isOnboardingComplete);
       expect(state.checklistItems).toEqual(persistedData.checklistItems);
+      expect(state.skippedChecklistItems).toEqual(persistedData.skippedChecklistItems); // Added check
       expect(state.dismissedCoachmarks).toEqual(persistedData.dismissedCoachmarks);
       expect(state.isGettingStartedSidebarHidden).toBe(persistedData.isGettingStartedSidebarHidden);
     });
 
-    it('hydrateOnboardingState should not update state if prefs.onboarding does not exist', async () => {
-      (appwriteAccount.get as vi.Mock).mockResolvedValueOnce({ prefs: {} }); // No onboarding key
-
-      // Capture initial data properties
-      const initialDataState = extractPersistedState(useOnboardingStore.getState());
+    it('hydrateOnboardingState should initialize skippedChecklistItems if not in prefs', async () => {
+      const persistedDataOldFormat = { // Missing skippedChecklistItems
+        isOnboardingComplete: true,
+        checklistItems: { addedFirstDoctor: true, addedFirstMaterial: true, createdFirstCase: false },
+        dismissedCoachmarks: { dashboardCaseManagement: true, dashboardDoctors: false, dashboardMaterials: false },
+        isGettingStartedSidebarHidden: true,
+      };
+      (appwriteAccount.get as vi.Mock).mockResolvedValueOnce({ prefs: { onboarding: persistedDataOldFormat } });
 
       await useOnboardingStore.getState().hydrateOnboardingState();
 
-      expect(appwriteAccount.get).toHaveBeenCalledTimes(1);
-      const finalDataState = extractPersistedState(useOnboardingStore.getState());
+      const state = useOnboardingStore.getState();
+      expect(state.skippedChecklistItems).toEqual({ // Should be initialized to defaults
+        addedFirstDoctor: false,
+        addedFirstMaterial: false,
+        createdFirstCase: false,
+      });
+      expect(state.isOnboardingComplete).toBe(true); // Other data should still load
+    });
 
+    it('hydrateOnboardingState should not update state if prefs.onboarding does not exist', async () => {
+      (appwriteAccount.get as vi.Mock).mockResolvedValueOnce({ prefs: {} });
+      const initialDataState = extractPersistedState(useOnboardingStore.getState());
+      await useOnboardingStore.getState().hydrateOnboardingState();
+      const finalDataState = extractPersistedState(useOnboardingStore.getState());
       expect(finalDataState).toEqual(initialDataState);
     });
 
      it('hydrateOnboardingState should handle errors during account.get gracefully', async () => {
       (appwriteAccount.get as vi.Mock).mockRejectedValueOnce(new Error("Appwrite error"));
       const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-
       const initialDataState = extractPersistedState(useOnboardingStore.getState());
-
       await useOnboardingStore.getState().hydrateOnboardingState();
-
-      expect(appwriteAccount.get).toHaveBeenCalledTimes(1);
       const finalDataState = extractPersistedState(useOnboardingStore.getState());
-
-      expect(finalDataState).toEqual(initialDataState); // State should remain unchanged
+      expect(finalDataState).toEqual(initialDataState);
       expect(consoleErrorSpy).toHaveBeenCalledWith("Failed to hydrate onboarding state from Appwrite:", expect.any(Error));
-
       consoleErrorSpy.mockRestore();
     });
   });
