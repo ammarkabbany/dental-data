@@ -54,7 +54,11 @@ const getPersistedState = (fullState: OnboardingState): PersistedOnboardingState
 
 const updatePrefsSafely = async (prefsData: { onboarding: PersistedOnboardingState }) => {
   try {
-    await account.updatePrefs(prefsData);
+    const userPrefs = await account.getPrefs();
+    await account.updatePrefs({
+      ...userPrefs,
+      ...prefsData
+    });
   } catch (error) {
     console.error("Failed to update Appwrite user prefs:", error);
   }
