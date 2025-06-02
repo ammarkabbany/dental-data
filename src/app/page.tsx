@@ -406,7 +406,7 @@ export default function Homepage() {
                       <span className="text-2xl font-bold">{item.step}</span>
                     </div>
                     {index < 2 && (
-                      <div className="absolute top-8 left-[calc(50%+2.5rem)] w-[calc(50%-4rem)] border-t-2 border-dashed border-muted-foreground/30 dark:border-muted-foreground/20 hidden md:block" />
+                      <div className="absolute top-8 left-[calc(50%+50px)] w-[calc(100%-20px)] md:left-[calc(50%+54px)] md:w-[calc(100%-48px)] border-t-2 border-dashed border-muted-foreground/30 dark:border-muted-foreground/20 hidden md:block" />
                     )}
                     <h3 className="text-2xl font-semibold text-foreground dark:text-gray-100 mb-3">{item.title}</h3>
                     <p className="text-muted-foreground dark:text-gray-400 text-sm">
@@ -511,7 +511,7 @@ export default function Homepage() {
                               : "bg-muted/20 dark:bg-neutral-800/40 hover:shadow-lg dark:hover:shadow-neutral-700/50"}`
                           }>
                             {plan.popular && (
-                              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 z-10">
+                              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 -translate-y-1/2 z-10">
                                <Badge variant="default" className="px-5 py-1.5 text-sm font-semibold bg-primary text-primary-foreground shadow-md">Most Popular</Badge>
                               </div>
                             )}
@@ -659,7 +659,7 @@ export default function Homepage() {
             <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4 mb-12">
               <div className="space-y-6">
                 <div className="flex items-center gap-3">
-                  <Logo src="/old-fav.ico" className="size-10" />
+                  <Logo src="/old-fav.ico" className="size-14" />
                   <span className="text-xl font-bold text-primary dark:text-primary-foreground">DentaAuto</span>
                 </div>
                 <p className="text-sm text-gray-300">

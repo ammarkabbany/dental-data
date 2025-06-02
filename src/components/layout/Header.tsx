@@ -14,9 +14,9 @@ export default function Header({ children }: { children?: React.ReactNode }) {
     <header className="border-b border-border dark:border-neutral-800 sticky top-0 z-50 w-full bg-background/95 dark:bg-neutral-900/95 text-foreground backdrop-blur supports-[backdrop-filter]:bg-background/75 dark:supports-[backdrop-filter]:bg-neutral-900/75">
       <div className="container flex h-16 items-center justify-between mx-auto px-4 md:px-6">
         <div className="flex items-center gap-x-8">
-          <Link href={"/"} className="flex items-center gap-3 select-none"> {/* Increased gap for larger logo */}
-            <Logo src="/old-fav.ico" className="size-10" /> {/* Increased size, removed h/w, removed mt-1 for now */}
-            <span className="text-2xl font-bold tracking-tight text-foreground dark:text-gray-50">DentaAuto</span> {/* Adjusted tracking, ensured color */}
+          <Link href={"/"} className="flex items-center gap-3 select-none">
+            <Logo src="/old-fav.ico" className="size-14" />
+            <span className="text-2xl font-bold tracking-tight text-foreground dark:text-gray-50">DentaAuto</span>
           </Link>
           {children}
         </div>
