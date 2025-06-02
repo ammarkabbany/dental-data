@@ -121,14 +121,14 @@ export default function Homepage() {
                   className="flex flex-col gap-4 min-[400px]:flex-row justify-center items-center" // items-center for motion.div alignment
                 >
                   {!isLoading && isAuthenticated ? (
-                    <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 300, damping: 15 }}>
+                    <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 200, damping: 20 }}>
                       <Button size="lg" asChild className="bg-primary hover:bg-primary/90 text-primary-foreground dark:bg-primary dark:hover:bg-primary/90 dark:text-primary-foreground">
                         <Link href={"/dashboard"}>Go to Dashboard</Link>
                       </Button>
                     </motion.div>
                   ) : (
                     <>
-                      <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 300, damping: 15 }}>
+                      <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 200, damping: 20 }}>
                         <Button
                           onClick={() => handleLogin("/onboarding")}
                           size="lg"
@@ -138,7 +138,7 @@ export default function Homepage() {
                           <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                         </Button>
                       </motion.div>
-                      <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 300, damping: 15 }}>
+                      <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 200, damping: 20 }}>
                         <Button size="lg" variant="outline" className="border-foreground/30 hover:bg-foreground/5 dark:border-foreground/30 dark:hover:bg-foreground/5">
                           Book a Demo
                         </Button>
@@ -406,7 +406,7 @@ export default function Homepage() {
                       <span className="text-2xl font-bold">{item.step}</span>
                     </div>
                     {index < 2 && (
-                      <div className="absolute top-8 left-[calc(50%+40px)] w-[calc(100%-48px)] border-t-2 border-dashed border-muted-foreground/30 dark:border-muted-foreground/20 hidden md:block" />
+                      <div className="absolute top-8 left-[calc(50%+2.5rem)] w-[calc(50%-4rem)] border-t-2 border-dashed border-muted-foreground/30 dark:border-muted-foreground/20 hidden md:block" />
                     )}
                     <h3 className="text-2xl font-semibold text-foreground dark:text-gray-100 mb-3">{item.title}</h3>
                     <p className="text-muted-foreground dark:text-gray-400 text-sm">
@@ -461,11 +461,11 @@ export default function Homepage() {
                               : "bg-muted/20 dark:bg-neutral-800/40 hover:shadow-lg dark:hover:shadow-neutral-700/50"}`
                           }>
                             {plan.popular && (
-                              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
+                              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 z-10">
                                 <Badge variant="default" className="px-5 py-1.5 text-sm font-semibold bg-primary text-primary-foreground shadow-md">Most Popular</Badge>
                               </div>
                             )}
-                            <CardHeader className="pt-8"> {/* Added padding top for badge space */}
+                            <CardHeader> {/* Removed pt-8 */}
                               <CardTitle className="text-2xl font-semibold text-foreground dark:text-gray-100 mb-1">{plan.name}</CardTitle>
                               <div className="flex items-baseline gap-1.5 mb-3">
                                 <span className="text-4xl font-extrabold text-foreground dark:text-gray-50">{formatCurrency(plan.price, 'EGP', 0)}</span>
@@ -511,11 +511,11 @@ export default function Homepage() {
                               : "bg-muted/20 dark:bg-neutral-800/40 hover:shadow-lg dark:hover:shadow-neutral-700/50"}`
                           }>
                             {plan.popular && (
-                              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
+                              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 z-10">
                                <Badge variant="default" className="px-5 py-1.5 text-sm font-semibold bg-primary text-primary-foreground shadow-md">Most Popular</Badge>
                               </div>
                             )}
-                            <CardHeader className="pt-8">
+                            <CardHeader> {/* Removed pt-8 */}
                               <CardTitle className="text-2xl font-semibold text-foreground dark:text-gray-100 mb-1">{plan.name}</CardTitle>
                               <div className="flex items-baseline gap-1.5 mb-3">
                                 <span className="text-4xl font-extrabold text-foreground dark:text-gray-50">{formatCurrency(getYearlyPrice(plan.price, 0.25), 'EGP', 0)}</span>
@@ -628,13 +628,13 @@ export default function Homepage() {
                 </p>
                 <div className="flex flex-col gap-4 min-[400px]:flex-row">
                   {!isLoading && isAuthenticated ? (
-                    <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 300, damping: 15 }}>
+                    <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 200, damping: 20 }}>
                       <Button size="lg" asChild className="bg-primary text-primary-foreground hover:bg-primary/90">
                         <Link href={"/dashboard"}>Go to Dashboard</Link>
                       </Button>
                     </motion.div>
                   ) : (
-                    <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 300, damping: 15 }}>
+                    <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 200, damping: 20 }}>
                       <Button
                         onClick={() => handleLogin("/onboarding")}
                         size="lg"
@@ -659,7 +659,7 @@ export default function Homepage() {
             <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4 mb-12">
               <div className="space-y-6">
                 <div className="flex items-center gap-3">
-                  <Logo src="/old-fav.ico" className="size-8" />
+                  <Logo src="/old-fav.ico" className="size-10" />
                   <span className="text-xl font-bold text-primary dark:text-primary-foreground">DentaAuto</span>
                 </div>
                 <p className="text-sm text-gray-300">
