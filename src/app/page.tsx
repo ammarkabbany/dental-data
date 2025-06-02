@@ -1,7 +1,7 @@
 "use client";
-import React from "react";
+import React, { useRef } from "react"; // Added useRef
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion"; // Added useScroll, useTransform
 import {
   Check,
   ChevronRight,
@@ -34,6 +34,18 @@ import { formatCurrency, getYearlyPrice } from "@/lib/format-utils";
 
 export default function Homepage() {
   const { handleLogin, isAuthenticated, isLoading } = useAuth();
+  const heroRef = useRef<HTMLDivElement>(null); // Added ref for hero section
+  const { scrollYProgress } = useScroll({ // Added scrollYProgress
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+
+  // Parallax for h1: slower scroll up
+  const h1Y = useTransform(scrollYProgress, [0, 1], ["0%", "-20%"]);
+  // Parallax for p: slightly faster scroll up
+  const pY = useTransform(scrollYProgress, [0, 1], ["0%", "-30%"]);
+
+
   const handleClickScroll = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -64,69 +76,92 @@ export default function Homepage() {
 
         <main className="flex-1 w-full">
           {/* Hero Section */}
-          <section className="py-20 md:py-28 w-full">
+          <section ref={heroRef} className="w-full py-24 md:py-32 lg:py-40 bg-background text-foreground relative overflow-hidden"> {/* Added ref and overflow-hidden */}
             <div className="container mx-auto px-4 md:px-6">
-              <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
-                <div className="flex flex-col justify-center space-y-4">
-                  <div className="space-y-2">
-                    <Badge className="inline-block" variant="outline">
-                      The complete solution for dental labs
-                    </Badge>
-                    <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
-                      Streamline Your Dental Lab Management
-                    </h1>
-                    <p className="max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400">
-                      The comprehensive platform that helps dental labs manage
-                      cases, doctors, materials, and inventory with precision and
-                      ease.
-                    </p>
-                  </div>
-                  <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                    {!isLoading && isAuthenticated ?
-                      <Button size="lg" asChild>
+              <div className="flex flex-col items-center text-center space-y-8">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, ease: [0.25, 1, 0.5, 1] }}
+                >
+                  <Badge
+                    variant="outline"
+                    className="px-4 py-1 text-sm font-medium border-primary/50 text-primary dark:text-primary-foreground bg-primary/10 dark:bg-primary/20"
+                  >
+                    The complete solution for dental labs
+                  </Badge>
+                </motion.div>
+
+                <motion.h1
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.1, ease: [0.25, 1, 0.5, 1] }}
+                  style={{ y: h1Y }} // Added parallax style
+                  className="text-5xl font-extrabold tracking-tight sm:text-6xl md:text-7xl lg:text-8xl/none"
+                >
+                  Streamline Your Dental Lab Management
+                </motion.h1>
+
+                <motion.p
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2, ease: [0.25, 1, 0.5, 1] }}
+                  style={{ y: pY }} // Added parallax style
+                  className="max-w-[700px] text-lg text-gray-600 md:text-xl dark:text-gray-300 font-light"
+                >
+                  The comprehensive platform that helps dental labs manage
+                  cases, doctors, materials, and inventory with precision and
+                  ease.
+                </motion.p>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.3, ease: [0.25, 1, 0.5, 1] }}
+                  className="flex flex-col gap-4 min-[400px]:flex-row justify-center items-center" // items-center for motion.div alignment
+                >
+                  {!isLoading && isAuthenticated ? (
+                    <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 200, damping: 20 }}>
+                      <Button size="lg" asChild className="bg-primary hover:bg-primary/90 text-primary-foreground dark:bg-primary dark:hover:bg-primary/90 dark:text-primary-foreground">
                         <Link href={"/dashboard"}>Go to Dashboard</Link>
                       </Button>
-                      : <>
-                        <Button onClick={() => handleLogin('/onboarding')} size="lg" className="gap-1.5 group">
+                    </motion.div>
+                  ) : (
+                    <>
+                      <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 200, damping: 20 }}>
+                        <Button
+                          onClick={() => handleLogin("/onboarding")}
+                          size="lg"
+                          className="gap-1.5 group bg-primary hover:bg-primary/90 text-primary-foreground dark:bg-primary dark:hover:bg-primary/90 dark:text-primary-foreground"
+                        >
                           Start Free Trial
                           <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                         </Button>
-                        <Button size="lg" variant="outline">
+                      </motion.div>
+                      <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 200, damping: 20 }}>
+                        <Button size="lg" variant="outline" className="border-foreground/30 hover:bg-foreground/5 dark:border-foreground/30 dark:hover:bg-foreground/5">
                           Book a Demo
                         </Button>
-                      </>
-                    }
+                      </motion.div>
+                    </>
+                  )}
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.4, ease: [0.25, 1, 0.5, 1] }}
+                  className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400"
+                >
+                  <div className="flex items-center gap-1">
+                    <Check className="h-4 w-4 text-primary" />
+                    <span>No credit card required</span>
                   </div>
-                  <div className="flex items-center gap-4 text-sm">
-                    <div className="flex items-center gap-1">
-                      <Check className="h-4 w-4 text-primary" />
-                      <span>No credit card required</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Check className="h-4 w-4 text-primary" />
-                      <span>14-day free trial</span>
-                    </div>
+                  <div className="flex items-center gap-1">
+                    <Check className="h-4 w-4 text-primary" />
+                    <span>14-day free trial</span>
                   </div>
-                </div>
-                {/* <div className="flex items-center justify-center">
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className="relative w-full aspect-video overflow-hidden rounded-xl border bg-gradient-to-b from-background/10 to-background/50 p-1 shadow-xl"
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-purple-500/20 opacity-80" />
-                    
-                    <div className="absolute bottom-4 right-4">
-                      <Badge
-                        variant="secondary"
-                        className="backdrop-blur-md bg-background/70"
-                      >
-                        Live Preview
-                      </Badge>
-                    </div>
-                  </motion.div>
-                </div> */}
+                </motion.div>
               </div>
             </div>
           </section>
@@ -233,24 +268,25 @@ export default function Homepage() {
           </section>
 
           {/* Features Section */}
-          <section id="features" className="py-20 md:py-28 w-full">
+          <section id="features" className="w-full py-24 md:py-32 lg:py-40 bg-background text-foreground">
             <div className="container mx-auto px-4 md:px-6">
-              <div className="flex flex-col items-center justify-center space-y-4 text-center">
-                <div className="space-y-2">
-                  <Badge className="inline-block" variant="secondary">
-                    Features
-                  </Badge>
-                  <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
-                    Everything you need to manage your dental lab
-                  </h2>
-                  <p className="max-w-[900px] mx-auto text-gray-500 md:text-xl/relaxed dark:text-gray-400">
-                    Our platform combines powerful features with an intuitive
-                    interface to help you streamline operations and focus on what
-                    matters most.
-                  </p>
-                </div>
+              <div className="flex flex-col items-center justify-center space-y-6 text-center mb-12 md:mb-16">
+                <Badge
+                  variant="outline"
+                  className="px-4 py-1 text-sm font-medium border-primary/50 text-primary dark:text-primary-foreground bg-primary/10 dark:bg-primary/20"
+                >
+                  Features
+                </Badge>
+                <h2 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl">
+                  Everything you need to manage your dental lab
+                </h2>
+                <p className="max-w-[900px] mx-auto text-lg text-gray-600 md:text-xl dark:text-gray-300 font-light">
+                  Our platform combines powerful features with an intuitive
+                  interface to help you streamline operations and focus on what
+                  matters most.
+                </p>
               </div>
-              <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 py-12 md:grid-cols-2 lg:grid-cols-3">
+              <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 py-12 sm:grid-cols-2 lg:grid-cols-3">
                 {[
                   {
                     icon: <Users className="h-10 w-10 text-primary" />,
@@ -293,17 +329,21 @@ export default function Homepage() {
                     key={index}
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    transition={{ duration: 0.5, delay: index * 0.1, ease: [0.25, 1, 0.5, 1] }}
                     viewport={{ once: true }}
+                    whileHover={{ scale: 1.03 }}
+                    className="h-full" // Ensure motion.div takes full height for consistent card heights if content varies
                   >
-                    <Card className="relative overflow-hidden border-none bg-background shadow-md transition-all hover:shadow-lg">
-                      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5 opacity-50" />
-                      <CardHeader>
-                        <div className="mb-3">{feature.icon}</div>
-                        <CardTitle>{feature.title}</CardTitle>
+                    <Card className="h-full flex flex-col relative overflow-hidden bg-muted/20 dark:bg-neutral-800/30 shadow-lg dark:shadow-neutral-700/50 transition-all duration-300 ease-in-out hover:shadow-xl dark:hover:shadow-neutral-600/60 border border-transparent hover:border-primary/30 dark:hover:border-primary/50">
+                      {/* Optional: Subtle decorative element
+                      <div className="absolute -top-1/3 -right-1/4 w-2/3 h-2/3 bg-primary/5 dark:bg-primary/10 rounded-full blur-3xl opacity-50 group-hover:opacity-70 transition-opacity duration-300" />
+                      */}
+                      <CardHeader className="z-10">
+                        <div className="mb-4 text-primary dark:text-primary-foreground/80">{React.cloneElement(feature.icon, { className: "h-10 w-10" })}</div>
+                        <CardTitle className="text-xl font-semibold text-foreground dark:text-gray-100">{feature.title}</CardTitle>
                       </CardHeader>
-                      <CardContent>
-                        <p className="text-muted-foreground">
+                      <CardContent className="flex-1 z-10">
+                        <p className="text-muted-foreground dark:text-gray-400 text-sm">
                           {feature.description}
                         </p>
                       </CardContent>
@@ -315,23 +355,24 @@ export default function Homepage() {
           </section>
 
           {/* How it Works Section */}
-          <section id="workflow" className="py-20 bg-muted/30 w-full">
+          <section id="workflow" className="w-full py-24 md:py-32 lg:py-40 bg-background text-foreground">
             <div className="container mx-auto px-4 md:px-6">
-              <div className="flex flex-col items-center justify-center space-y-4 text-center">
-                <div className="space-y-2">
-                  <Badge className="inline-block" variant="outline">
-                    Workflow
-                  </Badge>
-                  <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-                    How DentaAuto Works
-                  </h2>
-                  <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed dark:text-gray-400">
-                    Our intuitive platform makes managing your dental lab simple
-                    and efficient
-                  </p>
-                </div>
+              <div className="flex flex-col items-center justify-center space-y-6 text-center mb-12 md:mb-16">
+                <Badge
+                  variant="outline"
+                  className="px-4 py-1 text-sm font-medium border-primary/50 text-primary dark:text-primary-foreground bg-primary/10 dark:bg-primary/20"
+                >
+                  Workflow
+                </Badge>
+                <h2 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl">
+                  How DentaAuto Works
+                </h2>
+                <p className="max-w-[900px] mx-auto text-lg text-gray-600 md:text-xl dark:text-gray-300 font-light">
+                  Our intuitive platform makes managing your dental lab simple
+                  and efficient.
+                </p>
               </div>
-              <div className="mt-16 grid gap-8 md:grid-cols-3">
+              <div className="mt-16 grid gap-10 md:grid-cols-3 md:gap-12 lg:gap-16">
                 {[
                   {
                     step: "01",
@@ -356,18 +397,19 @@ export default function Homepage() {
                     key={index}
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.2 }}
+                    transition={{ duration: 0.5, delay: index * 0.2, ease: [0.25, 1, 0.5, 1] }}
                     viewport={{ once: true }}
-                    className="relative flex flex-col items-center text-center"
+                    whileHover={{ scale: 1.02 }}
+                    className="relative flex flex-col items-center text-center p-6 rounded-lg transition-shadow duration-300 hover:shadow-xl dark:hover:shadow-primary/10"
                   >
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary mb-4 relative z-10">
-                      <span className="text-lg font-bold">{item.step}</span>
+                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary-foreground mb-6 relative z-10 ring-4 ring-primary/20 dark:ring-primary/30">
+                      <span className="text-2xl font-bold">{item.step}</span>
                     </div>
                     {index < 2 && (
-                      <div className="absolute top-6 left-[calc(50%+34px)] w-[calc(100%-36px)] border-t border-dashed border-muted-foreground/30 hidden md:block" />
+                      <div className="absolute top-8 left-[calc(50%+50px)] w-[calc(100%-20px)] md:left-[calc(50%+54px)] md:w-[calc(100%-48px)] border-t-2 border-dashed border-muted-foreground/30 dark:border-muted-foreground/20 hidden md:block" />
                     )}
-                    <h3 className="text-xl font-bold">{item.title}</h3>
-                    <p className="mt-2 text-muted-foreground">
+                    <h3 className="text-2xl font-semibold text-foreground dark:text-gray-100 mb-3">{item.title}</h3>
+                    <p className="text-muted-foreground dark:text-gray-400 text-sm">
                       {item.description}
                     </p>
                   </motion.div>
@@ -377,121 +419,134 @@ export default function Homepage() {
           </section>
 
           {/* Pricing Section */}
-          <section id="pricing" className="py-20 md:py-28 w-full">
-          <div className="container mx-auto px-4 md:px-6">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="space-y-2">
-                <Badge className="inline-block" variant="secondary">
+          <section id="pricing" className="w-full py-24 md:py-32 lg:py-40 bg-background text-foreground">
+            <div className="container mx-auto px-4 md:px-6">
+              <div className="flex flex-col items-center justify-center space-y-6 text-center mb-12 md:mb-16">
+                <Badge
+                  variant="outline"
+                  className="px-4 py-1 text-sm font-medium border-primary/50 text-primary dark:text-primary-foreground bg-primary/10 dark:bg-primary/20"
+                >
                   Pricing
                 </Badge>
-                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+                <h2 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl">
                   Simple, transparent pricing
                 </h2>
-                <p className="max-w-[600px] text-gray-500 md:text-xl/relaxed dark:text-gray-400">
-                  Choose the plan that&apos;s right for your dental lab
+                <p className="max-w-[700px] mx-auto text-lg text-gray-600 md:text-xl dark:text-gray-300 font-light">
+                  Choose the plan that&apos;s right for your dental lab. No hidden fees, ever.
                 </p>
               </div>
-            </div>
-            <div className="mx-auto mt-8 max-w-5xl">
-              <Tabs defaultValue="monthly" className="w-full">
-                <div className="flex justify-center mb-8">
-                  <TabsList>
-                    <TabsTrigger value="monthly">Monthly</TabsTrigger>
-                    <TabsTrigger value="annually">Annually (Save 25%)</TabsTrigger>
-                  </TabsList>
-                </div>
-                <TabsContent value="monthly">
-                  <div className="grid gap-6 lg:grid-cols-3">
-                    {Plans.map((plan, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: index * 0.1 }}
-                        viewport={{ once: true }}
-                      >
-                        <Card className={`flex flex-col h-[350px] relative ${plan.popular ? "border-primary shadow-lg" : ""}`}>
-                          {plan.popular && (
-                            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                              <Badge variant="default" className="px-6 py-1 text-sm">Most Popular</Badge>
-                            </div>
-                          )}
-                          <CardHeader>
-                            <CardTitle>{plan.name}</CardTitle>
-                            <div className="flex items-baseline gap-1">
-                              <span className="text-3xl font-bold">{formatCurrency(plan.price, 'EGP', 0)}</span>
-                              <span className="text-muted-foreground">/month</span>
-                            </div>
-                            <CardDescription>{plan.desc}</CardDescription>
-                          </CardHeader>
-                          <CardContent className="flex-1">
-                            <ul className="space-y-2 text-sm">
-                              {plan.features.map((feature, i) => (
-                                <li key={i} className="flex items-center">
-                                  <feature.icon className="mr-2 h-4 w-4 text-primary" />
-                                  <span>{feature.text}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </CardContent>
-                          {/* <CardFooter>
-                            <Button className="w-full" variant={plan.popular ? "default" : "outline"}>
-                              {plan.}
-                            </Button>
-                          </CardFooter> */}
-                        </Card>
-                      </motion.div>
-                    ))}
+              <div className="mx-auto mt-12 max-w-5xl">
+                <Tabs defaultValue="monthly" className="w-full">
+                  <div className="flex justify-center mb-10">
+                    <TabsList className="bg-muted/30 dark:bg-neutral-800/50 p-1.5 rounded-lg">
+                      <TabsTrigger value="monthly" className="px-6 py-2 text-sm font-medium text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md rounded-md transition-all">Monthly</TabsTrigger>
+                      <TabsTrigger value="annually" className="px-6 py-2 text-sm font-medium text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md rounded-md transition-all">Annually (Save 25%)</TabsTrigger>
+                    </TabsList>
                   </div>
-                </TabsContent>
-                <TabsContent value="annually">
-                  <div className="grid gap-6 lg:grid-cols-3">
-                    {Plans.map((plan, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: index * 0.1 }}
-                        viewport={{ once: true }}
-                      >
-                        <Card className={`flex flex-col h-[350px] relative ${plan.popular ? "border-primary shadow-lg" : ""}`}>
-                          {plan.popular && (
-                            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                              <Badge variant="default" className="px-6 py-1 text-sm">Most Popular</Badge>
-                            </div>
-                          )}
-                          <CardHeader>
-                            <CardTitle>{plan.name}</CardTitle>
-                            <div className="flex items-baseline gap-1">
-                              <span className="text-3xl font-bold">{formatCurrency(getYearlyPrice(plan.price, 0.25), 'EGP', 0)}</span>
-                              <span className="text-muted-foreground">/year</span>
-                            </div>
-                            <CardDescription>{plan.desc}</CardDescription>
-                          </CardHeader>
-                          <CardContent className="flex-1">
-                            <ul className="space-y-2 text-sm">
-                              {plan.features.map((feature, i) => (
-                                <li key={i} className="flex items-center">
-                                  <feature.icon className="mr-2 h-4 w-4 text-primary" />
-                                  <span>{feature.text}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </CardContent>
-                          {/* <CardFooter>
-                            <Button className="w-full" variant={plan.popular ? "default" : "outline"}>
-                              {plan.features}
-                            </Button>
-                          </CardFooter> */}
-                        </Card>
-                      </motion.div>
-                    ))}
-                  </div>
-                </TabsContent>
-              </Tabs>
+                  <TabsContent value="monthly">
+                    <div className="grid gap-8 lg:grid-cols-3 items-stretch"> {/* items-stretch for consistent card height */}
+                      {Plans.map((plan, index) => (
+                        <motion.div
+                          key={`monthly-${index}`}
+                          initial={{ opacity: 0, y: 20 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.5, delay: index * 0.1, ease: [0.25, 1, 0.5, 1] }}
+                          viewport={{ once: true }}
+                          whileHover={{ y: plan.popular ? 0 : -5, scale: plan.popular ? 1.0 : 1.02 }}
+                          className={`h-full ${plan.popular ? "ring-2 ring-primary dark:ring-primary shadow-primary/20" : "ring-1 ring-border"} rounded-xl transition-all duration-300`}
+                        >
+                          <Card className={`flex flex-col h-full relative overflow-hidden p-6 rounded-xl transition-all duration-300 ease-in-out
+                            ${plan.popular
+                              ? "bg-primary/5 dark:bg-primary/10 shadow-2xl dark:shadow-primary/30"
+                              : "bg-muted/20 dark:bg-neutral-800/40 hover:shadow-lg dark:hover:shadow-neutral-700/50"}`
+                          }>
+                            {plan.popular && (
+                              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 z-10">
+                                <Badge variant="default" className="px-5 py-1.5 text-sm font-semibold bg-primary text-primary-foreground shadow-md">Most Popular</Badge>
+                              </div>
+                            )}
+                            <CardHeader> {/* Removed pt-8 */}
+                              <CardTitle className="text-2xl font-semibold text-foreground dark:text-gray-100 mb-1">{plan.name}</CardTitle>
+                              <div className="flex items-baseline gap-1.5 mb-3">
+                                <span className="text-4xl font-extrabold text-foreground dark:text-gray-50">{formatCurrency(plan.price, 'EGP', 0)}</span>
+                                <span className="text-muted-foreground dark:text-gray-400">/month</span>
+                              </div>
+                              <CardDescription className="text-sm text-muted-foreground dark:text-gray-400 min-h-[40px]">{plan.desc}</CardDescription>
+                            </CardHeader>
+                            <CardContent className="flex-1 my-6">
+                              <ul className="space-y-3 text-sm">
+                                {plan.features.map((feature, i) => (
+                                  <li key={i} className="flex items-center gap-2.5">
+                                    <feature.icon className={`h-5 w-5 ${plan.popular ? 'text-primary dark:text-primary-foreground/90' : 'text-primary'}`} />
+                                    <span className="text-muted-foreground dark:text-gray-300">{feature.text}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </CardContent>
+                            <CardFooter>
+                              <Button className={`w-full mt-auto ${plan.popular ? 'bg-primary hover:bg-primary/90 text-primary-foreground' : 'bg-secondary hover:bg-secondary/90 text-secondary-foreground'}`} variant={plan.popular ? "default" : "secondary"} size="lg" disabled>
+                                Choose Plan
+                              </Button>
+                            </CardFooter>
+                          </Card>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </TabsContent>
+                  <TabsContent value="annually">
+                    <div className="grid gap-8 lg:grid-cols-3 items-stretch">
+                      {Plans.map((plan, index) => (
+                        <motion.div
+                          key={`annually-${index}`}
+                          initial={{ opacity: 0, y: 20 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.5, delay: index * 0.1, ease: [0.25, 1, 0.5, 1] }}
+                          viewport={{ once: true }}
+                          whileHover={{ y: plan.popular ? 0 : -5, scale: plan.popular ? 1.0 : 1.02 }}
+                          className={`h-full ${plan.popular ? "ring-2 ring-primary dark:ring-primary shadow-primary/20" : "ring-1 ring-border"} rounded-xl transition-all duration-300`}
+                        >
+                           <Card className={`flex flex-col h-full relative overflow-hidden p-6 rounded-xl transition-all duration-300 ease-in-out
+                            ${plan.popular
+                              ? "bg-primary/5 dark:bg-primary/10 shadow-2xl dark:shadow-primary/30"
+                              : "bg-muted/20 dark:bg-neutral-800/40 hover:shadow-lg dark:hover:shadow-neutral-700/50"}`
+                          }>
+                            {plan.popular && (
+                              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 -translate-y-1/2 z-10">
+                               <Badge variant="default" className="px-5 py-1.5 text-sm font-semibold bg-primary text-primary-foreground shadow-md">Most Popular</Badge>
+                              </div>
+                            )}
+                            <CardHeader> {/* Removed pt-8 */}
+                              <CardTitle className="text-2xl font-semibold text-foreground dark:text-gray-100 mb-1">{plan.name}</CardTitle>
+                              <div className="flex items-baseline gap-1.5 mb-3">
+                                <span className="text-4xl font-extrabold text-foreground dark:text-gray-50">{formatCurrency(getYearlyPrice(plan.price, 0.25), 'EGP', 0)}</span>
+                                <span className="text-muted-foreground dark:text-gray-400">/year</span>
+                              </div>
+                              <CardDescription className="text-sm text-muted-foreground dark:text-gray-400 min-h-[40px]">{plan.desc}</CardDescription>
+                            </CardHeader>
+                            <CardContent className="flex-1 my-6">
+                              <ul className="space-y-3 text-sm">
+                                {plan.features.map((feature, i) => (
+                                  <li key={i} className="flex items-center gap-2.5">
+                                    <feature.icon className={`h-5 w-5 ${plan.popular ? 'text-primary dark:text-primary-foreground/90' : 'text-primary'}`} />
+                                    <span className="text-muted-foreground dark:text-gray-300">{feature.text}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </CardContent>
+                            <CardFooter>
+                              <Button className={`w-full mt-auto ${plan.popular ? 'bg-primary hover:bg-primary/90 text-primary-foreground' : 'bg-secondary hover:bg-secondary/90 text-secondary-foreground'}`} variant={plan.popular ? "default" : "secondary"} size="lg" disabled>
+                                Choose Plan
+                              </Button>
+                            </CardFooter>
+                          </Card>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </TabsContent>
+                </Tabs>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
 
           {/* FAQ Section */}
           {/* <section id="faq" className="py-20 md:py-28 w-full">
@@ -561,38 +616,37 @@ export default function Homepage() {
         </section> */}
 
           {/* CTA Section */}
-          <section className="bg-primary text-primary-foreground py-16 md:py-24 w-full flex items-center justify-center">
-            <div className="container px-4 md:px-6">
-              <div className="flex flex-col items-center justify-center space-y-4 text-center">
-                <div className="space-y-2">
-                  <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
-                    Ready to transform your dental lab?
-                  </h2>
-                  <p className="max-w-[700px] md:text-xl/relaxed mx-auto">
-                    Join hundreds of dental labs already using DentaAuto to
-                    streamline their operations
-                  </p>
-                </div>
-                <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                  {!isLoading && isAuthenticated ?
-                    <Button className="to-secondary hover:from-secondary/80 hover:to-secondary/80" variant={"secondary"} size="lg" asChild>
-                      <Link href={"/dashboard"}>Go to Dashboard</Link>
-                    </Button>
-                    :
-                    <>
+          <section className="w-full py-24 md:py-32 lg:py-40 bg-neutral-800 text-gray-50">
+            <div className="container mx-auto px-4 md:px-6">
+              <div className="flex flex-col items-center justify-center space-y-6 text-center">
+                <h2 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl">
+                  Ready to transform your dental lab?
+                </h2>
+                <p className="max-w-[700px] text-lg text-gray-300 md:text-xl font-light">
+                  Join hundreds of dental labs already using DentaAuto to
+                  streamline their operations.
+                </p>
+                <div className="flex flex-col gap-4 min-[400px]:flex-row">
+                  {!isLoading && isAuthenticated ? (
+                    <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 200, damping: 20 }}>
+                      <Button size="lg" asChild className="bg-primary text-primary-foreground hover:bg-primary/90">
+                        <Link href={"/dashboard"}>Go to Dashboard</Link>
+                      </Button>
+                    </motion.div>
+                  ) : (
+                    <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 200, damping: 20 }}>
                       <Button
+                        onClick={() => handleLogin("/onboarding")}
                         size="lg"
-                        variant="secondary"
-                        className="gap-1.5 group to-secondary hover:from-secondary/80 hover:to-secondary/80"
-                        onClick={() => handleLogin('/onboarding')}
+                        className="gap-1.5 group bg-primary text-primary-foreground hover:bg-primary/90"
                       >
                         Start Your Free Trial
-                        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                        <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
                       </Button>
-                    </>
-                  }
+                    </motion.div>
+                  )}
                 </div>
-                <p className="text-sm text-primary-foreground/80">
+                <p className="text-sm text-gray-400">
                   No credit card required. 14-day free trial.
                 </p>
               </div>
@@ -600,78 +654,69 @@ export default function Homepage() {
           </section>
         </main>
 
-        <footer className="border-t py-12 md:py-16 w-full">
+        <footer className="w-full border-t border-neutral-700 bg-neutral-900 text-gray-50 py-16 md:py-20">
           <div className="container mx-auto px-4 md:px-6">
-            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-              <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <Logo src="/old-fav.ico" className="size-16" />
-                  <span className="text-xl font-bold tracking-wide">DentaAuto</span>
+            <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4 mb-12">
+              <div className="space-y-6">
+                <div className="flex items-center gap-3">
+                  <Logo src="/old-fav.ico" className="size-14" />
+                  <span className="text-xl font-bold text-primary dark:text-primary-foreground">DentaAuto</span>
                 </div>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-gray-300">
                   Comprehensive dental lab management software designed by lab
                   professionals, for lab professionals.
                 </p>
               </div>
-              <div className="space-y-4">
-                <h4 className="text-sm font-semibold">Product</h4>
-                <ul className="space-y-2 text-sm">
-                  <li
-                    onClick={() => handleClickScroll("features")}
-                    className="text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
-                  >
-                    Features
+              <div className="space-y-6">
+                <h4 className="text-sm font-semibold uppercase tracking-wider text-gray-200">Product</h4>
+                <ul className="space-y-3 text-sm">
+                  <li>
+                    <button
+                      onClick={() => handleClickScroll("features")}
+                      className="text-gray-300 hover:text-primary dark:hover:text-primary-foreground/80 transition-colors"
+                    >
+                      Features
+                    </button>
                   </li>
-                  <li
-                    onClick={() => handleClickScroll("workflow")}
-                    className="text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
-                  >
-                    Workflow
+                  <li>
+                    <button
+                      onClick={() => handleClickScroll("workflow")}
+                      className="text-gray-300 hover:text-primary dark:hover:text-primary-foreground/80 transition-colors"
+                    >
+                      Workflow
+                    </button>
                   </li>
-                  <li
-                    onClick={() => handleClickScroll("pricing")}
-                    className="text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
-                  >
-                    Pricing
+                  <li>
+                    <button
+                      onClick={() => handleClickScroll("pricing")}
+                      className="text-gray-300 hover:text-primary dark:hover:text-primary-foreground/80 transition-colors"
+                    >
+                      Pricing
+                    </button>
                   </li>
                 </ul>
               </div>
-              <div className="space-y-4">
-                <h4 className="text-sm font-semibold">Company</h4>
-                <ul className="space-y-2 text-sm">
-                  {/* <li>
-                    <Link
-                      href="#"
-                      className="text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      About Us
-                    </Link>
-                  </li> */}
-                  {/* <li>
-                    <Link
-                      href="#"
-                      className="text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      Careers
-                    </Link>
-                  </li> */}
+              <div className="space-y-6">
+                <h4 className="text-sm font-semibold uppercase tracking-wider text-gray-200">Company</h4>
+                <ul className="space-y-3 text-sm">
                   <li>
                     <Link
                       href="#"
-                      className="text-muted-foreground hover:text-foreground transition-colors"
+                      className="text-gray-300 hover:text-primary dark:hover:text-primary-foreground/80 transition-colors"
                     >
                       Contact
                     </Link>
                   </li>
+                  {/* Add other company links if available */}
                 </ul>
               </div>
-              <div className="space-y-4">
-                <h4 className="text-sm font-semibold">Legal</h4>
-                <ul className="space-y-2 text-sm">
+              <div className="space-y-6">
+                <h4 className="text-sm font-semibold uppercase tracking-wider text-gray-200">Legal</h4>
+                <ul className="space-y-3 text-sm">
                   <li>
                     <Link
                       href="#"
-                      className="text-muted-foreground hover:text-foreground transition-colors"
+                      className="text-gray-300 hover:text-primary dark:hover:text-primary-foreground/80 transition-colors"
                     >
                       Privacy Policy
                     </Link>
@@ -679,7 +724,7 @@ export default function Homepage() {
                   <li>
                     <Link
                       href="#"
-                      className="text-muted-foreground hover:text-foreground transition-colors"
+                      className="text-gray-300 hover:text-primary dark:hover:text-primary-foreground/80 transition-colors"
                     >
                       Terms of Service
                     </Link>
@@ -687,7 +732,7 @@ export default function Homepage() {
                   <li>
                     <Link
                       href="#"
-                      className="text-muted-foreground hover:text-foreground transition-colors"
+                      className="text-gray-300 hover:text-primary dark:hover:text-primary-foreground/80 transition-colors"
                     >
                       Cookie Policy
                     </Link>
@@ -695,19 +740,20 @@ export default function Homepage() {
                 </ul>
               </div>
             </div>
-            <div className="mt-8 border-t pt-8 flex flex-col sm:flex-row justify-between items-center">
-              <p className="text-sm text-muted-foreground">
-                © 2025 DentaAuto. All rights reserved.
+            <div className="mt-12 border-t border-neutral-700 pt-8 flex flex-col sm:flex-row justify-between items-center">
+              <p className="text-sm text-gray-400">
+                © {new Date().getFullYear()} DentaAuto. All rights reserved.
               </p>
-              <div className="flex items-center gap-4 mt-4 sm:mt-0">
+              <div className="flex items-center gap-5 mt-6 sm:mt-0">
                 <Link
                   href="https://www.linkedin.com/company/crox-team/"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-gray-400 hover:text-primary dark:hover:text-primary-foreground/80 transition-colors"
+                  aria-label="LinkedIn"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
+                    width="22"
+                    height="22"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
@@ -720,13 +766,13 @@ export default function Homepage() {
                     <rect x="2" y="9" width="4" height="12"></rect>
                     <circle cx="4" cy="4" r="2"></circle>
                   </svg>
-                  <span className="sr-only">LinkedIn</span>
                 </Link>
                 <Link
                   href="https://instagram.com/croxteamco/"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-gray-400 hover:text-primary dark:hover:text-primary-foreground/80 transition-colors"
+                  aria-label="Instagram"
                 >
-                  <InstagramLogoIcon className="size-5" />
+                  <InstagramLogoIcon className="h-5 w-5" />
                 </Link>
               </div>
             </div>
