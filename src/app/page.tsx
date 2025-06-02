@@ -121,14 +121,14 @@ export default function Homepage() {
                   className="flex flex-col gap-4 min-[400px]:flex-row justify-center items-center" // items-center for motion.div alignment
                 >
                   {!isLoading && isAuthenticated ? (
-                    <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
+                    <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 300, damping: 15 }}>
                       <Button size="lg" asChild className="bg-primary hover:bg-primary/90 text-primary-foreground dark:bg-primary dark:hover:bg-primary/90 dark:text-primary-foreground">
                         <Link href={"/dashboard"}>Go to Dashboard</Link>
                       </Button>
                     </motion.div>
                   ) : (
                     <>
-                      <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
+                      <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 300, damping: 15 }}>
                         <Button
                           onClick={() => handleLogin("/onboarding")}
                           size="lg"
@@ -138,7 +138,7 @@ export default function Homepage() {
                           <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                         </Button>
                       </motion.div>
-                      <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
+                      <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 300, damping: 15 }}>
                         <Button size="lg" variant="outline" className="border-foreground/30 hover:bg-foreground/5 dark:border-foreground/30 dark:hover:bg-foreground/5">
                           Book a Demo
                         </Button>
@@ -461,7 +461,7 @@ export default function Homepage() {
                               : "bg-muted/20 dark:bg-neutral-800/40 hover:shadow-lg dark:hover:shadow-neutral-700/50"}`
                           }>
                             {plan.popular && (
-                              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
                                 <Badge variant="default" className="px-5 py-1.5 text-sm font-semibold bg-primary text-primary-foreground shadow-md">Most Popular</Badge>
                               </div>
                             )}
@@ -511,7 +511,7 @@ export default function Homepage() {
                               : "bg-muted/20 dark:bg-neutral-800/40 hover:shadow-lg dark:hover:shadow-neutral-700/50"}`
                           }>
                             {plan.popular && (
-                              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
                                <Badge variant="default" className="px-5 py-1.5 text-sm font-semibold bg-primary text-primary-foreground shadow-md">Most Popular</Badge>
                               </div>
                             )}
@@ -628,13 +628,13 @@ export default function Homepage() {
                 </p>
                 <div className="flex flex-col gap-4 min-[400px]:flex-row">
                   {!isLoading && isAuthenticated ? (
-                    <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
+                    <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 300, damping: 15 }}>
                       <Button size="lg" asChild className="bg-primary text-primary-foreground hover:bg-primary/90">
                         <Link href={"/dashboard"}>Go to Dashboard</Link>
                       </Button>
                     </motion.div>
                   ) : (
-                    <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
+                    <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 300, damping: 15 }}>
                       <Button
                         onClick={() => handleLogin("/onboarding")}
                         size="lg"
