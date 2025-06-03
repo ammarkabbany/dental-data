@@ -63,7 +63,6 @@ export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
     .getSelectedRowModel()
     .rows.map((row) => row.original)
     .sort((a, b) => a.date.localeCompare(b.date))
-    .splice(0, 100);
 
   const filtersCount = Object.values(table.getAllColumns()).filter((column) =>
     column.getIsFiltered()
@@ -232,7 +231,7 @@ export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
 
         {canDelete && selectedCases.length > 0 && (
           <DeleteCaseModal
-            cases={selectedCases}
+            cases={selectedCases.splice(0, 100)}
             onDelete={() => {
               table.resetRowSelection();
             }}
