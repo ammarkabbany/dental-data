@@ -81,7 +81,14 @@ export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
           table.resetRowSelection();
         }}
       />
-      <PrintComponent selectedCases={table.getSelectedRowModel().rows.map(row => row.original)} options={exportOptions} />
+      <PrintComponent
+        selectedCases={table
+          .getSelectedRowModel()
+          .rows.map((row) => row.original)
+          .sort((a, b) => a.date.localeCompare(b.date))
+        }
+        options={exportOptions}
+      />
       <div className="flex flex-wrap items-center justify-between gap-4 py-4">
         <div className="flex flex-wrap items-center gap-2">
           <SearchInput
