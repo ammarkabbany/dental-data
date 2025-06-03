@@ -16,7 +16,7 @@ import useTeamStore from "@/store/team-store";
 import { useModalStore } from "@/store/modal-store";
 
 interface FloatingDockProps {
-  selectedCases: Case[];
+  selectedCases: number;
   onClearSelection: () => void;
 }
 
@@ -33,7 +33,7 @@ export function FloatingDock({
 
   return (
     <AnimatePresence>
-      {selectedCases.length > 0 && (
+      {selectedCases > 0 && (
         <motion.div
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -44,7 +44,7 @@ export function FloatingDock({
         >
           <div className="flex items-center gap-2 bg-sidebar border rounded-xl shadow-lg px-4 py-3 relative backdrop-blur-sm">
             <div className="absolute w-max -top-5 left-1/2 transform -translate-x-1/2 bg-sidebar-accent text-primary-foreground text-xs p-2 rounded-full">
-              {selectedCases.length} selected
+              {selectedCases} selected
             </div>
 
             <TooltipProvider delayDuration={100}>
@@ -83,7 +83,7 @@ export function FloatingDock({
                   </Tooltip>
                 )}
 
-                {canDelete && selectedCases.length > 0 && (
+                {canDelete && selectedCases > 0 && (
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button

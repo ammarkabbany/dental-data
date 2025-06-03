@@ -63,6 +63,7 @@ export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
     .getSelectedRowModel()
     .rows.map((row) => row.original)
     .sort((a, b) => a.date.localeCompare(b.date))
+    .splice(0, 100);
 
   const filtersCount = Object.values(table.getAllColumns()).filter((column) =>
     column.getIsFiltered()
@@ -75,12 +76,12 @@ export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
   return (
     <>
       <FloatingDock
-        selectedCases={selectedCases}
+        selectedCases={table.getSelectedRowModel().rows.length}
         onClearSelection={() => {
           table.resetRowSelection();
         }}
       />
-      <PrintComponent selectedCases={selectedCases} options={exportOptions} />
+      <PrintComponent selectedCases={table.getSelectedRowModel().rows.map(row => row.original)} options={exportOptions} />
       <div className="flex flex-wrap items-center justify-between gap-4 py-4">
         <div className="flex flex-wrap items-center gap-2">
           <SearchInput
@@ -231,7 +232,7 @@ export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
 
         {canDelete && selectedCases.length > 0 && (
           <DeleteCaseModal
-            cases={selectedCases.splice(0, 100)}
+            cases={selectedCases}
             onDelete={() => {
               table.resetRowSelection();
             }}
