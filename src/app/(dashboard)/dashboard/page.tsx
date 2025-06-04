@@ -23,6 +23,8 @@ import { MaterialCreateModal } from "@/components/materials/create-material-moda
 import { CreateDoctorModal } from "@/components/doctors/create-doctor-modal";
 import useTeamStore from "@/store/team-store";
 import { useAuth } from "@/providers/auth-provider";
+import WelcomeChecklist from "@/components/onboarding/WelcomeChecklist";
+import Coachmark from "@/components/onboarding/Coachmark"; // Import Coachmark
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -144,6 +146,9 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        {/* Welcome Checklist */}
+        <WelcomeChecklist />
+
         {/* Stats Grid */}
         <div>
           {isLoading ? (
@@ -197,53 +202,88 @@ export default function DashboardPage() {
               ))}
             </>
           ) : (
-            actionCards.map((card) => (
-              <motion.div
-                key={card.title}
-                variants={itemVariants}
-                whileHover="hover"
-                className="w-full"
-              >
-                {card.href ? (
-                  <Link href={card.href} className="block w-full">
-                    <Card className={`group border-border ${card.isPrimary ? "bg-primary" : "hover:border-primary/50"} transition-all hover:shadow-md h-full`}>
-                      <CardContent className="flex flex-col items-center justify-center gap-4">
-                        <div className="p-3 rounded-full bg-secondary/20 group-hover:bg-secondary/40 transition-colors">
+            actionCards.map((card) => {
+              const cardElement = (
+                <motion.div
+                  key={card.title}
+                  variants={itemVariants}
+                  whileHover="hover"
+                  className="w-full h-full" // Ensure motion.div takes full height for PopoverTrigger
+                >
+                  {card.href ? (
+                    <Link href={card.href} className="block w-full h-full">
+                      <Card className={`group border-border ${card.isPrimary ? "bg-primary" : "hover:border-primary/50"} transition-all hover:shadow-md h-full`}>
+                        <CardContent className="flex flex-col items-center justify-center gap-4 text-center p-6">
+                          <div className="p-3 rounded-full bg-secondary/20 group-hover:bg-secondary/40 transition-colors">
+                            {card.icon}
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-foreground">{card.title}</h3>
+                            <p className="text-sm text-foreground/75">{card.description}</p>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  ) : (
+                    <Card
+                      className="group border-border hover:border-primary/50 transition-all hover:shadow-md cursor-pointer h-full"
+                      onClick={card.onClick}
+                    >
+                      <CardContent className="flex flex-col items-center justify-center gap-4 text-center p-6">
+                        <div className="p-3 rounded-full bg-primary/5 group-hover:bg-primary/10 transition-colors">
                           {card.icon}
                         </div>
-                        <div className="text-center space-y-2">
+                        <div>
                           <h3 className="font-semibold text-foreground">{card.title}</h3>
-                          <p className="text-sm text-foreground/75">{card.description}</p>
+                          <p className="text-sm text-muted-foreground">{card.description}</p>
                         </div>
-                        {/* <Button variant="ghost" size="sm" className="mt-2">
-                          <Plus className="mr-2 size-4" />
-                          {card.buttonText}
-                        </Button> */}
                       </CardContent>
                     </Card>
-                  </Link>
-                ) : (
-                  <Card
-                    className="group border-border hover:border-primary/50 transition-all hover:shadow-md cursor-pointer h-full"
-                    onClick={card.onClick}
+                  )}
+                </motion.div>
+              );
+
+              if (card.title === "New Case") {
+                return (
+                  <Coachmark
+                    key={card.title}
+                    coachmarkId="dashboardCaseManagement"
+                    title="Manage Your Cases"
+                    description="Click here to create new cases or view existing ones."
+                    position="bottom"
                   >
-                    <CardContent className="flex flex-col items-center justify-center gap-4">
-                      <div className="p-3 rounded-full bg-primary/5 group-hover:bg-primary/10 transition-colors">
-                        {card.icon}
-                      </div>
-                      <div className="text-center space-y-2">
-                        <h3 className="font-semibold text-foreground">{card.title}</h3>
-                        <p className="text-sm text-muted-foreground">{card.description}</p>
-                      </div>
-                      {/* <Button variant="ghost" size="sm" className="mt-2">
-                        <Plus className="mr-2 size-4" />
-                        {card.buttonText}
-                      </Button> */}
-                    </CardContent>
-                  </Card>
-                )}
-              </motion.div>
-            ))
+                    {cardElement}
+                  </Coachmark>
+                );
+              }
+              if (card.title === "New Doctor") {
+                return (
+                  <Coachmark
+                    key={card.title}
+                    coachmarkId="dashboardDoctors"
+                    title="Add and See Doctors"
+                    description="Manage the doctors associated with your lab from here."
+                    position="bottom"
+                  >
+                    {cardElement}
+                  </Coachmark>
+                );
+              }
+              if (card.title === "New Material") {
+                return (
+                  <Coachmark
+                    key={card.title}
+                    coachmarkId="dashboardMaterials"
+                    title="Organize Lab Materials"
+                    description="Keep track of your dental materials and supplies."
+                    position="bottom"
+                  >
+                    {cardElement}
+                  </Coachmark>
+                );
+              }
+              return cardElement; // Should not happen if titles match
+            })
           )}
         </motion.div>
 

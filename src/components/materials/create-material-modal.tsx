@@ -17,9 +17,12 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useCreateMaterial } from "@/features/materials/hooks/use-create-material";
 import { createMaterialSchema } from "@/features/materials/schemas";
+import { useOnboardingStore } from "@/store/onboarding-store"; // Import onboarding store
 
 export const MaterialCreateModal = () => {
   const { isModalOpen, closeModal } = useModalStore();
+  // Onboarding store
+  const { checklistItems, completeChecklistItem } = useOnboardingStore();
 
   const {mutate, isPending, error} = useCreateMaterial();
 
@@ -38,6 +41,10 @@ export const MaterialCreateModal = () => {
   const onSubmit = (values: z.infer<typeof createMaterialSchema>) => {
     mutate({data: values}, {
       onSuccess: () => {
+        // Complete checklist item for adding a material
+        if (!checklistItems.addedFirstMaterial) {
+          completeChecklistItem('addedFirstMaterial');
+        }
         closeModal(Modals.CREATE_MATERIAL_MODAL);
       }
     });

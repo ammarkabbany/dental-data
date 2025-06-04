@@ -25,14 +25,17 @@ import { usePermission } from "@/hooks/use-permissions";
 import { useTemplateParams } from "@/features/templates/hooks/use-template-params";
 import { useTemplatesStore } from "@/store/templates-store";
 import useTeamStore from "@/store/team-store";
-import { AlertCircle } from "lucide-react"; // Add this import
+import { AlertCircle } from "lucide-react";
 import { useDoctorsStore } from "@/store/doctors-store";
 import { useMaterialsStore } from "@/store/material-store";
+import { useOnboardingStore } from "@/store/onboarding-store"; // Import onboarding store
 
 export const CreateCaseForm = () => {
   const { membership, userRole } = useTeamStore();
   const canViewDue = usePermission(userRole).canViewDue();
   const router = useRouter();
+  // Onboarding store
+  const { checklistItems, completeChecklistItem } = useOnboardingStore();
 
   const templateParams = useTemplateParams();
 
@@ -415,6 +418,10 @@ export const CreateCaseForm = () => {
           }
           if (currentTemplate) {
             addRecentTemplate(currentTemplate.$id);
+          }
+          // Complete checklist item for creating a case
+          if (!checklistItems.createdFirstCase) {
+            completeChecklistItem('createdFirstCase');
           }
           handleResetTeeth();
           form.resetField("patient");
