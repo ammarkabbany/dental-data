@@ -4,14 +4,9 @@ import {
   createAdminClient,
   createSessionClient,
 } from "@/lib/appwrite/appwrite";
-import { CASES_COLLECTION_ID, DATABASE_ID } from "@/lib/constants";
+import { AUDIT_LOGS_COLLECTION_ID, CASES_COLLECTION_ID, DATABASE_ID } from "@/lib/constants";
 import { Case } from "@/types";
 import { AppwriteException, ID, Permission, Query, Role } from "node-appwrite";
-import {
-  GetDoctorById,
-  UpdateDoctor,
-  UpdateDoctorDue,
-} from "../doctors/actions";
 import { getTeamById, updateTeam } from "../team/teamService";
 import { LogAuditEvent } from "../logs/actions";
 import { isBefore } from "date-fns";
@@ -170,37 +165,85 @@ export const DeleteCase = async (
 
   const { databases } = await createAdminClient();
 
-  const handleCaseDeletion = async (documentId: string) => {
+  try {
+    const response = await databases.deleteDocuments<Case>(
+      DATABASE_ID,
+      CASES_COLLECTION_ID,
+      [
+        Query.equal("teamId", teamId),
+        Query.equal("$id", ids),
+      ]
+    )
+
     try {
-      const document = await GetCaseById(documentId);
-      if (!document) {
-        console.warn(`Case with ID ${documentId} not found.`);
-        return;
-      }
-
-      // Delete the document
-      await databases.deleteDocument(DATABASE_ID, CASES_COLLECTION_ID, documentId);
-
-      // Log the deletion
-      await LogAuditEvent({
-        userId: document.userId,
-        teamId: document.teamId,
-        action: "DELETE",
-        resource: "CASE",
-        resourceId: document.$id,
-        changes: {
-          before: document,
-          after: {},
-        },
-        timestamp: new Date().toISOString(),
-      });
+      await databases.createDocuments(
+        DATABASE_ID,
+        AUDIT_LOGS_COLLECTION_ID,
+        response.documents.map((document) => ({
+          userId: document.userId,
+          teamId: document.teamId,
+          action: "DELETE",
+          resource: "CASE",
+          resourceId: document.$id,
+          changes: JSON.stringify(
+            {
+              before: document,
+              after: {},
+            }
+          ),
+          timestamp: new Date().toISOString(),
+        }))
+      )
     } catch (error) {
-      console.error(`Failed to delete case with ID ${documentId}:`, error);
+      console.error("Couldn't Audit Log.", error)
     }
-  };
+  } catch (error) {
+    console.error("Error deleting cases:", error);
+  }
 
-  // Process all deletions in parallel
-  await Promise.allSettled(ids.map((id) => handleCaseDeletion(id)));
+  // await LogAuditEvent({
+  //   userId: "system",
+  //   teamId: teamId,
+  //   action: "DELETE",
+  //   resource: "CASE",
+  //   resourceId: 'MULTIPLE CASES',
+  //   changes: {
+  //     before: response,
+  //     after: {},
+  //   },
+  //   timestamp: new Date().toISOString(),
+  // })
+
+  // const handleCaseDeletion = async (documentId: string) => {
+  //   try {
+  //     const document = await GetCaseById(documentId);
+  //     if (!document) {
+  //       console.warn(`Case with ID ${documentId} not found.`);
+  //       return;
+  //     }
+
+  //     // Delete the document
+  //     await databases.deleteDocument(DATABASE_ID, CASES_COLLECTION_ID, documentId);
+
+  //     // Log the deletion
+  //     await LogAuditEvent({
+  //       userId: document.userId,
+  //       teamId: document.teamId,
+  //       action: "DELETE",
+  //       resource: "CASE",
+  //       resourceId: document.$id,
+  //       changes: {
+  //         before: document,
+  //         after: {},
+  //       },
+  //       timestamp: new Date().toISOString(),
+  //     });
+  //   } catch (error) {
+  //     console.error(`Failed to delete case with ID ${documentId}:`, error);
+  //   }
+  // };
+
+  // await Promise.allSettled(ids.map((id) => handleCaseDeletion(id)));
 };
 
 export const GetCases = async (): Promise<Case[]> => {

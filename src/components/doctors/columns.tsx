@@ -100,55 +100,55 @@ export const getColumns = (
     //   },
     //   size: 100,
     // },
-    {
-      accessorKey: "actions",
-      header: () => <div className="text-center">Actions</div>,
-      cell: ({ row }) => {
-        return (
-          <TooltipProvider disableHoverableContent>
-            <div className="flex items-center gap-2 justify-center">
-              {permissions.checkPermission("financials", "has") && (
-                <>
-                  <Tooltip delayDuration={100}>
-                    <PaymentDialog doctor={row.original}>
-                      <TooltipTrigger asChild>
-                        <Button
-                          size={"icon"}
-                          className="rounded-full"
-                          variant={"secondary"}
-                        >
-                          <CreditCard className="h-4 w-4" />
-                        </Button>
-                      </TooltipTrigger>
-                    </PaymentDialog>
-                    <TooltipContent side="top">Add Payment</TooltipContent>
-                  </Tooltip>
-                </>
-              )}
-              {/* {permissions.checkPermission("doctors", "update") && (
-                <Tooltip delayDuration={100}>
-                  <TooltipTrigger asChild>
-                  <Button
-                    size={"icon"}
-                    className="rounded-full"
-                    variant={"secondary"}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      row.toggleExpanded();
-                    }}
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  </TooltipTrigger>
-                  <TooltipContent side="top">Edit</TooltipContent>
-                </Tooltip>
-              )} */}
-            </div>
-          </TooltipProvider>
-        );
-      },
-      size: 75,
-      enableSorting: false,
-      enableHiding: false,
-    },
+    // {
+    //   accessorKey: "actions",
+    //   header: () => <div className="text-center">Actions</div>,
+    //   cell: ({ row }) => {
+    //     return (
+    //       <TooltipProvider disableHoverableContent>
+    //         <div className="flex items-center gap-2 justify-center">
+    //           {permissions.checkPermission("financials", "has") && (
+    //             <>
+    //               <Tooltip delayDuration={100}>
+    //                 <PaymentDialog doctor={row.original}>
+    //                   <TooltipTrigger asChild>
+    //                     <Button
+    //                       size={"icon"}
+    //                       className="rounded-full"
+    //                       variant={"secondary"}
+    //                     >
+    //                       <CreditCard className="h-4 w-4" />
+    //                     </Button>
+    //                   </TooltipTrigger>
+    //                 </PaymentDialog>
+    //                 <TooltipContent side="top">Add Payment</TooltipContent>
+    //               </Tooltip>
+    //             </>
+    //           )}
+    //           {permissions.checkPermission("doctors", "update") && (
+    //             <Tooltip delayDuration={100}>
+    //               <TooltipTrigger asChild>
+    //               <Button
+    //                 size={"icon"}
+    //                 className="rounded-full"
+    //                 variant={"secondary"}
+    //                 onClick={(e) => {
+    //                   e.stopPropagation();
+    //                   // row.toggleExpanded();
+    //                 }}
+    //               >
+    //                 <Edit className="h-4 w-4" />
+    //               </Button>
+    //               </TooltipTrigger>
+    //               <TooltipContent side="top">Edit</TooltipContent>
+    //             </Tooltip>
+    //           )}
+    //         </div>
+    //       </TooltipProvider>
+    //     );
+    //   },
+    //   size: 75,
+    //   enableSorting: false,
+    //   enableHiding: false,
+    // },
   ];
