@@ -89,7 +89,7 @@ export function Menu({ isOpen }: MenuProps) {
                 active={isActive("cases")}
                 onClick={() => navigate("/dashboard/cases")}
               />
-              {permission.checkPermission("doctors", "create") && (
+              {/* {permission.checkPermission("doctors", "create") && (
                 <NavItem
                   icon={Users}
                   label="Doctors"
@@ -104,7 +104,7 @@ export function Menu({ isOpen }: MenuProps) {
                   active={isActive("materials")}
                   onClick={() => navigate("/dashboard/materials")}
                 />
-              )}
+              )} */}
 
               {/* <Separator className="my-3" /> */}
 
