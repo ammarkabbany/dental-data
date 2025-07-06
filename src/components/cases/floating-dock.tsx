@@ -14,6 +14,7 @@ import { Download, Trash2, X } from "lucide-react";
 import { usePermission } from "@/hooks/use-permissions";
 import useTeamStore from "@/store/team-store";
 import { useModalStore } from "@/store/modal-store";
+import { Badge } from "../ui/badge";
 
 interface FloatingDockProps {
   selectedCases: number;
@@ -43,9 +44,12 @@ export function FloatingDock({
           data-floating-dock="true"
         >
           <div className="flex items-center gap-2 bg-sidebar border rounded-xl shadow-lg px-4 py-3 relative backdrop-blur-sm">
-            <div className="absolute w-max -top-5 left-1/2 transform -translate-x-1/2 bg-sidebar-accent text-primary-foreground text-xs p-2 rounded-full">
+            {/* <div className="bg-sidebar-accent text-primary-foreground text-xs p-2 rounded-full">
               {selectedCases} selected
-            </div>
+            </div> */}
+            <Badge variant={"destructive"} className="rounded-sm absolute w-max -top-3.5 py-0.5 px-1 left-1/2 transform -translate-x-1/2">
+              {selectedCases} selected
+            </Badge>
 
             <TooltipProvider delayDuration={100}>
               <div className="flex items-center gap-2">

@@ -175,6 +175,12 @@ export const DeleteCase = async (
       ]
     )
 
+    const permissions: string[] = [];
+    if (teamId) {
+      permissions.push(Permission.read(Role.team(teamId, "owner")));
+      permissions.push(Permission.read(Role.team(teamId, "admin")));
+    }
+
     try {
       await databases.createDocuments(
         DATABASE_ID,
@@ -192,6 +198,7 @@ export const DeleteCase = async (
             }
           ),
           timestamp: new Date().toISOString(),
+          $permissions: permissions,
         }))
       )
     } catch (error) {

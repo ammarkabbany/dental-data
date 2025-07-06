@@ -58,7 +58,7 @@ export default function DashboardPage() {
       //   value: data?.caseDifference ? (data.caseDifference).toFixed(0).concat('%') : "0",
       //   trend: data?.caseDifference ? data.caseDifference > 1 ? "up" : "down" : "up",
       // },
-      href: "/dashboard/cases",
+      // href: "/dashboard/cases",
       icon: <FileTextIcon className="size-6" />,
     },
     {
@@ -68,7 +68,7 @@ export default function DashboardPage() {
       //   value: "+42%",
       //   trend: "up",
       // },
-      href: "/dashboard/doctors",
+      // href: "/dashboard/doctors",
       icon: <HugeiconsIcon icon={Doctor02Icon} />,
     },
     {
@@ -78,7 +78,7 @@ export default function DashboardPage() {
       //   value: "0%",
       //   trend: "down",
       // },
-      href: "/dashboard/materials",
+      // href: "/dashboard/materials",
       icon: <CubeIcon className="size-6" />,
     },
     // {
