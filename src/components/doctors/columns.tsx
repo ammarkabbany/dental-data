@@ -1,7 +1,7 @@
 import { type ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Doctor } from "@/types";
-import { formatCurrency, formatNumbers } from "@/lib/format-utils";
+import { formatCurrency, formatNumbers, shortenString } from "@/lib/format-utils";
 import { Edit, ChevronDown, ChevronRight, CreditCard, DollarSign, AlertTriangle } from "lucide-react";
 import { Button } from "../ui/button";
 import { PermissionCheckType } from "@/hooks/use-permissions";
@@ -23,14 +23,14 @@ export const getColumns = (
       accessorKey: "$id",
       header: "ID",
       cell: ({ row }) => {
-        const id = Number(row.id) + 1;
-        let idString = String(id);
-        while (idString.length < 4) {
-          idString = "0" + idString;
-        }
-        return <div className="capitalize">DR-{idString}</div>;
+        // const id = Number(row.id) + 1;
+        // let idString = String(id);
+        // while (idString.length < 4) {
+        //   idString = "0" + idString;
+        // }
+        return <div className="capitalize">{row.original.$id}</div>;
       },
-      size: 100,
+      size: 160,
     },
     {
       accessorKey: "doctor",
@@ -47,7 +47,7 @@ export const getColumns = (
         const createdAt = new Date(row.original.$createdAt);
         const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
         const isRecent = createdAt >= fiveMinutesAgo;
-        const doctor: string = row.original.name
+        const doctor: string = shortenString(row.original.name, 20)
         return (
           <div className="capitalize flex items-center gap-2 text-ellipsis truncate">
             {doctor}
@@ -59,47 +59,47 @@ export const getColumns = (
           </div>
         );
       },
-      size: 180,
+      size: 200,
     },
-    // {
-    //   accessorKey: "totalCases",
-    //   header: "Cases",
-    //   cell: ({ row }) => {
-    //     const cases = parseInt(row.getValue("totalCases"));
+    {
+      accessorKey: "totalCases",
+      header: "Cases",
+      cell: ({ row }) => {
+        const cases = parseInt(row.getValue("totalCases"));
 
-    //     const formatted = formatNumbers(cases);
+        const formatted = formatNumbers(cases);
 
-    //     return (
-    //       <Badge variant={"info"} className="text-center">
-    //         {formatted}
-    //       </Badge>
-    //     );
-    //   },
-    //   size: 75,
-    // },
-    // {
-    //   accessorKey: "due",
-    //   header: "Due",
-    //   cell: ({ row }) => {
-    //     // You would get this from your data source
-    //     const dueAmount = row.original.due || 0;
-    //     const formatted = formatCurrency(dueAmount, prefs.currency, 0);
+        return (
+          <Badge variant={"info"} className="text-center">
+            {formatted}
+          </Badge>
+        );
+      },
+      size: 75,
+    },
+    {
+      accessorKey: "due",
+      header: "Due",
+      cell: ({ row }) => {
+        // You would get this from your data source
+        const dueAmount = row.original.due || 0;
+        const formatted = formatCurrency(dueAmount, prefs.currency, 0);
         
-    //     return (
-    //       <div className="">
-    //         <Badge 
-    //           variant={dueAmount > 0 ? "destructive" : "outline"}
-    //           className={cn(
-    //             dueAmount === 0 && "bg-gray-50 text-gray-500 border-gray-200"
-    //           )}
-    //         >
-    //           {formatted}
-    //         </Badge>
-    //       </div>
-    //     );
-    //   },
-    //   size: 100,
-    // },
+        return (
+          <div className="">
+            <Badge 
+              variant={dueAmount > 0 ? "default" : "outline"}
+              className={cn(
+                dueAmount === 0 && "bg-gray-50 text-gray-500 border-gray-200"
+              )}
+            >
+              {formatted}
+            </Badge>
+          </div>
+        );
+      },
+      size: 100,
+    },
     // {
     //   accessorKey: "actions",
     //   header: () => <div className="text-center">Actions</div>,

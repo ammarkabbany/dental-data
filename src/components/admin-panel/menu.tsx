@@ -89,7 +89,7 @@ export function Menu({ isOpen }: MenuProps) {
                 active={isActive("cases")}
                 onClick={() => navigate("/dashboard/cases")}
               />
-              {/* {permission.checkPermission("doctors", "create") && (
+              {permission.checkPermission("doctors", "read") && (
                 <NavItem
                   icon={Users}
                   label="Doctors"
@@ -97,7 +97,7 @@ export function Menu({ isOpen }: MenuProps) {
                   onClick={() => navigate("/dashboard/doctors")}
                 />
               )}
-              {permission.checkPermission("materials", "create") && (
+              {/* {permission.checkPermission("materials", "create") && (
                 <NavItem
                   icon={CubeIcon}
                   label="Materials"
