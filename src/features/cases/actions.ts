@@ -4,9 +4,14 @@ import {
   createAdminClient,
   createSessionClient,
 } from "@/lib/appwrite/appwrite";
-import { AUDIT_LOGS_COLLECTION_ID, CASES_COLLECTION_ID, DATABASE_ID } from "@/lib/constants";
+import {
+  AUDIT_LOGS_COLLECTION_ID,
+  CASES_COLLECTION_ID,
+  DATABASE_ID,
+  DOCTORS_FUNCTION_ID,
+} from "@/lib/constants";
 import { Case } from "@/types";
-import { AppwriteException, ID, Permission, Query, Role } from "node-appwrite";
+import { AppwriteException, ExecutionMethod, ID, Permission, Query, Role } from "node-appwrite";
 import { getTeamById, updateTeam } from "../team/teamService";
 import { LogAuditEvent } from "../logs/actions";
 import { isBefore } from "date-fns";
@@ -29,13 +34,14 @@ export const CreateCase = async (
   if (isBefore(new Date(team?.planExpiresAt || 0), new Date())) {
     return {
       success: false,
-      message: 'Your plan expired. Renew to add new cases.',
+      message: "Your plan expired. Renew to add new cases.",
     };
   }
   if (team.casesUsed >= team.maxCases) {
     return {
       success: false,
-      message: "Case limit reached! Please upgrade your plan to add more cases.",
+      message:
+        "Case limit reached! Please upgrade your plan to add more cases.",
     };
   }
 
@@ -64,7 +70,7 @@ export const CreateCase = async (
         casesUsed: Math.max(0, (team.casesUsed || 0) + 1),
       });
     }
-  
+
     await LogAuditEvent({
       userId: document.userId,
       teamId: document.teamId,
@@ -118,6 +124,21 @@ export const UpdateCase = async (
     }
   );
 
+  if (updatedDocument.due !== oldCase.due) {
+    await functions.createExecution(
+      DOCTORS_FUNCTION_ID,
+      JSON.stringify({
+        caseId: updatedDocument.$id,
+        doctorId: updatedDocument.doctorId,
+        oldDue: oldCase.due || 0,
+        newDue: updatedDocument.due || 0,
+      }),
+      true,
+      "/update",
+      ExecutionMethod.POST
+    );
+  }
+
   // update doctor
   // const doctorId = updatedDocument.doctorId;
   // const newDue = updatedDocument.due || 0;
@@ -163,17 +184,28 @@ export const DeleteCase = async (
     throw new Error("Invalid input: 'teamId' is required.");
   }
 
-  const { databases } = await createAdminClient();
+  const { databases, functions } = await createAdminClient();
+
 
   try {
     const response = await databases.deleteDocuments<Case>(
       DATABASE_ID,
       CASES_COLLECTION_ID,
-      [
-        Query.equal("teamId", teamId),
-        Query.equal("$id", ids),
-      ]
-    )
+      [Query.equal("teamId", teamId), Query.equal("$id", ids)]
+    );
+    await functions.createExecution(
+      DOCTORS_FUNCTION_ID,
+      JSON.stringify({
+        changes: response.documents.map(c=> ({
+          caseId: c.$id,
+          doctorId: c.doctorId,
+          amount: c.due || 0,
+        }))
+      }),
+      true,
+      "/delete",
+      ExecutionMethod.POST
+    );
 
     const permissions: string[] = [];
     if (teamId) {
@@ -191,18 +223,16 @@ export const DeleteCase = async (
           action: "DELETE",
           resource: "CASE",
           resourceId: document.$id,
-          changes: JSON.stringify(
-            {
-              before: document,
-              after: {},
-            }
-          ),
+          changes: JSON.stringify({
+            before: document,
+            after: {},
+          }),
           timestamp: new Date().toISOString(),
           $permissions: permissions,
         }))
-      )
+      );
     } catch (error) {
-      console.error("Couldn't Audit Log.", error)
+      console.error("Couldn't Audit Log.", error);
     }
   } catch (error) {
     console.error("Error deleting cases:", error);
