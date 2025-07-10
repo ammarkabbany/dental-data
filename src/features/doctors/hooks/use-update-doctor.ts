@@ -18,8 +18,8 @@ export const useUpdateDoctor = () => {
       queryClient.invalidateQueries({queryKey: ['doctors']})
       toastAPI.success('Doctor updated')
     },
-    // onError: (error) => {
-    //   toastAPI.error(error.message)
-    // },
+    onError: (error) => {
+      toastAPI.error(error.message || "An unknown error occurred")
+    },
   })
 }
