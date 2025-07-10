@@ -19,7 +19,6 @@ import { Models } from "appwrite";
 // import { useUpdateDoctor } from "@/features/doctors/hooks/use-update-doctor"; // No longer needed here
 // import { toastAPI } from "@/lib/ToastAPI"; // No longer needed here
 import { EditableDoctorNameCell } from "./EditableDoctorNameCell";
-import { cn } from "@/lib/utils";
 
 export const getColumns = (
   permissions: PermissionCheckType,

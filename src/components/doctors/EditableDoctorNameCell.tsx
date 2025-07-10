@@ -120,9 +120,11 @@ export const EditableDoctorNameCell: React.FC<EditableDoctorNameCellProps> = ({
       {permissions.checkPermission("doctors", "update") && (
         <Button
           size="icon"
+          size="icon"
           variant="ghost"
           onClick={handleEdit}
-          className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
+          // Always visible on small screens, hover effect on medium screens and up
+          className="h-7 w-7 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
         >
           <Edit className="h-4 w-4" />
         </Button>
