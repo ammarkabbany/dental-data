@@ -1,8 +1,9 @@
+import * as React from "react";
 import { type ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Doctor } from "@/types";
 import { formatCurrency, formatNumbers, shortenString } from "@/lib/format-utils";
-import { Edit, ChevronDown, ChevronRight, CreditCard, DollarSign, AlertTriangle } from "lucide-react";
+import { Edit, ChevronDown, ChevronRight, CreditCard, DollarSign, AlertTriangle, Save, X, Loader2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { PermissionCheckType } from "@/hooks/use-permissions";
 import {
@@ -13,11 +14,18 @@ import {
 } from "../ui/tooltip";
 import { PaymentDialog } from "./payment-dialog";
 import { Models } from "appwrite";
+// import { cn } from "@/lib/utils"; // No longer needed here
+// import { Input } from "@/components/ui/input"; // No longer needed here
+// import { useUpdateDoctor } from "@/features/doctors/hooks/use-update-doctor"; // No longer needed here
+// import { toastAPI } from "@/lib/ToastAPI"; // No longer needed here
+import { EditableDoctorNameCell } from "./EditableDoctorNameCell";
 import { cn } from "@/lib/utils";
 
 export const getColumns = (
   permissions: PermissionCheckType,
-  prefs: Models.Preferences
+  prefs: Models.Preferences,
+  editingRowId: string | null,
+  setEditingRowId: (id: string | null) => void,
 ): ColumnDef<Doctor>[] => [
     {
       accessorKey: "$id",
@@ -35,31 +43,18 @@ export const getColumns = (
     {
       accessorKey: "doctor",
       header: "Doctor",
-      // accessorFn: (row) => {
-      //   const doctor = row;
-      //   const doctorName = doctor?.name || "Unknown";
-      //   return doctorName.length > 25
-      //     ? doctorName.substring(0, 25) + "..."
-      //     : doctorName;
-      // },
       cell: ({ row }) => {
-        const now = new Date();
-        const createdAt = new Date(row.original.$createdAt);
-        const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
-        const isRecent = createdAt >= fiveMinutesAgo;
-        const doctor: string = shortenString(row.original.name, 20)
+        const doctor = row.original;
         return (
-          <div className="capitalize flex items-center gap-2 text-ellipsis truncate">
-            {doctor}
-            {isRecent && (
-              <Badge className="ml-1" variant="info">
-                New
-              </Badge>
-            )}
-          </div>
+          <EditableDoctorNameCell
+            doctor={doctor}
+            isEditing={editingRowId === doctor.$id}
+            setEditingRowId={setEditingRowId}
+            permissions={permissions}
+          />
         );
       },
-      size: 200,
+      size: 280, // Keep increased size for the component
     },
     {
       accessorKey: "totalCases",
