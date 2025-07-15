@@ -37,3 +37,34 @@ export const getYearlyPrice = (monthlyPrice: number, discount = 0.20) => {
   const fullYear = monthlyPrice * 12;
   return (fullYear * (1 - discount)).toFixed(2);
 };
+
+export function formatDuration(durationInSeconds: number) {
+  if (typeof durationInSeconds !== 'number' || isNaN(durationInSeconds)) {
+    return 'N/A'; // Or throw an error, depending on your error handling
+  }
+
+  // Convert to milliseconds first for precision
+  const durationInMs = durationInSeconds * 1000;
+
+  if (durationInMs < 1000) {
+    // Less than 1 second, display in milliseconds
+    return `${Math.round(durationInMs)}ms`;
+  } else if (durationInMs < 60 * 1000) {
+    // Less than 1 minute, display in seconds
+    // Round to one decimal place if needed, or just to nearest second
+    return `${(durationInMs / 1000).toFixed(1)}s`;
+  } else if (durationInMs < 60 * 60 * 1000) {
+    // Less than 1 hour, display in minutes and seconds
+    const minutes = Math.floor(durationInMs / (60 * 1000));
+    const remainingSeconds = Math.round((durationInMs % (60 * 1000)) / 1000);
+    return `${minutes}m ${remainingSeconds}s`;
+  } else {
+    // 1 hour or more, display in hours, minutes, and seconds
+    const hours = Math.floor(durationInMs / (60 * 60 * 1000));
+    const minutes = Math.floor(
+      (durationInMs % (60 * 60 * 1000)) / (60 * 1000)
+    );
+    const remainingSeconds = Math.round((durationInMs % (60 * 1000)) / 1000);
+    return `${hours}h ${minutes}m ${remainingSeconds}s`;
+  }
+}

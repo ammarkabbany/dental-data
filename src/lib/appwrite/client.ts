@@ -3,6 +3,7 @@ import { Account, Client, Databases, Avatars, Teams, Storage, Functions } from "
 const client = new Client()
     .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)
     .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID!)
+    .setDevKey(process.env.NEXT_PUBLIC_APPWRITE_DEV_KEY || "")
 
 const account = new Account(client)
 const databases = new Databases(client)

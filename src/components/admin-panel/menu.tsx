@@ -10,6 +10,7 @@ import {
   ShieldUser,
   Logs,
   ClipboardListIcon,
+  Monitor,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -123,6 +124,14 @@ export function Menu({ isOpen }: MenuProps) {
                 active={isActive("logs")}
                 onClick={() => navigate("/dashboard/logs")}
               />
+              {isAdmin && (
+                <NavItem
+                  icon={Monitor}
+                  label="Monitor"
+                  active={isActive("monitor")}
+                  onClick={() => navigate("/monitor")}
+                />
+              )}
 
               {permission.canViewDue() && (
                 <>
