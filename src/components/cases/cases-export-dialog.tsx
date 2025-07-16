@@ -20,13 +20,14 @@ import {
   ResponsiveModal,
   ResponsiveModalWithTrigger,
 } from "../responsive-modal";
+import { Input } from "../ui/input";
 
 interface CasesExportOptions {
   exportOptions: {
-    [key: string]: boolean;
+    [key: string]: boolean | number;
   };
   setExportOptions: React.Dispatch<
-    React.SetStateAction<{ [key: string]: boolean }>
+    React.SetStateAction<{ [key: string]: boolean | number }>
   >;
 }
 
@@ -87,11 +88,11 @@ export function CasesExportDialog({
                 </Label>
                 <Switch
                   id="show_client_switch"
-                  checked={exportOptions["showClient"]}
-                  onCheckedChange={() =>
+                  checked={!!exportOptions["showClient"]}
+                  onCheckedChange={value =>
                     setExportOptions({
                       ...exportOptions,
-                      showClient: !exportOptions["showClient"],
+                      showClient: value,
                     })
                   }
                 />
@@ -102,15 +103,33 @@ export function CasesExportDialog({
                 </Label>
                 <Switch
                   id="show_shade_switch"
-                  checked={exportOptions["showShade"]}
-                  onCheckedChange={() =>
+                  checked={!!exportOptions["showShade"]}
+                  onCheckedChange={value =>
                     setExportOptions({
                       ...exportOptions,
-                      showShade: !exportOptions["showShade"],
+                      showShade: value,
                     })
                   }
                 />
               </div>
+            </div>
+            {/* Deduct Amount Input */}
+            <div className="flex flex-col gap-2 col-span-full mt-4">
+              <Label htmlFor="deduct_amount_input" className="text-left">
+                Deduct Amount
+              </Label>
+              <Input
+                id="deduct_amount_input"
+                type="number"
+                min="0"
+                step="0.01"
+                value={String(exportOptions["deductAmount"] ?? 0)}
+                onChange={e => setExportOptions({
+                  ...exportOptions,
+                  deductAmount: Number(e.target.value)
+                })}
+                className="px-2 py-1 w-32"
+              />
             </div>
           </div>
           <DialogFooter className="mt-4">
