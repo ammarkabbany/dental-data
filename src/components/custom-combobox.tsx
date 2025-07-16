@@ -85,7 +85,7 @@ export function CustomComboBox({
           </Button>
         )}
       </PopoverTrigger>
-      <PopoverContent className="w-[250px] p-0 z-[9999]">
+      <PopoverContent className="w-[250px] p-1 z-[9999]">
         <Command>
           <CommandInput placeholder={`Search a ${label}...`} className={`h-9`} />
           <CommandList className="z-[9999]">

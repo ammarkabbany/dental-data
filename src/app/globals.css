@@ -291,6 +291,14 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  input[type='number']::-webkit-outer-spin-button,
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number'] {
+    -webkit-appearance: none;
+    margin: 0;
+    -moz-appearance: textfield !important;
+  }
 }
 
 /* [data-scroll-locked][data-scroll-locked] {
@@ -371,3 +379,10 @@
   pointer-events: none;
   z-index: 1;
 } */
+
+@media print {
+  .print-page-break {
+    break-before: page;
+    page-break-before: always;
+  }
+}

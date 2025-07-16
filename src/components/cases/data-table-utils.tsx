@@ -34,10 +34,11 @@ import { SearchInput } from "../search-input";
 
 export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
   const [exportOptions, setExportOptions] = React.useState<{
-    [key: string]: boolean;
+    [key: string]: any;
   }>({
     showClient: true,
     showShade: true,
+    deductAmount: 0,
   });
 
   const { pageIndex, pageSize } = table.getState().pagination;

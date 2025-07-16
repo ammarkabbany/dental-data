@@ -9,6 +9,10 @@ export const useGetAdminExecutions = () => {
       return executions;
     },
     retry: false,
-    staleTime: 1000 * 60 * 5,
+    refetchInterval: 5000,
+    refetchIntervalInBackground: true,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
+    refetchOnWindowFocus: true,
   });
 };
