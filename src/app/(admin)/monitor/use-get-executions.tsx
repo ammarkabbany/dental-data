@@ -10,9 +10,8 @@ export const useGetAdminExecutions = () => {
     },
     retry: false,
     refetchInterval: 5000,
-    refetchIntervalInBackground: true,
-    refetchOnMount: true,
-    refetchOnReconnect: true,
-    refetchOnWindowFocus: true,
+    refetchOnMount: "always",
+    refetchOnReconnect: "always",
+    refetchOnWindowFocus: "always",
   });
 };

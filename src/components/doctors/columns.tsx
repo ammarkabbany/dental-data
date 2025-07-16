@@ -31,12 +31,12 @@ export const getColumns = (
       accessorKey: "$id",
       header: "ID",
       cell: ({ row }) => {
-        // const id = Number(row.id) + 1;
-        // let idString = String(id);
-        // while (idString.length < 4) {
-        //   idString = "0" + idString;
-        // }
-        return <div className="capitalize">{row.original.$id}</div>;
+        const id = Number(row.original.$sequence);
+        let idString = String(id);
+        while (idString.length < 4) {
+          idString = "0" + idString;
+        }
+        return <div className="capitalize">DOC-{idString}</div>;
       },
       size: 160,
     },
@@ -86,7 +86,7 @@ export const getColumns = (
               variant={dueAmount > 0 ? "default" : "outline"}
               className={cn(
                 dueAmount === 0 && "bg-gray-50 text-gray-500 border-gray-200"
-              )}
+              , "rounded-sm")}
             >
               {formatted}
             </Badge>

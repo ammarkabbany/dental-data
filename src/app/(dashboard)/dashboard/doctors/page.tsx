@@ -10,10 +10,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { motion, AnimatePresence } from "framer-motion";
 import useTeamStore from "@/store/team-store";
 import { useDoctorsStore } from "@/store/doctors-store";
-import { useOnboardingStore } from '@/store/onboarding-store'; // Import onboarding store
-
-export const runtime = 'edge'
-export const dynamic = 'force-dynamic'
+import { useOnboardingStore } from '@/store/onboarding-store';
 
 export default function DoctorsPage() {
   const { openModal } = useModalStore();

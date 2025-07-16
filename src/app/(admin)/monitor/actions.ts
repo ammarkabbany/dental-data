@@ -7,5 +7,8 @@ export const listAllExecutions = async () => {
   const allExecs = await Promise.all(functionList.functions.map(async (fn) => {
     return (await functions.listExecutions(fn.$id)).executions;
   }));
-  return allExecs.flat();
+  return allExecs.flat().map(ex => ({
+    ...ex,
+    functionName: functionList.functions.find(f => f.$id === ex.functionId)?.name
+  }));
 }

@@ -146,7 +146,7 @@ const PrintableTable = React.forwardRef<HTMLDivElement, PrintableTableProps>(
               </Table>
               {/* Optionally, show totals only on the last page */}
               {idx === caseChunks.length - 1 && (
-                <div className="flex flex-row gap-2">
+                <div className="flex flex-row justify-end">
                   <div className="flex gap-2 items-center justify-end text-gray-800">
                     <div className="text-right font-bold min-w-24">Total Units</div>
                     <div className="font-bold">

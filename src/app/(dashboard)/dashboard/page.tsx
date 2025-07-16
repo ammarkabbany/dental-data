@@ -275,7 +275,7 @@ export default function DashboardPage() {
                     key={card.title}
                     coachmarkId="dashboardMaterials"
                     title="Organize Lab Materials"
-                    description="Keep track of your dental materials and supplies."
+                    description="Manage the materials used for cases."
                     position="bottom"
                   >
                     {cardElement}
