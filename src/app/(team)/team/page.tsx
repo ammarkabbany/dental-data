@@ -139,7 +139,7 @@ export default function TeamPage() {
                       ? `${remainingCases} cases remaining`
                       : "Limit reached"}
                   </p>
-                  {remainingCases <= 0 && canUpdate && (
+                  {/* {remainingCases <= 0 && canUpdate && (
                     <Button
                       variant="link"
                       size="sm"
@@ -148,7 +148,7 @@ export default function TeamPage() {
                     >
                       <Link href="/team/billing">Upgrade</Link>
                     </Button>
-                  )}
+                  )} */}
                 </div>
               </CardContent>
             </Card>
@@ -171,11 +171,11 @@ export default function TeamPage() {
                     ? "Upgrade for more features"
                     : "Premium"}
                 </p>
-                {canUpdate && (
+                {/* {canUpdate && (
                   <Button variant="link" size="sm" className="mt-2 p-0 h-auto text-primary" asChild>
                     <Link href="/team/billing">Upgrade now</Link>
                   </Button>
-                )}
+                )} */}
               </CardContent>
             </Card>
           </motion.div>

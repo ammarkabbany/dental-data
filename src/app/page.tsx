@@ -450,12 +450,12 @@ export default function Homepage() {
                           key={`monthly-${index}`}
                           initial={{ opacity: 0, y: 20 }}
                           whileInView={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.5, delay: index * 0.1, ease: [0.25, 1, 0.5, 1] }}
+                          transition={{ duration: 0.2, delay: index * 0.1, ease: [0.25, 1, 0.5, 1] }}
                           viewport={{ once: true }}
                           whileHover={{ y: plan.popular ? 0 : -5, scale: plan.popular ? 1.0 : 1.02 }}
                           className={`h-full ${plan.popular ? "ring-2 ring-primary dark:ring-primary shadow-primary/20" : "ring-1 ring-border"} rounded-xl transition-all duration-300`}
                         >
-                          <Card className={`flex flex-col h-full relative overflow-hidden p-6 rounded-xl transition-all duration-300 ease-in-out
+                          <Card className={`flex flex-col h-full relative overflow-hidden p-4 rounded-xl transition-all duration-300 ease-in-out
                             ${plan.popular
                               ? "bg-primary/5 dark:bg-primary/10 shadow-2xl dark:shadow-primary/30"
                               : "bg-muted/20 dark:bg-neutral-800/40 hover:shadow-lg dark:hover:shadow-neutral-700/50"}`
@@ -468,7 +468,7 @@ export default function Homepage() {
                             <CardHeader> {/* Removed pt-8 */}
                               <CardTitle className="text-2xl font-semibold text-foreground dark:text-gray-100 mb-1">{plan.name}</CardTitle>
                               <div className="flex items-baseline gap-1.5 mb-3">
-                                <span className="text-4xl font-extrabold text-foreground dark:text-gray-50">{formatCurrency(plan.price, 'EGP', 0)}</span>
+                                <span className="text-4xl font-extrabold text-foreground dark:text-gray-50">{formatCurrency(plan.price, 'USD', 0)}</span>
                                 <span className="text-muted-foreground dark:text-gray-400">/month</span>
                               </div>
                               <CardDescription className="text-sm text-muted-foreground dark:text-gray-400 min-h-[40px]">{plan.desc}</CardDescription>
@@ -505,7 +505,7 @@ export default function Homepage() {
                           whileHover={{ y: plan.popular ? 0 : -5, scale: plan.popular ? 1.0 : 1.02 }}
                           className={`h-full ${plan.popular ? "ring-2 ring-primary dark:ring-primary shadow-primary/20" : "ring-1 ring-border"} rounded-xl transition-all duration-300`}
                         >
-                           <Card className={`flex flex-col h-full relative overflow-hidden p-6 rounded-xl transition-all duration-300 ease-in-out
+                           <Card className={`flex flex-col h-full relative overflow-hidden p-4 rounded-xl transition-all duration-300 ease-in-out
                             ${plan.popular
                               ? "bg-primary/5 dark:bg-primary/10 shadow-2xl dark:shadow-primary/30"
                               : "bg-muted/20 dark:bg-neutral-800/40 hover:shadow-lg dark:hover:shadow-neutral-700/50"}`
@@ -518,7 +518,7 @@ export default function Homepage() {
                             <CardHeader> {/* Removed pt-8 */}
                               <CardTitle className="text-2xl font-semibold text-foreground dark:text-gray-100 mb-1">{plan.name}</CardTitle>
                               <div className="flex items-baseline gap-1.5 mb-3">
-                                <span className="text-4xl font-extrabold text-foreground dark:text-gray-50">{formatCurrency(getYearlyPrice(plan.price, 0.25), 'EGP', 0)}</span>
+                                <span className="text-4xl font-extrabold text-foreground dark:text-gray-50">{formatCurrency(getYearlyPrice(plan.price, 0.25), 'USD', 0)}</span>
                                 <span className="text-muted-foreground dark:text-gray-400">/year</span>
                               </div>
                               <CardDescription className="text-sm text-muted-foreground dark:text-gray-400 min-h-[40px]">{plan.desc}</CardDescription>

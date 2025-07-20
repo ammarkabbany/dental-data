@@ -43,7 +43,7 @@ export const Plans = [
   {
     name: "Starter",
     desc: "Great for small to medium labs.",
-    price: 750,
+    price: 14.99,
     features: [
       { text: "Up to 200 cases per month", icon: Database },
       { text: "Up to 3 team members", icon: Users },
@@ -55,7 +55,7 @@ export const Plans = [
   {
     name: "Pro",
     desc: "Perfect for growing labs.",
-    price: 1500,
+    price: 29.99,
     features: [
       { text: "Up to 500 cases per month", icon: Database },
       { text: "Up to 5 team members", icon: Users },

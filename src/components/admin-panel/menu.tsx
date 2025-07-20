@@ -73,7 +73,7 @@ export function Menu({ isOpen }: MenuProps) {
                   onClick={() => navigate("/admin")}
                 />
               )}
-              <NavItem 
+              <NavItem
                 isNew
                 icon={BarChart3}
                 label="Analytics"
@@ -118,19 +118,21 @@ export function Menu({ isOpen }: MenuProps) {
                 active={isActive("templates")}
                 onClick={() => navigate("/dashboard/templates")}
               />
-              <NavItem
-                icon={ClipboardListIcon}
-                label="Logs"
-                active={isActive("logs")}
-                onClick={() => navigate("/dashboard/logs")}
-              />
               {isAdmin && (
-                <NavItem
-                  icon={Monitor}
-                  label="Monitor"
-                  active={isActive("monitor")}
-                  onClick={() => navigate("/monitor")}
-                />
+                <>
+                  <NavItem
+                    icon={ClipboardListIcon}
+                    label="Logs"
+                    active={isActive("logs")}
+                    onClick={() => navigate("/dashboard/logs")}
+                  />
+                  <NavItem
+                    icon={Monitor}
+                    label="Monitor"
+                    active={isActive("monitor")}
+                    onClick={() => navigate("/monitor")}
+                  />
+                </>
               )}
 
               {permission.canViewDue() && (
@@ -217,16 +219,14 @@ function NavItem({
         >
           Coming Soon
         </Badge>
-      ) : 
-      isNew ? (
+      ) : isNew ? (
         <Badge
           variant="default"
           className="ml-auto text-[10px] px-1.5 py-0.5 rounded-sm"
         >
           New
         </Badge>
-      ) :
-      (
+      ) : (
         badge &&
         (disabled ? (
           <Badge

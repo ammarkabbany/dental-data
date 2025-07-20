@@ -35,7 +35,7 @@ export const shortenString = (name?: string, length: number = 15) => {
 
 export const getYearlyPrice = (monthlyPrice: number, discount = 0.20) => {
   const fullYear = monthlyPrice * 12;
-  return (fullYear * (1 - discount)).toFixed(2);
+  return Math.round((fullYear * (1 - discount)))
 };
 
 export function formatDuration(durationInSeconds: number) {
