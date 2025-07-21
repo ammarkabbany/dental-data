@@ -42,6 +42,7 @@ export const getColumns = (
     },
     {
       accessorKey: "doctor",
+      accessorFn: (row) => row.name,
       header: "Doctor",
       cell: ({ row }) => {
         const doctor = row.original;
@@ -64,11 +65,10 @@ export const getColumns = (
 
         const formatted = formatNumbers(cases);
 
-        return (
-          <Badge variant={"info"} className="text-center">
-            {formatted}
-          </Badge>
-        );
+        return <p className="font-bold text-sm text-foreground">{formatted}</p>
+          // <Badge variant={"info"} className="text-center">
+          // </Badge>
+        
       },
       size: 75,
     },

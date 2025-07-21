@@ -141,9 +141,9 @@ export function DoctorsDataTable({ data = [] }: DataTableProps) {
           className=""
           placeholder="Search doctors..."
           type="text"
-          value={table.getState().globalFilter || ""}
-          onChange={(event) => {table.setGlobalFilter(event.target.value)}}
-          onClear={() => {table.setGlobalFilter(undefined)}}
+          value={table.getColumn('doctor')?.getFilterValue() as string || ""}
+          onChange={(event) => {table.getColumn('doctor')?.setFilterValue(event.target.value)}}
+          onClear={() => {table.getColumn('doctor')?.setFilterValue(undefined)}}
         />
       </div>
       <div className="space-y-4">

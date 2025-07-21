@@ -1,12 +1,45 @@
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
 import { Drawer, DrawerContent, DrawerTitle } from "./ui/drawer";
+import { Sheet, SheetContent, SheetTitle } from "./ui/sheet";
 
 interface ResponsiveModalProps {
   children: React.ReactNode;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   className?: string;
+}
+
+export const ResponsiveSheet = ({
+  children,
+  open,
+  onOpenChange,
+  className,
+}: ResponsiveModalProps) => {
+  const isMobile = useIsMobile();
+
+  if (!isMobile) {
+    return (
+      <Sheet open={open} onOpenChange={onOpenChange}>
+        <SheetTitle></SheetTitle>
+        <SheetContent
+          className={`w-full sm:max-w-lg ${className} p-0 border-none overflow-y-auto no-scrollbar`}
+        >
+          {children}
+        </SheetContent>
+      </Sheet>
+    );
+  }
+
+  return (
+    <Drawer open={open} onOpenChange={onOpenChange}>
+      <DrawerContent>
+        <div className="overflow-y-auto no-scrollbar max-h-[85vh]">
+          {children}
+        </div>
+      </DrawerContent>
+    </Drawer>
+  );
 }
 
 export const ResponsiveModal = ({
