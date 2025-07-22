@@ -8,5 +8,8 @@ export const useGetTemplateById = (id: string) => {
       const template = await GetTemplateById(id);
       return template;
     },
+    staleTime: 0,
+    gcTime: 0,
+    retry: false,
   })
 }

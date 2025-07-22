@@ -85,7 +85,7 @@ export function CustomComboBox({
           </Button>
         )}
       </PopoverTrigger>
-      <PopoverContent showArrow className="w-[250px] p-1 pointer-events-auto z-[9999]">
+      <PopoverContent showArrow className="w-[250px] p-1 pointer-events-auto">
         <Command>
           <CommandInput placeholder={`Search a ${label}...`} className={`h-9`} />
           <CommandList className="z-[9999]">

@@ -21,17 +21,17 @@ import { Template } from "@/types";
 import { useState } from "react";
 import { useDoctorsStore } from "@/store/doctors-store";
 import { useMaterialsStore } from "@/store/material-store";
+import { useRouter } from "next/navigation";
 
-export const TemplateUpdateModal = ({template, trigger}: {template: Template, trigger: React.ReactNode}) => {
+export const UpdateTemplateForm = ({template}: {template: Template}) => {
   const {getDoctorById, doctors} = useDoctorsStore();
   const {getMaterialById, materials} = useMaterialsStore();
+  const router = useRouter();
 
   const { mutate, isPending, error } = useUpdateTemplate();
-
-  const [isDialogOpen, setDialogOpen] = useState(false);
     
   const onCancel = () => {
-    setDialogOpen(false);
+    router.back();
   }
 
   const form = useForm<z.infer<typeof createTemplateSchema>>({
@@ -50,7 +50,7 @@ export const TemplateUpdateModal = ({template, trigger}: {template: Template, tr
       { data: values, id: template.$id },
       {
         onSuccess: () => {
-          onCancel();
+          router.replace('/dashboard/templates')
         },
       }
     );
@@ -61,17 +61,12 @@ export const TemplateUpdateModal = ({template, trigger}: {template: Template, tr
     form.setValue("doctor", docDoctor?.$id);
   };
   const handleMaterialSelection = (currentValue: string) => {
-    const docMaterial = materials?.find((doc) => doc.name === currentValue);
+    const docMaterial = materials?.find((doc) => doc.$id === currentValue);
     form.setValue("material", docMaterial?.$id);
   };
 
   return (
-    <ResponsiveModalWithTrigger
-      open={isDialogOpen}
-      onOpenChange={(open) => setDialogOpen(open)}
-      trigger={trigger}
-    >
-      <Card className="w-full h-full border-none shadow-none bg-gradient-to-t from-card to-accent">
+      <Card className="w-full h-full border-none shadow-none">
         <CardHeader className="flex">
           <CardTitle className="text-xl font-bold">
             Update template details
@@ -107,14 +102,14 @@ export const TemplateUpdateModal = ({template, trigger}: {template: Template, tr
                         <FormControl>
                           <CustomComboBox
                             label="material"
-                            // property="$id"
+                            property="$id"
                             variant={"secondary"}
                             values={materials || []}
                             value={field.value}
                             action={handleMaterialSelection}
-                            previewValue={`${
-                              getMaterialById(field.value || "")?.name
-                            } ${getMaterialById(field.value || "")?.price}`}
+                            previewValue={`${getMaterialById(field.value || "")?.name} (${
+                                getMaterialById(field.value || "")?.price
+                              })`}
                           />
                         </FormControl>
                         <FormMessage />
@@ -202,6 +197,5 @@ export const TemplateUpdateModal = ({template, trigger}: {template: Template, tr
           </Form>
         </CardContent>
       </Card>
-    </ResponsiveModalWithTrigger>
   );
 };

@@ -77,7 +77,7 @@ export const EditCaseForm = ({ selectedCase }: EditCaseFormProps) => {
   };
 
   const handleMaterialSelection = (currentValue: string) => {
-    const docMaterial = materials?.find((mat) => mat.name === currentValue);
+    const docMaterial = materials?.find((mat) => mat.$id === currentValue);
     const teethQuantity = teethData.length;
 
     if (docMaterial) {
@@ -342,8 +342,7 @@ export const EditCaseForm = ({ selectedCase }: EditCaseFormProps) => {
         onSuccess: () => {
           // onCancel(); // onCancel now includes router.back()
           // Potentially show a success toast here
-          console.log("Case updated successfully!");
-          router.push("/dashboard/cases"); // Navigate to cases list page
+          router.replace("/dashboard/cases"); // Navigate to cases list page
         },
         onError: () => {
           // Potentially show an error toast here
@@ -354,7 +353,7 @@ export const EditCaseForm = ({ selectedCase }: EditCaseFormProps) => {
   };
 
   return (
-    <Card className="w-full h-full border-none shadow-none dark:from-background dark:to-accent bg-gradient-to-tr">
+    <Card className="w-full h-full border-none shadow-none">
       <CardHeader className="flex flex-col px-7">
         <CardTitle className="text-xl font-bold">
           Update case details
@@ -418,10 +417,10 @@ export const EditCaseForm = ({ selectedCase }: EditCaseFormProps) => {
                         <FormControl>
                           <CustomComboBox
                             label="material"
-                            // property="$id"
+                            property="$id"
                             variant={"secondary"}
                             values={materials || []}
-                            value={getMaterialById(field.value)?.name} // Store ID
+                            value={field.value} // Store ID
                             action={handleMaterialSelection}
                             previewValue={`${getMaterialById(field.value)?.name || "Select Material"} (${
                               getMaterialById(field.value)?.price || "N/A"

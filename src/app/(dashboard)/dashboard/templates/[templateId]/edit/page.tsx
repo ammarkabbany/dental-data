@@ -1,34 +1,32 @@
-// src/app/(dashboard)/dashboard/cases/[caseId]/edit/page.tsx
 "use client";
 
 import { useParams } from "next/navigation";
-import { useGetCaseById } from "@/features/cases/hooks/use-get-case-by-id";
-// PageLoader is removed as EditCaseFormSkeleton replaces it for this page
 import NotFound from "@/components/notFound";
-import { EditCaseForm } from "@/components/cases/edit-case-form";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
-import { EditCaseFormSkeleton } from "@/components/cases/edit-case-form-skeleton"; // Import Skeleton
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"; // For error display
 import { Terminal } from "lucide-react"; // For error display
+import { useGetTemplateById } from "@/features/templates/hooks/use-get-template-by-id";
+import { EditTemplateFormSkeleton } from "@/components/templates/edit-template-form-skeleton";
+import { UpdateTemplateForm } from "@/components/templates/update-template-form";
 
-export default function EditCasePage() {
+export default function EditTemplatePage() {
   const params = useParams();
-  const caseId = params.caseId as string;
-  const { data: caseData, isLoading, isError } = useGetCaseById(caseId);
+  const templateId = params.templateId as string;
+  const { data: templateData, isFetching: isLoading, isError } = useGetTemplateById(templateId);
 
   const pageTitle = isLoading
-    ? "Loading Case..."
+    ? "Loading Template..."
     : isError
       ? "Error"
-      : !caseData
-        ? "Case Not Found"
-        : `Edit Case: ${caseData.patient}`;
+      : !templateData
+        ? "Template Not Found"
+        : `Edit Template: ${templateData.name}`;
 
   if (isLoading) {
     return (
       <ContentLayout title={pageTitle}>
         <div className="container mx-auto">
-          <EditCaseFormSkeleton />
+          <EditTemplateFormSkeleton />
         </div>
       </ContentLayout>
     );
@@ -40,10 +38,10 @@ export default function EditCasePage() {
         <div className="container mx-auto py-10 flex justify-center">
           <Alert variant="destructive" className="w-full max-w-lg">
             <Terminal className="h-4 w-4" />
-            <AlertTitle>Error Fetching Case Data</AlertTitle>
+            <AlertTitle>Error Fetching Template Data</AlertTitle>
             <AlertDescription>
-              There was a problem retrieving the case details. Please ensure the
-              Case ID is correct or try again later. If the problem persists,
+              There was a problem retrieving the template details. Please ensure the
+              Template ID is correct or try again later. If the problem persists,
               contact support.
             </AlertDescription>
           </Alert>
@@ -52,16 +50,16 @@ export default function EditCasePage() {
     );
   }
 
-  if (!caseData) {
+  if (!templateData) {
     return (
       <ContentLayout title={pageTitle}>
         <div className="container mx-auto py-10">
           {/* Assuming NotFound component is styled appropriately.
               If not, wrap it or style it here for better presentation. */}
           <NotFound
-            title="Case Not Found"
-            href="/dashboard/cases"
-            message="The case you are looking for could not be found or you do not have permission to view it."
+            title="Template Not Found"
+            href="/dashboard/templates"
+            message="The template you are looking for could not be found or you do not have permission to view it."
           />
         </div>
       </ContentLayout>
@@ -71,7 +69,7 @@ export default function EditCasePage() {
   return (
     <ContentLayout title={pageTitle}>
       <div className="container mx-auto">
-        <EditCaseForm selectedCase={caseData} />
+        <UpdateTemplateForm template={templateData} />
       </div>
     </ContentLayout>
   );

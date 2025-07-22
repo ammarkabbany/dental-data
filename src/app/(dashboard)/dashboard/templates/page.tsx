@@ -1,12 +1,12 @@
 "use client";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
-import { TemplateCreateModal } from "@/components/templates/create-template-modal";
+import Link from "next/link";
 import { TemplateCard } from "@/components/templates/template-card";
 import { Button } from "@/components/ui/button";
 import { SearchInput } from "@/components/search-input";
 import { useGetTemplates } from "@/features/templates/hooks/use-get-templates";
 import { usePermission } from "@/hooks/use-permissions";
-import { Modals, useModalStore } from "@/store/modal-store";
+
 import { PlusIcon, FileTextIcon } from "@radix-ui/react-icons";
 import { motion, AnimatePresence } from "framer-motion";
 import * as React from "react";
@@ -40,7 +40,7 @@ export default function TemplatesPage() {
     "create"
   );
   const [searchTerm, setSearchTerm] = React.useState("");
-  const { openModal } = useModalStore();
+
 
   const filteredTemplates = templates?.filter((t) =>
     searchTerm ? t.name.toLowerCase().includes(searchTerm.toLowerCase()) : true
@@ -54,8 +54,6 @@ export default function TemplatesPage() {
     searchTerm;
 
   return (
-    <>
-      <TemplateCreateModal />
       <ContentLayout title="Templates">
         <motion.div
           className="flex justify-between items-center mb-8"
@@ -86,12 +84,15 @@ export default function TemplatesPage() {
               transition={{ duration: 0.2 }}
             >
               <Button
-                onClick={() => openModal(Modals.CREATE_TEMPLATE_MODAL)}
+                asChild
                 variant="default"
-                className="py-2"
+                 className="py-2"
               >
+                
+                 <Link href="/dashboard/templates/create">
                 <PlusIcon className="mr-2" />
                 Add Template
+                </Link>
               </Button>
             </motion.div>
           )}
@@ -130,13 +131,12 @@ export default function TemplatesPage() {
                 standardize your case management.
               </p>
               {canCreate && (
-                <Button
-                  onClick={() => openModal(Modals.CREATE_TEMPLATE_MODAL)}
-                  variant="default"
-                >
-                  <PlusIcon className="mr-2" />
-                  Create Your First Template
-                </Button>
+                <Button asChild variant="default">
+                   <Link href="/templates/create">
+                     <PlusIcon className="mr-2" />
+                     Create Your First Template
+                   </Link>
+                 </Button>
               )}
             </motion.div>
           ) : showNoResults ? (
@@ -173,6 +173,6 @@ export default function TemplatesPage() {
           )}
         </AnimatePresence>
       </ContentLayout>
-    </>
+
   );
 }

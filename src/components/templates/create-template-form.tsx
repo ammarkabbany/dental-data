@@ -20,16 +20,18 @@ import { useCreateTemplate } from "@/features/templates/hooks/use-create-templat
 import { CustomComboBox } from "../custom-combobox";
 import { useDoctorsStore } from "@/store/doctors-store";
 import { useMaterialsStore } from "@/store/material-store";
+import { useRouter } from "next/navigation";
 
-export const TemplateCreateModal = () => {
+export const CreateTemplateForm = () => {
   const { isModalOpen, closeModal } = useModalStore();
   const { getDoctorById, doctors } = useDoctorsStore();
   const { getMaterialById, materials } = useMaterialsStore();
+  const router = useRouter();
 
   const { mutate, isPending, error } = useCreateTemplate();
 
   const onCancel = () => {
-    closeModal(Modals.CREATE_TEMPLATE_MODAL);
+    router.back();
     form.reset();
   };
 
@@ -45,7 +47,7 @@ export const TemplateCreateModal = () => {
       { data: values },
       {
         onSuccess: () => {
-          closeModal(Modals.CREATE_TEMPLATE_MODAL);
+          router.push('/dashboard/templates')
         },
       }
     );
@@ -56,16 +58,12 @@ export const TemplateCreateModal = () => {
     form.setValue("doctor", docDoctor?.$id);
   };
   const handleMaterialSelection = (currentValue: string) => {
-    const docMaterial = materials?.find((doc) => doc.name === currentValue);
+    const docMaterial = materials?.find((doc) => doc.$id === currentValue);
     form.setValue("material", docMaterial?.$id);
   };
 
   return (
-    <ResponsiveModal
-      open={isModalOpen(Modals.CREATE_TEMPLATE_MODAL)}
-      onOpenChange={() => closeModal(Modals.CREATE_TEMPLATE_MODAL)}
-    >
-      <Card className="w-full h-full border-none shadow-none bg-gradient-to-t from-card to-accent">
+      <Card className="w-full h-full border-none shadow-none">
         <CardHeader className="flex">
           <CardTitle className="text-xl font-bold">
             Create new template
@@ -101,10 +99,10 @@ export const TemplateCreateModal = () => {
                         <FormControl>
                           <CustomComboBox
                             label="material"
-                            // property="$id"
+                            property="$id"
                             variant={"secondary"}
                             values={materials || []}
-                            value={getMaterialById(field.value || "")?.name}
+                            value={field.value}
                             action={handleMaterialSelection}
                             previewValue={`${getMaterialById(field.value || "")?.name
                               } ${getMaterialById(field.value || "")?.price}`}
@@ -194,6 +192,5 @@ export const TemplateCreateModal = () => {
           </Form>
         </CardContent>
       </Card>
-    </ResponsiveModal>
   );
 };

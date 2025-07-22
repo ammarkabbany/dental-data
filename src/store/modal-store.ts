@@ -34,14 +34,11 @@ export const useModalStore = create<ModalState>((set, get) => ({
     return modal ?? false;
   },
 }));
-
 export enum Modals {
   CREATE_MATERIAL_MODAL = 'create-material-modal',
   CREATE_DOCTOR_MODAL = 'create-doctor-modal',
   UPDATE_MATERIAL_MODAL = 'update-material-modal',
   UPDATE_DOCTOR_MODAL = 'update-doctor-modal',
   UPDATE_CASE_MODAL = 'update-case-modal',
-  CREATE_TEMPLATE_MODAL = 'update-template-modal',
-  UPDATE_TEMPLATE_MODAL = 'update-template-modal',
   DASHBOARD_COMMAND_MODAL = 'dashboard-command-modal',
 }

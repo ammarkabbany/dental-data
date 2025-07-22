@@ -23,7 +23,7 @@ function PopoverContent({
   showArrow?: boolean;
 }) {
   return (
-    // <PopoverPrimitive.Portal>
+    <PopoverPrimitive.Portal>
       <PopoverPrimitive.Content
         data-slot="popover-content"
         align={align}
@@ -36,10 +36,10 @@ function PopoverContent({
       >
         {props.children}
         {showArrow && (
-          <PopoverPrimitive.Arrow className="fill-popover -my-px drop-shadow-[0_1px_0_hsl(var(--border))]" />
+          <PopoverPrimitive.Arrow className="fill-popover -my-px drop-shadow-[0_1px_0_hsl(var(--border))]"></PopoverPrimitive.Arrow>
         )}
       </PopoverPrimitive.Content>
-    // </PopoverPrimitive.Portal>
+    </PopoverPrimitive.Portal>
   );
 }
 

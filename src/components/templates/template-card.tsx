@@ -11,8 +11,6 @@ import { Check, Pencil, Star, User2, Palette, Calendar } from "lucide-react";
 import { Template } from "@/types";
 import { useRouter } from "next/navigation";
 import { usePermission } from "@/hooks/use-permissions";
-import { TemplateUpdateModal } from "./update-template-modal";
-import { DialogTrigger } from "../ui/dialog";
 import { DeleteTemplateModal } from "./delete-template-modal";
 import { useTemplatesStore } from "@/store/templates-store";
 import { motion } from "framer-motion";
@@ -21,6 +19,7 @@ import { formatDates } from "@/lib/format-utils";
 import useTeamStore from "@/store/team-store";
 import { useDoctorsStore } from "@/store/doctors-store";
 import { useMaterialsStore } from "@/store/material-store";
+import Link from "next/link";
 
 export const TemplateCard = ({ template }: { template: Template }) => {
   const router = useRouter();
@@ -126,20 +125,30 @@ export const TemplateCard = ({ template }: { template: Template }) => {
 
           <div className="flex">
             {usePermission(userRole).checkPermission('templates', 'update') && (
-              <TemplateUpdateModal
-                trigger={
-                  <DialogTrigger asChild>
-                    <Button 
-                      variant="secondary" 
-                      size="icon"
-                      className="mx-2"
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                  </DialogTrigger>
-                }
-                template={template}
-              />
+              // <TemplateUpdateModal
+              //   trigger={
+              //     <DialogTrigger asChild>
+              //       <Button 
+              //         variant="secondary" 
+              //         size="icon"
+              //         className="mx-2"
+              //       >
+              //         <Pencil className="h-4 w-4" />
+              //       </Button>
+              //     </DialogTrigger>
+              //   }
+              //   template={template}
+              // />
+              <Button 
+                variant="secondary"
+                asChild
+                size="icon"
+                className="mx-2"
+              >
+                <Link href={`/dashboard/templates/${template.$id}/edit`}>
+                  <Pencil className="h-4 w-4" />
+                </Link>
+              </Button>
             )}
             {usePermission(userRole).checkPermission('templates', 'delete') && (
               <DeleteTemplateModal templateId={template.$id} />
