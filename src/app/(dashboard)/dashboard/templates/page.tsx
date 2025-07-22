@@ -132,7 +132,7 @@ export default function TemplatesPage() {
               </p>
               {canCreate && (
                 <Button asChild variant="default">
-                   <Link href="/templates/create">
+                   <Link href="/dashboard/templates/create">
                      <PlusIcon className="mr-2" />
                      Create Your First Template
                    </Link>
