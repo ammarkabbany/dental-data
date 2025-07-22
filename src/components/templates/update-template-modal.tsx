@@ -56,6 +56,15 @@ export const TemplateUpdateModal = ({template, trigger}: {template: Template, tr
     );
   };
 
+  const handleDoctorSelection = (currentValue: string) => {
+    const docDoctor = doctors?.find((doc) => doc.name === currentValue);
+    form.setValue("doctor", docDoctor?.$id);
+  };
+  const handleMaterialSelection = (currentValue: string) => {
+    const docMaterial = materials?.find((doc) => doc.name === currentValue);
+    form.setValue("material", docMaterial?.$id);
+  };
+
   return (
     <ResponsiveModalWithTrigger
       open={isDialogOpen}
@@ -98,11 +107,11 @@ export const TemplateUpdateModal = ({template, trigger}: {template: Template, tr
                         <FormControl>
                           <CustomComboBox
                             label="material"
-                            property="$id"
+                            // property="$id"
                             variant={"secondary"}
                             values={materials || []}
                             value={field.value}
-                            action={field.onChange}
+                            action={handleMaterialSelection}
                             previewValue={`${
                               getMaterialById(field.value || "")?.name
                             } ${getMaterialById(field.value || "")?.price}`}
@@ -121,11 +130,11 @@ export const TemplateUpdateModal = ({template, trigger}: {template: Template, tr
                         <FormControl>
                           <CustomComboBox
                             label="doctor"
-                            property="$id"
+                            // property="$id"
                             variant={"secondary"}
                             values={doctors || []}
                             value={field.value}
-                            action={field.onChange}
+                            action={handleDoctorSelection}
                             previewValue={`${
                               getDoctorById(field.value || "")?.name
                             }`}

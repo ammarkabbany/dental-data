@@ -77,7 +77,7 @@ export const EditCaseForm = ({ selectedCase }: EditCaseFormProps) => {
   };
 
   const handleMaterialSelection = (currentValue: string) => {
-    const docMaterial = materials?.find((mat) => mat.$id === currentValue);
+    const docMaterial = materials?.find((mat) => mat.name === currentValue);
     const teethQuantity = teethData.length;
 
     if (docMaterial) {
@@ -418,10 +418,10 @@ export const EditCaseForm = ({ selectedCase }: EditCaseFormProps) => {
                         <FormControl>
                           <CustomComboBox
                             label="material"
-                            property="$id"
+                            // property="$id"
                             variant={"secondary"}
                             values={materials || []}
-                            value={field.value} // Store ID
+                            value={getMaterialById(field.value)?.name} // Store ID
                             action={handleMaterialSelection}
                             previewValue={`${getMaterialById(field.value)?.name || "Select Material"} (${
                               getMaterialById(field.value)?.price || "N/A"

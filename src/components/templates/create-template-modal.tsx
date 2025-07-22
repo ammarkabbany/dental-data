@@ -23,8 +23,8 @@ import { useMaterialsStore } from "@/store/material-store";
 
 export const TemplateCreateModal = () => {
   const { isModalOpen, closeModal } = useModalStore();
-  const {getDoctorById, doctors} = useDoctorsStore();
-  const {getMaterialById, materials} = useMaterialsStore();
+  const { getDoctorById, doctors } = useDoctorsStore();
+  const { getMaterialById, materials } = useMaterialsStore();
 
   const { mutate, isPending, error } = useCreateTemplate();
 
@@ -49,6 +49,15 @@ export const TemplateCreateModal = () => {
         },
       }
     );
+  };
+
+  const handleDoctorSelection = (currentValue: string) => {
+    const docDoctor = doctors?.find((doc) => doc.name === currentValue);
+    form.setValue("doctor", docDoctor?.$id);
+  };
+  const handleMaterialSelection = (currentValue: string) => {
+    const docMaterial = materials?.find((doc) => doc.name === currentValue);
+    form.setValue("material", docMaterial?.$id);
   };
 
   return (
@@ -92,14 +101,13 @@ export const TemplateCreateModal = () => {
                         <FormControl>
                           <CustomComboBox
                             label="material"
-                            property="$id"
+                            // property="$id"
                             variant={"secondary"}
                             values={materials || []}
-                            value={field.value}
-                            action={field.onChange}
-                            previewValue={`${
-                              getMaterialById(field.value || "")?.name
-                            } ${getMaterialById(field.value || "")?.price}`}
+                            value={getMaterialById(field.value || "")?.name}
+                            action={handleMaterialSelection}
+                            previewValue={`${getMaterialById(field.value || "")?.name
+                              } ${getMaterialById(field.value || "")?.price}`}
                           />
                         </FormControl>
                         <FormMessage />
@@ -115,14 +123,13 @@ export const TemplateCreateModal = () => {
                         <FormControl>
                           <CustomComboBox
                             label="doctor"
-                            property="$id"
+                            // property="$id"
                             variant={"secondary"}
                             values={doctors || []}
-                            value={field.value}
-                            action={field.onChange}
-                            previewValue={`${
-                              getDoctorById(field.value || "")?.name
-                            }`}
+                            value={getDoctorById(field.value || "")?.name}
+                            action={handleDoctorSelection}
+                            previewValue={`${getDoctorById(field.value || "")?.name
+                              }`}
                           />
                         </FormControl>
                         <FormMessage />
