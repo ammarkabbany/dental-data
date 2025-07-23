@@ -5,13 +5,13 @@ import { formatCurrency, formatDates } from "@/lib/format-utils";
 import { Button } from "@/components/ui/button";
 import { Models } from "appwrite";
 
-export const getColumns = ({handleViewInvoice, prefs}: {handleViewInvoice: (invoice: CaseInvoice) => void, prefs: Models.Preferences}): ColumnDef<CaseInvoice>[] => [
+export const getColumns = (handleViewInvoice: (invoice: CaseInvoice) => void, prefs: Models.Preferences): ColumnDef<CaseInvoice>[] => [
   {
     accessorKey: "name",
     header: "Name",
     cell: ({ row }) => {
       const name = row.original.name;
-      return name.length > 20 ? name.substring(0, 20) + "..." : name;
+      return name.length > 25 ? name.substring(0, 25) + "..." : name;
     },
     size: 200
   },

@@ -71,7 +71,7 @@ export function CaseInvoicesDataTable() {
   });
   const [selectedCases, setSelectedCases] = React.useState<Case[]>([]);
 
-  const { currentAppwriteTeam } = useTeamStore();
+  const { currentAppwriteTeam: appwriteTeam } = useTeamStore();
 
   const handleViewInvoice = (invoice: CaseInvoice) => {
     setExportOptions({
@@ -87,12 +87,11 @@ export function CaseInvoicesDataTable() {
     pagination.pageSize
   );
 
+  const columns = getColumns(handleViewInvoice, appwriteTeam?.prefs || {});
+
   const table = useReactTable({
     data: caseInvoices?.documents || [],
-    columns: getColumns({
-      handleViewInvoice,
-      prefs: currentAppwriteTeam?.prefs || {},
-    }) as ColumnDef<any, any>[],
+    columns,
     pageCount: caseInvoices
       ? Math.ceil(caseInvoices.total / pagination.pageSize)
       : -1,
