@@ -230,7 +230,7 @@ const PrintComponent = ({selectedCases, options = defaultOptions}: PrintComponen
     onAfterPrint: () => {
       setShowComponent(false);
       closeModal('print')
-      openModal('save-case-export-prompt')
+      if (isModalOpen('cases-export')) openModal('save-case-export-prompt')
     },
   } as any); // Using `as any` to suppress type error
 

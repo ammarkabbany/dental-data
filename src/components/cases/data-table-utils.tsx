@@ -254,6 +254,7 @@ export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
             <CasesExportDialog
               exportOptions={exportOptions}
               setExportOptions={setExportOptions}
+              id="cases-export"
             />
           )}
         </div>

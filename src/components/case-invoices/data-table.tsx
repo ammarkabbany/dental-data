@@ -79,7 +79,7 @@ export function CaseInvoicesDataTable() {
       deductAmount: invoice.deducted,
     });
     setSelectedCases(invoice.cases);
-    openModal("cases-export");
+    openModal("case-invoices-export");
   };
 
   const { data: caseInvoices, isLoading } = useCaseInvoices(
@@ -119,6 +119,7 @@ export function CaseInvoicesDataTable() {
       <CasesExportDialog
         exportOptions={exportOptions}
         setExportOptions={setExportOptions}
+        id="case-invoices-export"
       />
       <PrintComponent selectedCases={selectedCases} options={exportOptions} />
       <div className="w-full">

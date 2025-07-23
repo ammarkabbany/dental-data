@@ -32,11 +32,13 @@ interface CasesExportOptions {
   setExportOptions: React.Dispatch<
     React.SetStateAction<{ [key: string]: boolean | number }>
   >;
+  id: string;
 }
 
 export function CasesExportDialog({
   exportOptions,
   setExportOptions,
+  id
 }: CasesExportOptions) {
   const { openModal, isModalOpen, closeModal } = useModalStore();
   const [format, setFormat] = useState("print");
@@ -57,9 +59,9 @@ export function CasesExportDialog({
       //     </Button>
       //   </DialogTrigger>
       // }
-      open={isModalOpen("cases-export")}
+      open={isModalOpen(id)}
       onOpenChange={() => {
-        closeModal("cases-export");
+        closeModal(id);
       }}
     >
       <div className="p-7 space-y-4">
