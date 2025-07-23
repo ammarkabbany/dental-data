@@ -2,10 +2,36 @@
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 // import { CreateCaseInvoiceModal } from "@/components/case-invoices/create-case-invoice-modal"; // To be created later
 import { CaseInvoicesDataTable } from "@/components/case-invoices/data-table";
+import ForbiddenPage from "@/components/forbidden";
+import LoadingSpinner from "@/components/ui/loading-spinner";
+import { usePermission } from "@/hooks/use-permissions";
+import { useTeam } from "@/providers/team-provider";
 import { motion, AnimatePresence } from "framer-motion";
 import * as React from 'react'
 
 export default function CaseInvoicesPage() {
+  const { isLoading, isAuthenticated, currentTeam, userRole } = useTeam();
+  const hasExportPermission = usePermission(userRole).checkPermission('financials', 'has')
+
+  if (isLoading) {
+    return (
+      <ContentLayout title="Loading">
+        <div className="flex items-center justify-center min-h-screen">
+          <LoadingSpinner />
+        </div>
+      </ContentLayout>
+    );
+  }
+
+  if (!hasExportPermission) {
+    return (
+      <ContentLayout title="Access Denied">
+        <div className="flex items-center justify-center min-h-[90vh]">
+          <ForbiddenPage />
+        </div>
+      </ContentLayout>
+    );
+  }
 
   return (
     <>
