@@ -41,4 +41,5 @@ export enum Modals {
   UPDATE_DOCTOR_MODAL = 'update-doctor-modal',
   UPDATE_CASE_MODAL = 'update-case-modal',
   DASHBOARD_COMMAND_MODAL = 'dashboard-command-modal',
+  CREATE_CASE_INVOICE_MODAL = 'create-case-invoice-modal',
 }

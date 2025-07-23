@@ -22,6 +22,9 @@ import {
 } from "../responsive-modal";
 import { Input } from "../ui/input";
 
+import { Case } from "@/types";
+import { SaveCaseExportPrompt } from "./SaveCaseExportPrompt";
+
 interface CasesExportOptions {
   exportOptions: {
     [key: string]: boolean | number;
@@ -55,7 +58,9 @@ export function CasesExportDialog({
       //   </DialogTrigger>
       // }
       open={isModalOpen("cases-export")}
-      onOpenChange={() => closeModal("cases-export")}
+      onOpenChange={() => {
+        closeModal("cases-export");
+      }}
     >
       <div className="p-7 space-y-4">
         <DialogHeader>
