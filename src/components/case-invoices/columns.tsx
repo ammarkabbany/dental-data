@@ -39,7 +39,7 @@ export const getColumns = ({handleViewInvoice, prefs}: {handleViewInvoice: (invo
     header: "Final Total",
     accessorFn: (row) => {
       const amount = row.finalAmount;
-      return formatCurrency(amount, prefs.currency);
+      return formatCurrency(amount, prefs.curreny);
     }
   },
   {
