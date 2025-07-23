@@ -11,6 +11,7 @@ import {
   Logs,
   ClipboardListIcon,
   Monitor,
+  FileDown,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -90,6 +91,14 @@ export function Menu({ isOpen }: MenuProps) {
                 active={isActive("cases")}
                 onClick={() => navigate("/dashboard/cases")}
               />
+              {permission.checkPermission("export", "has") && (
+                <NavItem
+                  icon={FileDown}
+                  label="Case Invoices"
+                  active={isActive("case-invoices")}
+                  onClick={() => navigate("/dashboard/case-invoices")}
+                />
+              )}
               {permission.checkPermission("doctors", "read") && (
                 <NavItem
                   icon={Users}

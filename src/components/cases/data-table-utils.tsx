@@ -31,6 +31,7 @@ import {
 } from "../ui/select";
 import { FloatingDock } from "./floating-dock";
 import { SearchInput } from "../search-input";
+import { SaveCaseExportPrompt } from "./SaveCaseExportPrompt";
 
 export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
   const [exportOptions, setExportOptions] = React.useState<{
@@ -90,6 +91,7 @@ export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
         }
         options={exportOptions}
       />
+      <SaveCaseExportPrompt selectedCases={selectedCases} exportOptions={exportOptions} />
       <div className="flex flex-wrap items-center justify-between gap-4 py-4">
         <div className="flex flex-wrap items-center gap-2">
           <SearchInput
@@ -252,6 +254,7 @@ export default function CasesDataTableUtils({ table }: { table: Table<Case> }) {
             <CasesExportDialog
               exportOptions={exportOptions}
               setExportOptions={setExportOptions}
+              id="cases-export"
             />
           )}
         </div>

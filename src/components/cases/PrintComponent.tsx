@@ -203,7 +203,7 @@ const defaultOptions = {
 const PrintComponent = ({selectedCases, options = defaultOptions}: PrintComponentOptions) => {
   const componentRef = useRef<HTMLDivElement>(null);
   const [showComponent, setShowComponent] = useState(false);
-  const { isModalOpen, closeModal } = useModalStore();
+  const { isModalOpen, closeModal, openModal } = useModalStore();
   const {currentAppwriteTeam} = useTeamStore();
   const {getDoctorById} = useDoctorsStore();
   const {getMaterialById} = useMaterialsStore();
@@ -230,6 +230,7 @@ const PrintComponent = ({selectedCases, options = defaultOptions}: PrintComponen
     onAfterPrint: () => {
       setShowComponent(false);
       closeModal('print')
+      if (isModalOpen('cases-export')) openModal('save-case-export-prompt')
     },
   } as any); // Using `as any` to suppress type error
 

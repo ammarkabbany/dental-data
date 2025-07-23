@@ -19,12 +19,14 @@ interface DataTablePaginationProps<TData> {
   table: Table<TData>;
   isLoading?: boolean;
   selectionEnabled?: boolean;
+  pageSizeOptions?: number[];
 }
 
 export function DataTablePagination<TData>({
   table,
   isLoading = false,
-  selectionEnabled = true
+  selectionEnabled = true,
+  pageSizeOptions = [10, 20, 50, 100]
 }: DataTablePaginationProps<TData>) {
   const pageCount = table.getPageCount();
   const showPageCountSkeleton = isLoading && pageCount <= 0;
@@ -52,7 +54,7 @@ export function DataTablePagination<TData>({
               <SelectValue placeholder={table.getState().pagination.pageSize} />
             </SelectTrigger>
             <SelectContent side='top'>
-              {[10, 20, 50, 100].map((pageSize) => (
+              {pageSizeOptions.map((pageSize) => (
                 <SelectItem key={pageSize} value={`${pageSize}`}>
                   {pageSize}
                 </SelectItem>

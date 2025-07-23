@@ -268,3 +268,14 @@ export type AnalyticsEntry = Models.Document & {
   }
   teamId: string;
 }
+
+export type CaseInvoice = Models.Document & {
+  teamId: string;
+  userId: string;
+  name: string;
+  doctorId: string;
+  cases: Case[];
+  totalAmount: number;
+  deducted?: number;
+  finalAmount: number;
+}

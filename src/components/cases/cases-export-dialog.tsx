@@ -22,6 +22,9 @@ import {
 } from "../responsive-modal";
 import { Input } from "../ui/input";
 
+import { Case } from "@/types";
+import { SaveCaseExportPrompt } from "./SaveCaseExportPrompt";
+
 interface CasesExportOptions {
   exportOptions: {
     [key: string]: boolean | number;
@@ -29,11 +32,13 @@ interface CasesExportOptions {
   setExportOptions: React.Dispatch<
     React.SetStateAction<{ [key: string]: boolean | number }>
   >;
+  id: string;
 }
 
 export function CasesExportDialog({
   exportOptions,
   setExportOptions,
+  id
 }: CasesExportOptions) {
   const { openModal, isModalOpen, closeModal } = useModalStore();
   const [format, setFormat] = useState("print");
@@ -54,8 +59,10 @@ export function CasesExportDialog({
       //     </Button>
       //   </DialogTrigger>
       // }
-      open={isModalOpen("cases-export")}
-      onOpenChange={() => closeModal("cases-export")}
+      open={isModalOpen(id)}
+      onOpenChange={() => {
+        closeModal(id);
+      }}
     >
       <div className="p-7 space-y-4">
         <DialogHeader>

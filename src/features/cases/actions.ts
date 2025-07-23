@@ -6,11 +6,12 @@ import {
 } from "@/lib/appwrite/appwrite";
 import {
   AUDIT_LOGS_COLLECTION_ID,
+  CASE_INVOICES_COLLECTION_ID,
   CASES_COLLECTION_ID,
   DATABASE_ID,
   DOCTORS_FUNCTION_ID,
 } from "@/lib/constants";
-import { Case } from "@/types";
+import { Case, CaseInvoice } from "@/types";
 import { AppwriteException, ExecutionMethod, ID, Permission, Query, Role } from "node-appwrite";
 import { getTeamById, updateTeam } from "../team/teamService";
 import { LogAuditEvent } from "../logs/actions";
@@ -324,4 +325,47 @@ export const GetCaseById = async (id: Case["$id"]): Promise<Case> => {
   );
 
   return material;
+};
+
+export const CreateCaseInvoice = async (
+  userId: string,
+  teamId: string,
+  data: Partial<CaseInvoice>
+): Promise<{
+  success: boolean;
+  message: string;
+}> => {
+  const { databases } = await createAdminClient();
+
+  try {
+    await databases.createDocument<CaseInvoice>(
+      DATABASE_ID,
+      CASE_INVOICES_COLLECTION_ID,
+      ID.unique(),
+      {
+        teamId,
+        userId,
+        cases: data.cases?.map(c => c.$id),
+        ...data,
+      },
+      [
+        // Permission.read(Role.team(teamId)),
+        Permission.write(Role.team(teamId, "owner")),
+        Permission.read(Role.team(teamId, "owner")),
+        Permission.read(Role.team(teamId, "admin")),
+        Permission.write(Role.team(teamId, "admin")),
+      ]
+    );
+
+    return {
+      success: true,
+      message: "Case invoice created successfully",
+    };
+  } catch (error) {
+    console.error("Error creating case invoice:", error);
+    return {
+      success: false,
+      message: "An error occurred while creating the case invoice",
+    };
+  }
 };
