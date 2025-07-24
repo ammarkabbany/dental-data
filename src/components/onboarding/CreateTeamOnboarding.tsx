@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardFooter, CardHeader } from '../ui/card';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../ui/select';
 import { motion } from 'framer-motion';
 import { CheckCircle, ArrowRight } from 'lucide-react';
 import { useCreateTeam } from '@/features/team/hooks/use-create-team';
@@ -74,12 +75,16 @@ const CreateTeamStep = ({
   teamName,
   setTeamName,
   onSubmit,
-  isPending
+  isPending,
+  teamType,
+  setTeamType
 }: {
   teamName: string;
   setTeamName: (name: string) => void;
   onSubmit: () => void;
   isPending: boolean;
+  teamType: 'dental_lab' | 'clinic' | 'freelancer' | 'other';
+  setTeamType: (type: 'dental_lab' | 'clinic' | 'freelancer' | 'other') => void;
 }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
@@ -107,6 +112,29 @@ const CreateTeamStep = ({
         />
         <p className="text-sm text-muted-foreground">
           This will be the display name for your team
+        </p>
+      </div>
+      <div className="space-y-3">
+        <label htmlFor="teamType" className="text-sm font-medium block">
+          Team Type
+        </label>
+        <Select
+          value={teamType}
+          onValueChange={(value: 'dental_lab' | 'clinic' | 'freelancer' | 'other') => setTeamType(value)}
+          disabled={isPending}
+        >
+          <SelectTrigger className="h-12 text-lg">
+            <SelectValue placeholder="Select team type" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="dental_lab">Dental Lab</SelectItem>
+            <SelectItem value="clinic">Clinic</SelectItem>
+            <SelectItem value="freelancer">Freelancer</SelectItem>
+            <SelectItem value="other">Other</SelectItem>
+          </SelectContent>
+        </Select>
+        <p className="text-sm text-muted-foreground">
+          Select the type of your team
         </p>
       </div>
     </CardContent>
@@ -148,6 +176,7 @@ const SuccessStep = () => {
 export function CreateTeamOnboarding() {
   const { user } = useAuth();
   const [teamName, setTeamName] = useState('');
+  const [teamType, setTeamType] = useState<'dental_lab' | 'clinic' | 'freelancer' | 'other'>('dental_lab');
   const [step, setStep] = useState(1);
 
   const { mutate, isPending } = useCreateTeam();
@@ -156,6 +185,7 @@ export function CreateTeamOnboarding() {
     if (!user) return;
     mutate({
       name: teamName,
+      type: teamType,
       userId: user.$id
     }, {
       onSuccess: () => {
@@ -180,6 +210,8 @@ export function CreateTeamOnboarding() {
               setTeamName={setTeamName}
               onSubmit={handleCreateTeam}
               isPending={isPending}
+              teamType={teamType}
+              setTeamType={setTeamType}
             />
           )}
           {step === 3 && <SuccessStep />}
