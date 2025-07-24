@@ -48,6 +48,17 @@ const permissionMatrix: Record<string, Record<Resource, Action[]>> = {
     team: ['read'],
     members: ['read']
   },
+  technician: {
+    cases: ['create', 'read', 'update'],
+    export: [],
+    financials: [],
+    doctors: ['create', 'read'],
+    materials: ['create', 'read'],
+    templates: ['create', 'read', 'update'],
+    inventory: ['read', 'update'],
+    team: ['read'],
+    members: ['read']
+  },
   viewer: {
     cases: ['read'],
     export: [],
