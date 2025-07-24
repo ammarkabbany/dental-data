@@ -68,19 +68,43 @@ export default function LoginPage() {
   const onSubmit = (values: z.infer<typeof loginSchema>) => {
     mutate({ data: values })
   };
-
+  // sm:rounded-xl sm:shadow-lg sm:shadow-primary/55
   return (
-    <Card className="max-w-md w-full rounded-none sm:rounded-xl shadow-lg shadow-primary/55">
+    <Card className="max-w-md w-full rounded-sm outline-none border-none">
       <CardHeader className="p-7 flex flex-col items-center justify-center">
         <CardTitle className="text-xl">Login</CardTitle>
         <CardDescription>
           Enter your credentials to access your account
         </CardDescription>
       </CardHeader>
-      <CardContent className="p-7">
+      <CardContent className="px-7">
+        <div className="">
+          <Button
+            onClick={() => account.createOAuth2Session(OAuthProvider.Google, `${NEXT_URL}${redirectUrl ?? "/"}`, `${NEXT_URL}?authStatus=failed`)}
+            className="items-center text-base rounded-sm w-full [&_svg]:size-5!"
+            variant="secondary"
+            disabled={isPending}
+          >
+            <GoogleIcon />
+            Google
+          </Button>
+          {/* <Button
+            onClick={() => {}}
+            className="items-center bg-neutral-800 hover:bg-neutral-700 text-white"
+            variant="secondary"
+            disabled={isPending}
+          >
+            <GithubIcon />
+            GitHub
+          </Button> */}
+        </div>
+        <Separator className="my-4" />
+        <h3 className="text-center text-sm text-muted-foreground mb-2">
+          Or continue with
+        </h3>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="flex flex-col gap-y-6">
+            <div className="flex flex-col gap-y-4">
               <FormField
                 control={form.control}
                 name="email"
@@ -141,30 +165,6 @@ export default function LoginPage() {
             </div>
           )}
         </Form>
-        <Separator className="my-4" />
-        <h3 className="text-center text-sm text-muted-foreground mb-2">
-          Or continue with
-        </h3>
-        <div className="">
-          <Button
-            onClick={() => account.createOAuth2Session(OAuthProvider.Google, `${NEXT_URL}${redirectUrl ?? "/"}`, `${NEXT_URL}?authStatus=failed`)}
-            className="items-center w-full"
-            variant="secondary"
-            disabled={isPending}
-          >
-            <GoogleIcon />
-            Google
-          </Button>
-          {/* <Button
-            onClick={() => {}}
-            className="items-center bg-neutral-800 hover:bg-neutral-700 text-white"
-            variant="secondary"
-            disabled={isPending}
-          >
-            <GithubIcon />
-            GitHub
-          </Button> */}
-        </div>
       </CardContent>
       <CardFooter className="flex items-center justify-center">
         <p className="text-sm text-gray-600">
