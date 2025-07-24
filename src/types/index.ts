@@ -26,6 +26,7 @@ export type TeamMember = Models.Document & {
 export type Team = Models.Document & {
   name: string;
   ownerId: string;
+  teamType: 'dental_lab' | 'clinic' | 'freelancer' | 'other';
   planId: string;
   casesUsed: number;
   maxCases: number;

@@ -64,7 +64,7 @@ async function addTeamMember(teamId: string, userId: string, role: string) {
   );
 }
 
-async function createTeam(name: string, userId: string) {
+async function createTeam(name: string, userId: string, type: 'dental_lab' | 'clinic' | 'freelancer' | 'other') {
   const { databases } = await createAdminClient();
   const id = ID.unique();
   const freePlan = await databases.getDocument<BillingPlan>(
@@ -78,6 +78,7 @@ async function createTeam(name: string, userId: string) {
     id,
     {
       name,
+      teamType: type,
       ownerId: userId,
       maxCases: freePlan.maxCases,
       planExpiresAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),

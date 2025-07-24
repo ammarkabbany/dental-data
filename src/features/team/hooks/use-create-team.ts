@@ -6,9 +6,9 @@ import { toastAPI } from "@/lib/ToastAPI";
 
 export const useCreateTeam = () => {
   const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: async ({name, userId}: {name: string, userId: string}) => {
-      const team = await createTeam(name, userId);
+  return useMutation<any, Error, { name: string; userId: string; type: 'dental_lab' | 'clinic' | 'freelancer' | 'other' }>({
+    mutationFn: async ({name, userId, type}) => {
+      const team = await createTeam(name, userId, type);
       const appwriteTeam = await teams.create(team.$id, name, ['owner'])
       return {
         team,
