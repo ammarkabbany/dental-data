@@ -3,8 +3,8 @@ export default function GoogleIcon() {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 48 48"
-      width="48px"
-      height="48px"
+      width="52px"
+      height="52px"
     >
       <path
         fill="#FFC107"

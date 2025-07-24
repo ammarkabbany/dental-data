@@ -68,17 +68,33 @@ export default function RegisterPage() {
   };
 
   return (
-    <Card className="max-w-md w-full rounded-none sm:rounded-xl shadow-lg shadow-primary/55">
+    <Card className="max-w-md w-full rounded-sm outline-none border-none">
       <CardHeader className="p-7 flex flex-col items-center justify-center">
         <CardTitle className="text-xl">Sign Up</CardTitle>
         <CardDescription>
           Create an account to get started
         </CardDescription>
       </CardHeader>
-      <CardContent className="p-7">
+      <CardContent className="px-7">
+        <div className="">
+          <Button
+            onClick={() => account.createOAuth2Session(OAuthProvider.Google, `${NEXT_URL}${redirectUrl ?? "/"}`, `${NEXT_URL}?authStatus=failed`)}
+            className="items-center text-base rounded-sm w-full [&_svg]:size-5!"
+            variant="secondary"
+            size={'lg'}
+            disabled={isPending}
+          >
+            <GoogleIcon />
+            Google
+          </Button>
+        </div>
+        <Separator className="my-4" />
+        <h3 className="text-center text-sm text-muted-foreground mb-2">
+          Or continue with
+        </h3>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="flex flex-col gap-y-6">
+            <div className="flex flex-col gap-y-4">
               <FormField
                 control={form.control}
                 name="name"
@@ -161,23 +177,11 @@ export default function RegisterPage() {
             </div>
           )}
         </Form>
-        <Separator className="my-4" />
-        <h3 className="text-center text-sm text-muted-foreground mb-2">
-          Or continue with
-        </h3>
-        <div className="">
-          <Button
-            onClick={() => account.createOAuth2Session(OAuthProvider.Google, `${NEXT_URL}${redirectUrl ?? "/"}`, `${NEXT_URL}?authStatus=failed`)}
-            className="items-center w-full"
-            variant="secondary"
-            disabled={isPending}
-          >
-            <GoogleIcon />
-            Google
-          </Button>
-        </div>
+        <p className="text-sm text-center text-gray-600 dark:text-gray-300 mt-2">
+          By signing up, you agree to our<br /> <Link href="/terms" className="text-blue-500 hover:underline">Terms of Service</Link> and <Link href="/privacy" className="text-blue-500 hover:underline">Privacy Policy</Link>.
+        </p>
       </CardContent>
-      <CardFooter className="flex items-center justify-center">
+      <CardFooter className="flex justify-center">
         <p className="text-sm text-gray-600">
           Already have an account?{" "}
           {/* ${params.size > 0 && "?"+encodeURIComponent(params.get("redirect"))} */}
