@@ -22,7 +22,7 @@ export function Navbar({ title }: NavbarProps) {
           <h1 className="font-bold">{title}</h1>
         </div>
         <div className="flex flex-1 items-center justify-end gap-x-4">
-          <Button onClick={() => openModal(Modals.DASHBOARD_COMMAND_MODAL)} className="text-muted-foreground hidden lg:inline-flex lg:w-[250px] justify-between" size={"sm"} variant={"secondary"}>
+          {/* <Button onClick={() => openModal(Modals.DASHBOARD_COMMAND_MODAL)} className="text-muted-foreground hidden lg:inline-flex lg:w-[250px] justify-between" size={"sm"} variant={"secondary"}>
             <span className="inline-flex items-center gap-2"><Search className="size-4 mx-0" />Search</span>
             <p className="text-muted-foreground text-xs space-x-1 hidden lg:inline">
             <kbd className="bg-background pointer-events-none inline-flex h-6 items-center gap-1 rounded border px-1.5 font-mono text-[12px] font-medium opacity-100 select-none">
@@ -32,9 +32,9 @@ export function Navbar({ title }: NavbarProps) {
               <span className="text-xs">K</span>
             </kbd>
           </p>
-          </Button>
+          </Button> */}
           {/* <ModeToggle /> */}
-          <Button variant={"ghost"} className="" size={"icon"} disabled>
+          <Button variant={"destructive"} className="" size={"icon"} disabled>
             <HugeiconsIcon className="size-5" icon={Notification03Icon} />
           </Button>
         </div>

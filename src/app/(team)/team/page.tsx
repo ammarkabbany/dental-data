@@ -192,7 +192,7 @@ export default function TeamPage() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
-                  {formatDistanceToNow(subscriptionEnd)}
+                  {formatDistanceToNow(subscriptionEnd, {addSuffix: true})}
                 </div>
                 <Progress
                   value={progress}
@@ -205,7 +205,7 @@ export default function TeamPage() {
                     </span>{" "}
                     on {subscriptionEnd.toLocaleDateString()}
                   </p>
-                  {hasExpired && canUpdate && (
+                  {/* {hasExpired && canUpdate && (
                     <Button
                       variant="link"
                       size="sm"
@@ -213,7 +213,7 @@ export default function TeamPage() {
                     >
                       Renew plan
                     </Button>
-                  )}
+                  )} */}
                 </div>
               </CardContent>
             </Card>

@@ -1,9 +1,10 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { CaseInvoice } from "@/types";
 import { useDoctorsStore } from "@/store/doctors-store";
-import { formatCurrency, formatDates } from "@/lib/format-utils";
+import { formatCurrency, formatDates, shortenString } from "@/lib/format-utils";
 import { Button } from "@/components/ui/button";
 import { Models } from "appwrite";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 
 export const getColumns = (handleViewInvoice: (invoice: CaseInvoice) => void, prefs: Models.Preferences): ColumnDef<CaseInvoice>[] => [
   {
@@ -11,7 +12,19 @@ export const getColumns = (handleViewInvoice: (invoice: CaseInvoice) => void, pr
     header: "Name",
     cell: ({ row }) => {
       const name = row.original.name;
-      return name.length > 25 ? name.substring(0, 25) + "..." : name;
+      const shortName = shortenString(name, 25);
+      return (
+        <TooltipProvider>
+          <Tooltip delayDuration={200}>
+            <TooltipTrigger>
+              {shortName}
+            </TooltipTrigger>
+            <TooltipContent side="top" className="mb-1 pointer-events-auto bg-background text-foreground border-border dark:bg-neutral-800 dark:text-gray-200 dark:border-neutral-700">
+              {name}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      )
     },
     size: 200
   },
@@ -21,7 +34,23 @@ export const getColumns = (handleViewInvoice: (invoice: CaseInvoice) => void, pr
       const id = row.doctorId;
       const doctor = useDoctorsStore.getState().getDoctorById(id);
       const doctorName = doctor?.name || "N/A"
-      return doctorName.length > 20 ? doctorName.substring(0, 20) + "..." : doctorName;
+      return doctorName;
+    },
+    cell: ({ row }) => {
+      const doctor: string = row.getValue("doctor") || "";
+      const doctorName = shortenString(doctor, 20);
+      return (
+        <TooltipProvider>
+          <Tooltip delayDuration={200}>
+            <TooltipTrigger>
+              {doctor}
+            </TooltipTrigger>
+            <TooltipContent side="top" className="mb-1 pointer-events-auto bg-background text-foreground border-border dark:bg-neutral-800 dark:text-gray-200 dark:border-neutral-700">
+              {doctorName}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      )
     },
     header: "Doctor",
     size: 200

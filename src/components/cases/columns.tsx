@@ -14,6 +14,8 @@ import { useMaterialsStore } from "@/store/material-store";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { DentalToothIcon, Doctor02Icon } from "@hugeicons/core-free-icons";
 import { useRouter } from "next/navigation"; // Added useRouter
+import { shortenString } from "@/lib/format-utils";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 
 export const getColumns = (): ColumnDef<Case>[] => [
   {
@@ -89,7 +91,7 @@ export const getColumns = (): ColumnDef<Case>[] => [
       const id = row.doctorId;
       const doctor = useDoctorsStore.getState().getDoctorById(id);
       const doctorName = doctor?.name || "Unknown"
-      return doctorName.length > 20 ? doctorName.substring(0, 20) + "..." : doctorName;
+      return doctorName;
     },
     header: ({ column }) => (
       <Button
@@ -111,10 +113,19 @@ export const getColumns = (): ColumnDef<Case>[] => [
       const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
       const isRecent = createdAt >= fiveMinutesAgo;
       const doctor: string = row.getValue('doctor')
-      
+      const doctorName = shortenString(doctor, 20);
       return (
         <div className="flex items-center gap-2">
-          <span className="font-medium">{doctor}</span>
+          <TooltipProvider>
+            <Tooltip delayDuration={200}>
+              <TooltipTrigger>
+                {doctorName}
+              </TooltipTrigger>
+              <TooltipContent side="top" className="mb-1 pointer-events-auto bg-background text-foreground border-border dark:bg-neutral-800 dark:text-gray-200 dark:border-neutral-700">
+                {doctor}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           {isRecent && (
             <Badge variant="default" className="bg-primary/10 text-primary hover:bg-primary/20">
               New
@@ -136,8 +147,19 @@ export const getColumns = (): ColumnDef<Case>[] => [
     cell: ({ row }) => {
       // <BookUser className="size-4.5" />
       const patient: string = row.getValue("patient") || "";
-      const patientName = patient.length > 20 ? patient.substring(0, 20) + "..." : patient
-      return <div className="capitalize flex items-center gap-2">{patientName}</div>;
+      const patientName = shortenString(patient, 20);
+      return (
+        <TooltipProvider>
+          <Tooltip delayDuration={200}>
+            <TooltipTrigger>
+              {patientName}
+            </TooltipTrigger>
+            <TooltipContent side="top" className="mb-1 pointer-events-auto bg-background text-foreground border-border dark:bg-neutral-800 dark:text-gray-200 dark:border-neutral-700">
+              {patient}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
     },
     size: 200,
   },
@@ -196,7 +218,7 @@ export const getColumns = (): ColumnDef<Case>[] => [
       const id = row.materialId;
       const material = useMaterialsStore.getState().getMaterialById(id);
       const materialName = material?.name || "Unknown"
-      return materialName.length > 20 ? materialName.substring(0, 20) + "..." : materialName;
+      return materialName;
     },
     header: () => (
       <div className="flex items-center gap-2">
@@ -206,9 +228,16 @@ export const getColumns = (): ColumnDef<Case>[] => [
     cell: ({ row }) => {
       const material: string = row.getValue('material');
       return (
-        <div className="flex items-center gap-2">
-          <span className="text-muted-foreground">{material}</span>
-        </div>
+        <TooltipProvider>
+          <Tooltip delayDuration={200}>
+            <TooltipTrigger>
+              {shortenString(material, 15)}
+            </TooltipTrigger>
+            <TooltipContent side="top" className="bg-background text-foreground border-border dark:bg-neutral-800 dark:text-gray-200 dark:border-neutral-700">
+              {material}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       );
     },
     size: 150,
@@ -238,15 +267,22 @@ export const getColumns = (): ColumnDef<Case>[] => [
       </div>
     ),
     cell: ({ row }) => (
-      <span className="text-muted-foreground">
-        {row.getValue("note") || "N/A"}
-      </span>
+      <TooltipProvider>
+        <Tooltip delayDuration={200}>
+          <TooltipTrigger>
+            {shortenString(row.getValue("note") || "N/A", 20)}
+          </TooltipTrigger>
+          <TooltipContent side="top"  className="bg-background text-foreground border-border dark:bg-neutral-800 dark:text-gray-200 dark:border-neutral-700">
+            {row.getValue("note") || "N/A"}
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     ),
-    size: 150
+    size: 200
   },
   {
     accessorKey: "actions",
-    header: () => <span className="text-start">Actions</span>,
+    header: () => <span className="text-start"></span>,
     cell: ({ row }) => {
       const _case: Case = row.original;
       // eslint-disable-next-line react-hooks/rules-of-hooks

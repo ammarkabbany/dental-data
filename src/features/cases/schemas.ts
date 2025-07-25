@@ -7,7 +7,7 @@ import { z } from "zod";
 // })
 
 export const createCaseSchema = z.object({
-  patient: z.string().max(48, "Max name length is 48").optional(),
+  patient: z.string().max(32, "Max patient name length is 32").optional(),
   date: z.string(),
   doctorId: z.string().min(1, "Required"),
   materialId: z.string().min(1, "Required"),
@@ -24,8 +24,8 @@ export const createCaseSchema = z.object({
       message: "At least one tooth must be selected.",
     }
   ),
-  shade: z.string().optional(),
+  shade: z.string().max(6, "Max shade length is 6").optional(),
   due: z.number().min(0, "Due can't be negative"),
   invoice: z.boolean().optional(),
-  note: z.string().optional(),
+  note: z.string().max(50, "Max note length is 50").optional(),
 });

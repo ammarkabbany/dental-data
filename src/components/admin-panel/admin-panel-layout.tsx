@@ -17,7 +17,7 @@ export default function AdminPanelLayout({
   const { getOpenState, settings } = sidebar;
   return (
     <>
-      <DashboardCommand />
+      {/* <DashboardCommand /> */}
       <Sidebar />
       <main
         className={cn(

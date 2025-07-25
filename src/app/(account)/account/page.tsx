@@ -15,6 +15,7 @@ import RedirectToAuth from "@/components/auth/custom-auth-redirect";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import AccountGeneralSettingsForm from "./account-general-settings-form";
 import { useAuth } from "@/providers/auth-provider";
+import MainFooter from "@/components/layout/Footer";
 
 export default function TeamPage() {
   const { isAuthenticated, isLoading } =
@@ -60,6 +61,7 @@ export default function TeamPage() {
   };
 
   return (
+    <>
     <main className="bg-gradient-to-b from-background to-muted/30 min-h-screen">
       <Header />
       <div className="max-w-7xl mx-auto pt-8 pb-16 px-4 sm:px-8">
@@ -141,5 +143,7 @@ export default function TeamPage() {
         </Tabs>
       </div>
     </main>
+    <MainFooter />
+    </>
   );
 }
