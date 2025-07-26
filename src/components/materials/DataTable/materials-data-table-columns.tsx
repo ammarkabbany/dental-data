@@ -4,13 +4,12 @@ import { Material } from "@/types";
 import { formatCurrency } from "@/lib/format-utils";
 import { PermissionCheckType } from "@/hooks/use-permissions";
 import { Models } from "appwrite";
-import { EditableMaterialNameCell } from "@/components/materials/EditableMaterialNameCell";
+import { EditableMaterialNameCell } from "../EditableMaterialNameCell";
+import { EditableMaterialPriceCell } from "../EditableMaterialPriceCell";
 
 export const getColumns = (
   permissions: PermissionCheckType,
   prefs: Models.Preferences,
-  editingRowId: string | null,
-  setEditingRowId: (id: string | null) => void,
 ): ColumnDef<Material>[] => [
   {
     accessorKey: "$id",
@@ -53,8 +52,6 @@ export const getColumns = (
       return (
         <EditableMaterialNameCell
           material={material}
-          isEditing={editingRowId === material.$id}
-          setEditingRowId={setEditingRowId}
           permissions={permissions}
         />
       );
@@ -87,19 +84,16 @@ export const getColumns = (
   //   },
   //   size: 50,
   // },
-  {
-    accessorKey: "price",
-    header: "Price",
-    cell: ({ row }) => {
-      const price = parseInt(row.getValue("price"));
-
-      // Format the amount as a dollar amount
-      const formatted = formatCurrency(price, prefs.currency, 0);
-
-      return <div>{formatted}</div>;
+  {    accessorKey: "price",    header: "Price",    cell: ({ row }) => {      const price = parseInt(row.getValue("price"));      const materialId = row.original.$id;
+      return (
+        <EditableMaterialPriceCell
+          initialValue={price}
+          materialId={materialId}
+          permissions={permissions}
+        />
+      );
     },
-    size: 100,
-  },
+    size: 100,  },
   // {
   //   accessorKey: "actions",
   //   header: () => <div className="text-center">Actions</div>,

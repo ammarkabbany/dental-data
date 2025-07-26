@@ -12,17 +12,14 @@ import { PermissionCheckType } from "@/hooks/use-permissions";
 
 interface EditableMaterialNameCellProps {
   material: Material;
-  isEditing: boolean;
-  setEditingRowId: (id: string | null) => void;
   permissions: PermissionCheckType;
 }
 
 export const EditableMaterialNameCell: React.FC<EditableMaterialNameCellProps> = ({
   material,
-  isEditing,
-  setEditingRowId,
   permissions,
 }) => {
+  const [isEditing, setIsEditing] = React.useState(false);
   const [name, setName] = React.useState(material.name);
   const { mutate: updateMaterial, isPending: isUpdating } = useUpdateMaterial();
 
@@ -34,7 +31,7 @@ export const EditableMaterialNameCell: React.FC<EditableMaterialNameCellProps> =
 
   const handleSave = () => {
     if (name === material.name) {
-      setEditingRowId(null);
+      setIsEditing(false);
       return;
     }
     if (name.trim().length < 4) {
@@ -49,7 +46,7 @@ export const EditableMaterialNameCell: React.FC<EditableMaterialNameCellProps> =
       { id: material.$id, data: { name: name.trim() } },
       {
         onSuccess: () => {
-          setEditingRowId(null);
+          setIsEditing(false);
         },
         onError: (error) => {
           toastAPI.error(error.message || "Failed to update material");
@@ -60,11 +57,11 @@ export const EditableMaterialNameCell: React.FC<EditableMaterialNameCellProps> =
 
   const handleCancel = () => {
     setName(material.name);
-    setEditingRowId(null);
+    setIsEditing(false);
   };
 
   const handleEdit = () => {
-    setEditingRowId(material.$id);
+    setIsEditing(true);
   };
 
   if (isEditing) {
