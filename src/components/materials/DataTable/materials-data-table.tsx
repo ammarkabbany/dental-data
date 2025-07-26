@@ -44,11 +44,12 @@ export function MaterialsDataTable({ data = [] }: DataTableProps) {
     []
   );
   const {userRole, currentAppwriteTeam: appwriteTeam} = useTeamStore();
+  const [editingRowId, setEditingRowId] = React.useState<string | null>(null);
 
   const permissions = usePermission(userRole);
   // Add these states
 
-  const columns = getColumns(permissions, appwriteTeam?.prefs || {});
+  const columns = getColumns(permissions, appwriteTeam?.prefs || {}, editingRowId, setEditingRowId);
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({
       actions: permissions.checkPermission('materials', 'update')

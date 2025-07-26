@@ -4,16 +4,19 @@ import { Material } from "@/types";
 import { formatCurrency } from "@/lib/format-utils";
 import { PermissionCheckType } from "@/hooks/use-permissions";
 import { Models } from "appwrite";
+import { EditableMaterialNameCell } from "@/components/materials/EditableMaterialNameCell";
 
 export const getColumns = (
   permissions: PermissionCheckType,
-  prefs: Models.Preferences
+  prefs: Models.Preferences,
+  editingRowId: string | null,
+  setEditingRowId: (id: string | null) => void,
 ): ColumnDef<Material>[] => [
   {
     accessorKey: "$id",
     header: "ID",
     cell: ({ row }) => {
-      const id = Number(row.id) + 1;
+      const id = Number(row.original.$sequence);
       let idString = String(id);
       while (idString.length < 4) {
         idString = "0" + idString;
@@ -44,32 +47,19 @@ export const getColumns = (
     //     />
     //   );
     // },
-    accessorFn: (row) => {
-      const material = row;
-      const materialNmae = material?.name || "Unknown";
-      return materialNmae.length > 25
-        ? materialNmae.substring(0, 25) + "..."
-        : materialNmae;
-    },
+    accessorFn: (row) => row.name,
     cell: ({ row }) => {
-      const now = new Date();
-      const createdAt = new Date(row.original.$createdAt);
-      const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
-      const isRecent = createdAt >= fiveMinutesAgo;
-      const material: string = row.getValue("material");
+      const material = row.original;
       return (
-        <div className="capitalize flex items-center gap-2">
-          {/* <DoctorIcon h={5} w={5} className="dark:fill-white dark:stroke-white" /> */}
-          {material}
-          {isRecent && (
-            <Badge className="ml-1" variant="info">
-              New
-            </Badge>
-          )}
-        </div>
+        <EditableMaterialNameCell
+          material={material}
+          isEditing={editingRowId === material.$id}
+          setEditingRowId={setEditingRowId}
+          permissions={permissions}
+        />
       );
     },
-    size: 180,
+    size: 280,
 
     // filterFn: (row, _, filterValue) => {
     //   const {data: doctor, isLoading} = useGetDoctorById(row.original.doctorId)

@@ -5,59 +5,21 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AuditLogTable } from "@/components/audit-logs/AuditLogTable";
-import { AUDIT_LOGS_COLLECTION_ID, DATABASE_ID } from "@/lib/constants";
-import { AuditLogEntry } from "@/types";
 import { useGetLogs } from "@/features/logs/hooks/use-get-logs";
+import { UpgradePrompt } from "@/components/upgrade-prompt";
+import { useTeam } from "@/providers/team-provider";
 
 export default function AuditLogsPage() {
   // const canCreate = usePermission(userRole).checkPermission('cases', 'create');
   const { data: logs, isLoading } = useGetLogs();
+  const {currentTeam} = useTeam();
   const showEmptyState = !isLoading && (!logs || logs.total === 0);
-
-  const mockLogs: AuditLogEntry[] = [
-    {
-      $id: '1',
-      $createdAt: new Date().toISOString(),
-      $updatedAt: new Date().toISOString(),
-      $collectionId: AUDIT_LOGS_COLLECTION_ID,
-      $databaseId: DATABASE_ID,
-      $permissions: [],
-      action: 'CREATE',
-      resource: 'DOCTOR',
-      resourceId: '69123851291dasd0',
-      userId: 'randomUserId',
-      timestamp: new Date().toISOString(),
-    },
-    {
-      $id: '2',
-      $createdAt: new Date().toISOString(),
-      $updatedAt: new Date().toISOString(),
-      $collectionId: AUDIT_LOGS_COLLECTION_ID,
-      $databaseId: DATABASE_ID,
-      $permissions: [],
-      action: 'UPDATE',
-      resource: 'MATERIAL',
-      resourceId: '1234567890abcdef',
-      userId: 'anotherUserId',
-      timestamp: new Date().toISOString(),
-    },
-    {
-      $id: '3',
-      $createdAt: new Date().toISOString(),
-      $updatedAt: new Date().toISOString(),
-      $collectionId: AUDIT_LOGS_COLLECTION_ID,
-      $databaseId: DATABASE_ID,
-      $permissions: [],
-      action: 'DELETE',
-      resource: 'CASE',
-      resourceId: 'abcdef1234567890',
-      userId: 'thirdUserId',
-      timestamp: new Date().toISOString(),
-    }
-  ]
 
   return (
     <ContentLayout title="Logs">
+      {currentTeam?.planId === 'free' && (
+        <UpgradePrompt featureName="Logs" />
+      )}
       <motion.div 
         className="flex justify-between items-center mb-8"
         initial={{ opacity: 0, y: -20 }}
