@@ -103,7 +103,7 @@ export const EditableMaterialPriceCell: React.FC<EditableMaterialPriceCellProps>
 
   return (
     <div className="flex items-center space-x-2 group">
-      {permissions.checkPermission("materials", "update") && (
+      {permissions.checkPermission("materials", "update") ? (
         <>
         <div onDoubleClick={handleDoubleClick}>${value}</div>
         <Button
@@ -115,6 +115,10 @@ export const EditableMaterialPriceCell: React.FC<EditableMaterialPriceCellProps>
           <Edit className="h-4 w-4" />
         </Button>
         </>
+      ) : (
+        <div>
+          ${value}
+        </div>
       )}
     </div>
   );
