@@ -91,3 +91,33 @@ export const GetMaterialById = async (id: string): Promise<Material> => {
 
   return material;
 };
+
+export const updateMaterial = async (
+  id: Material["$id"],
+  data: Partial<Material>
+): Promise<{
+  success: boolean;
+  message: string;
+}> => {
+  const { databases } = await createAdminClient();
+
+  try {
+    await databases.updateDocument<Material>(
+      DATABASE_ID,
+      MATERIALS_COLLECTION_ID,
+      id,
+      {
+        ...data,
+      }
+    );
+    return {
+      success: true,
+      message: "Material updated successfully",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "An error occurred",
+    };
+  }
+};

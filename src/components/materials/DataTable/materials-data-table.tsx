@@ -22,6 +22,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { getColumns } from "./materials-data-table-columns";
+import { useState } from "react";
 // import { useCasesStore } from "@/store/Cases";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 // import CasesDataTableUtils from "@/components/dashboard/cases/data-table-utils";
@@ -44,10 +45,7 @@ export function MaterialsDataTable({ data = [] }: DataTableProps) {
     []
   );
   const {userRole, currentAppwriteTeam: appwriteTeam} = useTeamStore();
-
   const permissions = usePermission(userRole);
-  // Add these states
-
   const columns = getColumns(permissions, appwriteTeam?.prefs || {});
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({

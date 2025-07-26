@@ -1,7 +1,7 @@
 "use client";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { motion } from "framer-motion";
-import { FileTextIcon } from "lucide-react";
+import { FileTextIcon, Crown } from "lucide-react";
 import AnalyticsAreaChart from "@/components/area-chart";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatNumbers } from "@/lib/format-utils";
@@ -16,9 +16,10 @@ import { formatDistanceToNowStrict } from "date-fns";
 import { Button } from "@/components/ui/button";
 import AnalyticsStatsCard from "@/components/analytics-card";
 import { DoctorsPieChart } from "@/components/doctors/doctors-chart";
+import { UpgradePrompt } from "@/components/upgrade-prompt";
 
 export default function AnalyticsPage() {
-  const { userRole } = useTeamStore();
+  const { userRole, currentTeam } = useTeamStore();
   const canViewRevenue = usePermission(userRole).canViewDue();
   const { data, isLoading } = useAnalyiticsData();
 
@@ -35,7 +36,7 @@ export default function AnalyticsPage() {
   const itemVariants = {
     hidden: { opacity: 0, y: 10 },
     visible: { opacity: 1, y: 0 },
-    hover: { y: -4, transition: { duration: 0.2 } }
+    hover: { y: -4, transition: { duration: 0.2 } },
   };
 
   const statsCards = [
@@ -43,21 +44,21 @@ export default function AnalyticsPage() {
       title: "Cases",
       value: formatNumbers(data?.data.cases ?? 0),
       icon: <FileTextIcon className="size-6" />,
-      trend: data?.data.casesDelta ? (data?.data.casesDelta) : 0,
+      trend: data?.data.casesDelta ? data?.data.casesDelta : 0,
       // trendLabel: data?.data.casesDelta ? data?.data.casesDelta > 1 ? "up" : "down" : "up",
     },
     {
       title: "Doctors",
       value: formatNumbers(data?.data.doctors ?? 0),
       icon: <HugeiconsIcon icon={Doctor02Icon} />,
-      trend: data?.data.doctorsDelta ? (data?.data.doctorsDelta) : 0,
+      trend: data?.data.doctorsDelta ? data?.data.doctorsDelta : 0,
       // trendLabel: data?.data.doctorsDelta ? data?.data.doctorsDelta > 1 ? "up" : "down" : "up",
     },
     {
       title: "Materials",
       value: formatNumbers(data?.data.materials ?? 0),
       icon: <CubeIcon className="size-6" />,
-      trend: data?.data.materialsDelta ? (data?.data.materialsDelta) : 0,
+      trend: data?.data.materialsDelta ? data?.data.materialsDelta : 0,
       // trendLabel: data?.data.materialsDelta ? data?.data.materialsDelta > 1 ? "up" : "down" : "up",
     },
     // ...(canViewRevenue ? [{
@@ -70,6 +71,9 @@ export default function AnalyticsPage() {
 
   return (
     <ContentLayout title="Analytics">
+      {currentTeam?.planId === "free" && (
+        <UpgradePrompt featureName="Analytics" />
+      )}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -83,15 +87,21 @@ export default function AnalyticsPage() {
             <br />
             Analytics are automatically updated every 12 hours.
             <br />
-            <span className="text-primary">Last updated: {data?.$createdAt && formatDistanceToNowStrict(new Date(data.$createdAt), {addSuffix: true})}</span>
+            <span className="text-primary">
+              Last updated:{" "}
+              {data?.$createdAt &&
+                formatDistanceToNowStrict(new Date(data.$createdAt), {
+                  addSuffix: true,
+                })}
+            </span>
           </p>
         </div>
         {/* <Button
-          className="transition" 
-        >
-          <RefreshCcw className="size-4" />
-          Refresh
-        </Button> */}
+              className="transition" 
+            >
+              <RefreshCcw className="size-4" />
+              Refresh
+            </Button> */}
       </motion.div>
 
       <div className="space-y-6">
@@ -120,109 +130,102 @@ export default function AnalyticsPage() {
               variants={containerVariants}
               className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 rounded-xl"
             >
-                {statsCards.map((card, index) => (
-                  <motion.div
-                    key={index}
-                    variants={itemVariants}
-                    className="col-span-1"
-                  >
-                    <AnalyticsStatsCard
-                      {...card}
-                    />
-                  </motion.div>
-                ))}
+              {statsCards.map((card, index) => (
+                <motion.div
+                  key={index}
+                  variants={itemVariants}
+                  className="col-span-1"
+                >
+                  <AnalyticsStatsCard {...card} />
+                </motion.div>
+              ))}
             </motion.div>
           )}
         </div>
 
         {/* Area Chart */}
-        <motion.div
-          variants={itemVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          <div className="xl:col-span-2">
-            <AnalyticsAreaChart data={data?.casesChartData ?? {}} label="cases" />
-          </div>
-          {/* <DoctorsPieChart /> */}
-        </motion.div>
+        {currentTeam?.planId !== 'free' && (
+          <motion.div variants={itemVariants} initial="hidden" animate="visible">
+            <div className="xl:col-span-2">
+              <AnalyticsAreaChart
+                data={data?.casesChartData ?? {}}
+                label="cases"
+              />
+            </div>
+            {/* <DoctorsPieChart /> */}
+          </motion.div>
+        )}
 
         {/* <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="grid grid-cols-1 md:grid-cols-2 gap-6"
-        >
-          <motion.div variants={itemVariants}>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold">Top Doctors</CardTitle>
-                <CardDescription>Doctors with the most cases</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {isLoading ? (
-                  <div className="space-y-3">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Skeleton key={i} className="h-8 w-full" />
-                    ))}
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {[].map((doctor, i) => (
-                      <div key={i} className="flex items-center justify-between">
-                        <div>
-                          <p className="font-medium">{doctor.name}</p>
-                          <p className="text-sm text-muted-foreground">{doctor.totalCases} cases</p>
-                        </div>
-                        <div className={`text-sm ${doctor.trend > 0 ? 'text-green-500' : 'text-red-500'}`}>
-                            {doctor.trend > 0 ? '+' : ''}{doctor.trend}%
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="grid grid-cols-1 md:grid-cols-2 gap-6"
+            >
+              <motion.div variants={itemVariants}>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg font-semibold">Top Doctors</CardTitle>
+                    <CardDescription>Doctors with the most cases</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    {isLoading ? (
+                      <div className="space-y-3">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <Skeleton key={i} className="h-8 w-full" />
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        {[].map((doctor, i) => (
+                          <div key={i} className="flex items-center justify-between">
+                            <div>
+                              <p className="font-medium">{doctor.name}</p>
+                              <p className="text-sm text-muted-foreground">{doctor.totalCases} cases</p>
+                            </div>
+                            <div className={`text-sm ${doctor.trend > 0 ? 'text-green-500' : 'text-red-500'}`}>
+                                {doctor.trend > 0 ? '+' : ''}{doctor.trend}%
+                              </div>
                           </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </motion.div>
+                    )}
+                  </CardContent>
+                </Card>
+              </motion.div>
 
-          <motion.div variants={itemVariants}>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold">Popular Materials</CardTitle>
-                <CardDescription>Most used materials this month</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {isLoading ? (
-                  <div className="space-y-3">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Skeleton key={i} className="h-8 w-full" />
-                    ))}
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {[
-                      { name: "Zirconia Crown", count: 68, percentage: "32%" },
-                      { name: "Composite Filling", count: 54, percentage: "25%" },
-                      { name: "Porcelain Veneer", count: 42, percentage: "19%" },
-                      { name: "Dental Implant", count: 35, percentage: "16%" },
-                      { name: "Temporary Crown", count: 18, percentage: "8%" }
-                    ].map((material, i) => (
-                      <div key={i} className="flex items-center justify-between">
-                        <div>
-                          <p className="font-medium">{material.name}</p>
-                          <p className="text-sm text-muted-foreground">{material.count} uses</p>
-                        </div>
-                        <div className="text-sm font-medium">
-                          {material.percentage}
-                        </div>
+              <motion.div variants={itemVariants}>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg font-semibold">Popular Materials</CardTitle>
+                    <CardDescription>Most used materials this month</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    {isLoading ? (
+                      <div className="space-y-3">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <Skeleton key={i} className="h-8 w-full" />
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </motion.div>
-        </motion.div> */}
+                    ) : (
+                      <div className="space-y-4">
+                        {[].map((material, i) => (
+                          <div key={i} className="flex items-center justify-between">
+                            <div>
+                              <p className="font-medium">{material.name}</p>
+                              <p className="text-sm text-muted-foreground">{material.totalCases} cases</p>
+                            </div>
+                            <div className={`text-sm ${material.trend > 0 ? 'text-green-500' : 'text-red-500'}`}>
+                                {material.trend > 0 ? '+' : ''}{material.trend}%
+                              </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </motion.div>
+            </motion.div> */}
       </div>
     </ContentLayout>
   );

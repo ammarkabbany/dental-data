@@ -4,16 +4,18 @@ import { Material } from "@/types";
 import { formatCurrency } from "@/lib/format-utils";
 import { PermissionCheckType } from "@/hooks/use-permissions";
 import { Models } from "appwrite";
+import { EditableMaterialNameCell } from "../EditableMaterialNameCell";
+import { EditableMaterialPriceCell } from "../EditableMaterialPriceCell";
 
 export const getColumns = (
   permissions: PermissionCheckType,
-  prefs: Models.Preferences
+  prefs: Models.Preferences,
 ): ColumnDef<Material>[] => [
   {
     accessorKey: "$id",
     header: "ID",
     cell: ({ row }) => {
-      const id = Number(row.id) + 1;
+      const id = Number(row.original.$sequence);
       let idString = String(id);
       while (idString.length < 4) {
         idString = "0" + idString;
@@ -44,32 +46,17 @@ export const getColumns = (
     //     />
     //   );
     // },
-    accessorFn: (row) => {
-      const material = row;
-      const materialNmae = material?.name || "Unknown";
-      return materialNmae.length > 25
-        ? materialNmae.substring(0, 25) + "..."
-        : materialNmae;
-    },
+    accessorFn: (row) => row.name,
     cell: ({ row }) => {
-      const now = new Date();
-      const createdAt = new Date(row.original.$createdAt);
-      const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
-      const isRecent = createdAt >= fiveMinutesAgo;
-      const material: string = row.getValue("material");
+      const material = row.original;
       return (
-        <div className="capitalize flex items-center gap-2">
-          {/* <DoctorIcon h={5} w={5} className="dark:fill-white dark:stroke-white" /> */}
-          {material}
-          {isRecent && (
-            <Badge className="ml-1" variant="info">
-              New
-            </Badge>
-          )}
-        </div>
+        <EditableMaterialNameCell
+          material={material}
+          permissions={permissions}
+        />
       );
     },
-    size: 180,
+    size: 280,
 
     // filterFn: (row, _, filterValue) => {
     //   const {data: doctor, isLoading} = useGetDoctorById(row.original.doctorId)
@@ -97,19 +84,16 @@ export const getColumns = (
   //   },
   //   size: 50,
   // },
-  {
-    accessorKey: "price",
-    header: "Price",
-    cell: ({ row }) => {
-      const price = parseInt(row.getValue("price"));
-
-      // Format the amount as a dollar amount
-      const formatted = formatCurrency(price, prefs.currency, 0);
-
-      return <div>{formatted}</div>;
+  {    accessorKey: "price",    header: "Price",    cell: ({ row }) => {      const price = parseInt(row.getValue("price"));      const materialId = row.original.$id;
+      return (
+        <EditableMaterialPriceCell
+          initialValue={price}
+          materialId={materialId}
+          permissions={permissions}
+        />
+      );
     },
-    size: 100,
-  },
+    size: 100,  },
   // {
   //   accessorKey: "actions",
   //   header: () => <div className="text-center">Actions</div>,

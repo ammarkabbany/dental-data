@@ -78,6 +78,7 @@ export function Menu({ isOpen }: MenuProps) {
                 isNew
                 icon={BarChart3}
                 label="Analytics"
+                hasAccess={currentTeam?.planId !== "free"}
                 active={isActive("analytics")}
                 onClick={() => navigate("/dashboard/analytics")}
               />
@@ -95,6 +96,7 @@ export function Menu({ isOpen }: MenuProps) {
                 <NavItem
                   icon={FileDown}
                   label="Case Invoices"
+                  hasAccess={currentTeam?.planId !== "free"}
                   active={isActive("case-invoices")}
                   onClick={() => navigate("/dashboard/case-invoices")}
                 />
@@ -107,14 +109,14 @@ export function Menu({ isOpen }: MenuProps) {
                   onClick={() => navigate("/dashboard/doctors")}
                 />
               )}
-              {/* {permission.checkPermission("materials", "create") && (
+              {permission.checkPermission("materials", "create") && (
                 <NavItem
                   icon={CubeIcon}
                   label="Materials"
                   active={isActive("materials")}
                   onClick={() => navigate("/dashboard/materials")}
                 />
-              )} */}
+              )}
 
               {/* <Separator className="my-3" /> */}
 
@@ -177,6 +179,7 @@ function NavItem({
   badgeVariant = "default",
   variant = "default",
   onClick,
+  hasAccess = true,
 }: {
   icon: any;
   label: string;
@@ -188,16 +191,17 @@ function NavItem({
   badgeVariant?: "default" | "warning" | "destructive";
   variant?: "default" | "danger";
   onClick?: () => void;
+  hasAccess?: boolean;
 }) {
   return (
     <button
-      onClick={disabled || comingSoon ? undefined : onClick}
-      disabled={disabled || comingSoon}
-      aria-disabled={disabled || comingSoon}
+      onClick={disabled || comingSoon || !hasAccess ? undefined : onClick}
+      disabled={disabled || comingSoon || !hasAccess}
+      aria-disabled={disabled || comingSoon || !hasAccess}
       title={comingSoon ? "Coming Soon" : undefined}
       className={cn(
         "group group/menu-button h-9 flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200",
-        disabled || comingSoon
+        disabled || comingSoon || !hasAccess
           ? "cursor-not-allowed opacity-50 text-muted-foreground"
           : active
             ? "bg-gradient-to-r from-primary/20 to-primary/5"
@@ -210,7 +214,7 @@ function NavItem({
         <Icon
           className={cn(
             "size-5",
-            disabled || comingSoon
+            disabled || comingSoon || !hasAccess
               ? "text-muted-foreground/75"
               : active
                 ? "text-white"
@@ -228,7 +232,16 @@ function NavItem({
         >
           Coming Soon
         </Badge>
-      ) : isNew ? (
+      ) :
+      !hasAccess ? (
+        <Badge
+          variant="default"
+          className="ml-auto text-[10px] px-1.5 py-0.5 rounded-sm bg-gray-700 text-gray-300"
+        >
+          Upgrade
+        </Badge>
+      ) :
+      isNew ? (
         <Badge
           variant="default"
           className="ml-auto text-[10px] px-1.5 py-0.5 rounded-sm"

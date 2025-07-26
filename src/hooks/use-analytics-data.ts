@@ -100,6 +100,9 @@ export function useAnalyiticsData() {
       if (!currentTeam) {
         throw new Error("No team found");
       }
+      if (currentTeam.planId === "free") {
+        return null;
+      }
       return getAnalyticsData({ teamId: currentTeam.$id });
     },
     retry: 1
@@ -116,6 +119,9 @@ export function usePrefetchAnalyticsData() {
       queryFn: () => {
         if (!currentTeam) {
           throw new Error("No team found");
+        }
+        if (currentTeam.planId === "free") {
+          return null;
         }
         return getAnalyticsData({ teamId: currentTeam.$id });
       }

@@ -4,6 +4,7 @@ import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { CaseInvoicesDataTable } from "@/components/case-invoices/data-table";
 import ForbiddenPage from "@/components/forbidden";
 import LoadingSpinner from "@/components/ui/loading-spinner";
+import { UpgradePrompt } from "@/components/upgrade-prompt";
 import { usePermission } from "@/hooks/use-permissions";
 import { useTeam } from "@/providers/team-provider";
 import { motion, AnimatePresence } from "framer-motion";
@@ -37,6 +38,9 @@ export default function CaseInvoicesPage() {
     <>
       {/* <CreateCaseInvoiceModal /> */}
       <ContentLayout title="Case Invoices">
+        {currentTeam?.planId === 'free' && (
+          <UpgradePrompt featureName="Case Invoices" />
+        )}
         <motion.div
           className="flex flex-col sm:flex-row justify-between sm:items-center mb-8 gap-y-2"
           initial={{ opacity: 0, y: -20 }}

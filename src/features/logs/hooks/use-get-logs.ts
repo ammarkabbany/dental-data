@@ -4,6 +4,7 @@ import { databases } from "@/lib/appwrite/client";
 import { DATABASE_ID, AUDIT_LOGS_COLLECTION_ID } from "@/lib/constants";
 import { Query } from "appwrite";
 import { getUserInfo } from "@/features/auth/actions";
+import { useTeam } from "@/providers/team-provider";
 
 // Define filter types for better type safety
 export interface LogFilters {
@@ -18,9 +19,16 @@ export const useGetLogs = (
   pageSize = 10, 
   filters: LogFilters = {}
 ) => {
+  const { currentTeam } = useTeam();
   return useQuery({
     queryKey: ["logs", pageIndex, pageSize, filters],
     queryFn: async () => {
+      if (!currentTeam) {
+        throw new Error("No team found");
+      }
+      if (currentTeam.planId === "free") {
+          return null;
+        }
       const offset = pageIndex * pageSize;
       
       // Start with basic query parameters
@@ -94,11 +102,18 @@ export const useGetLogs = (
 
 export const usePrefetchLogs = () => {
   const queryClient = useQueryClient();
+  const { currentTeam } = useTeam();
 
   return async (pageIndex = 0, pageSize = 10, filters: LogFilters = {}) => {
     await queryClient.prefetchQuery({
       queryKey: ["logs", pageIndex, pageSize, filters],
       queryFn: async () => {
+        if (!currentTeam) {
+          throw new Error("No team found");
+        }
+        if (currentTeam.planId === "free") {
+          return null;
+        }
         const offset = pageIndex * pageSize;
         
         // Start with basic query parameters
