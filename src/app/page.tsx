@@ -484,11 +484,11 @@ export default function Homepage() {
                                 ))}
                               </ul>
                             </CardContent>
-                            <CardFooter>
+                            {/* <CardFooter>
                               <Button className={`w-full mt-auto ${plan.popular ? 'bg-primary hover:bg-primary/90 text-primary-foreground' : 'bg-secondary hover:bg-secondary/90 text-secondary-foreground'}`} variant={plan.popular ? "default" : "secondary"} size="lg" disabled>
                                 Choose Plan
                               </Button>
-                            </CardFooter>
+                            </CardFooter> */}
                           </Card>
                         </motion.div>
                       ))}
@@ -534,11 +534,11 @@ export default function Homepage() {
                                 ))}
                               </ul>
                             </CardContent>
-                            <CardFooter>
+                            {/* <CardFooter>
                               <Button className={`w-full mt-auto ${plan.popular ? 'bg-primary hover:bg-primary/90 text-primary-foreground' : 'bg-secondary hover:bg-secondary/90 text-secondary-foreground'}`} variant={plan.popular ? "default" : "secondary"} size="lg" disabled>
                                 Choose Plan
                               </Button>
-                            </CardFooter>
+                            </CardFooter> */}
                           </Card>
                         </motion.div>
                       ))}

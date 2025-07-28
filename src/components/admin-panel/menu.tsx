@@ -204,7 +204,7 @@ function NavItem({
         disabled || comingSoon || !hasAccess
           ? "cursor-not-allowed opacity-50 text-muted-foreground"
           : active
-            ? "bg-gradient-to-r from-primary/20 to-primary/5"
+            ? "bg-gradient-to-r from-primary/20 to-primary/5 outline-[1.25px] -outline-offset-2 outline-sidebar-primary/75"
             : variant === "danger"
               ? "text-red-400 hover:bg-gray-800"
               : "text-muted-foreground hover:bg-sidebar-accent hover:text-white"
