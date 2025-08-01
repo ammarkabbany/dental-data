@@ -4,6 +4,8 @@ import { Check, Edit, Pencil, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useUpdateMaterial } from '@/features/materials/hooks/use-update-material';
 import { PermissionCheckType } from '@/hooks/use-permissions';
+import { formatCurrency } from '@/lib/format-utils';
+import useTeamStore from '@/store/team-store';
 
 interface EditableMaterialPriceCellProps {
   initialValue: number;
@@ -18,6 +20,7 @@ export const EditableMaterialPriceCell: React.FC<EditableMaterialPriceCellProps>
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [value, setValue] = useState(initialValue.toString());
+  const {currentAppwriteTeam} = useTeamStore();
   const inputRef = useRef<HTMLInputElement>(null);
   const { mutate: updateMaterial, isPending } = useUpdateMaterial();
 
@@ -105,7 +108,7 @@ export const EditableMaterialPriceCell: React.FC<EditableMaterialPriceCellProps>
     <div className="flex items-center space-x-2 group">
       {permissions.checkPermission("materials", "update") ? (
         <>
-        <div onDoubleClick={handleDoubleClick}>${value}</div>
+        <div onDoubleClick={handleDoubleClick}>{formatCurrency(Number(value), currentAppwriteTeam?.prefs.currency)}</div>
         <Button
           size="icon"
           variant="ghost"
@@ -117,7 +120,7 @@ export const EditableMaterialPriceCell: React.FC<EditableMaterialPriceCellProps>
         </>
       ) : (
         <div>
-          ${value}
+          {formatCurrency(Number(value), currentAppwriteTeam?.prefs.currency)}
         </div>
       )}
     </div>

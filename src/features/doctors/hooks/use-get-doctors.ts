@@ -14,7 +14,7 @@ export const useGetDoctors = () => {
   const hasFinancialPerm = usePermission(userRole).canViewDue();
   const selectQuery = ["$id", "$createdAt", "teamId", "name", "totalCases"];
   if (hasFinancialPerm) {
-    selectQuery.push('due')
+    selectQuery.push("due");
   }
   return useQuery({
     queryKey: ["doctors"],
@@ -22,7 +22,7 @@ export const useGetDoctors = () => {
       const doctors = await databases.listDocuments<Doctor>(
         DATABASE_ID,
         DOCTORS_COLLECTION_ID,
-        [Query.limit(9999), Query.select(selectQuery)]
+        [Query.limit(9999), Query.select(selectQuery), Query.orderDesc("totalCases")]
       );
       setDoctors(doctors.documents);
 
@@ -50,7 +50,7 @@ export const usePrefetchDoctors = () => {
   const hasFinancialPerm = usePermission(userRole).canViewDue();
   const selectQuery = ["$id", "$createdAt", "teamId", "name", "totalCases"];
   if (hasFinancialPerm) {
-    selectQuery.push('due');
+    selectQuery.push("due");
   }
 
   return async () => {
@@ -60,7 +60,7 @@ export const usePrefetchDoctors = () => {
         const doctors = await databases.listDocuments<Doctor>(
           DATABASE_ID,
           DOCTORS_COLLECTION_ID,
-          [Query.limit(9999), Query.select(selectQuery)]
+          [Query.limit(9999), Query.select(selectQuery), Query.orderDesc("totalCases")]
         );
         setDoctors(doctors.documents);
 

@@ -9,7 +9,7 @@ import { EditableMaterialPriceCell } from "../EditableMaterialPriceCell";
 
 export const getColumns = (
   permissions: PermissionCheckType,
-  prefs: Models.Preferences,
+  prefs: Models.Preferences
 ): ColumnDef<Material>[] => [
   {
     accessorKey: "$id",
@@ -84,7 +84,12 @@ export const getColumns = (
   //   },
   //   size: 50,
   // },
-  {    accessorKey: "price",    header: "Price",    cell: ({ row }) => {      const price = parseInt(row.getValue("price"));      const materialId = row.original.$id;
+  {
+    accessorKey: "price",
+    header: "Price",
+    cell: ({ row }) => {
+      const price = parseInt(row.getValue("price"));
+      const materialId = row.original.$id;
       return (
         <EditableMaterialPriceCell
           initialValue={price}
@@ -93,7 +98,8 @@ export const getColumns = (
         />
       );
     },
-    size: 100,  },
+    size: 100,
+  },
   // {
   //   accessorKey: "actions",
   //   header: () => <div className="text-center">Actions</div>,
