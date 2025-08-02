@@ -18,7 +18,7 @@ export function UpgradePrompt({ featureName = "this feature" }: UpgradePromptPro
           <br />
           Upgrade now to unlock all capabilities.
         </p>
-        <Button className="mt-4 mx-auto">Upgrade Now</Button>
+        {/* <Button className="mt-4 mx-auto">Upgrade Now</Button> */}
       </div>
     </div>
   );

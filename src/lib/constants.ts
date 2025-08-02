@@ -35,27 +35,30 @@ export const Plans = [
     price: 0,
     features: [
       { text: "14 days free trial", icon: Clock },
-      { text: "100 cases", icon: Database },
-      { text: "1 team member", icon: Users },
+      { text: "Up to 100 cases (14-day limit)", icon: Database },
+      { text: "1 team member (owner only)", icon: Users },
       { text: "Basic support", icon: MessageSquare },
+      { text: "Basic export features", icon: FileDown }
     ],
     popular: false,
   },
   {
     name: "Starter",
-    desc: "Great for small to medium labs.",
+    desc: "Great for small to medium teams.",
     price: 14.99,
     features: [
       { text: "Up to 200 cases per month", icon: Database },
       { text: "Up to 3 team members", icon: Users },
       { text: "Priority support", icon: MessageSquare },
       { text: "Simple Audit Logs", icon: Clock },
+      { text: "Advanced export features", icon: FileDown },
+      { text: "Basic analytics", icon: BarChart3 },
     ],
     popular: true,
   },
   {
     name: "Pro",
-    desc: "Perfect for growing labs.",
+    desc: "Perfect for growing teams.",
     price: 29.99,
     features: [
       { text: "Up to 500 cases per month", icon: Database },
