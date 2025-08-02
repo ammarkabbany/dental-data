@@ -196,11 +196,6 @@ const ExecutionLogs = ({
       {/* Logs List */}
       <div className="space-y-3">
         {logs
-          .sort(
-            (a, b) =>
-              new Date(b.$createdAt).getTime() -
-              new Date(a.$createdAt).getTime()
-          )
           .map((log) => (
             <Card
               key={log.$id}
