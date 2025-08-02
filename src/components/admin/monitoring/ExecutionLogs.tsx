@@ -25,58 +25,16 @@ import { API_ENDPOINT, APPWRITE_PROJECT } from "@/lib/constants";
 
 const ExecutionLogs = ({
   logs = [],
+  statusFilter,
+  setStatusFilter,
 }: {
   logs: (Models.Execution & { functionName: string })[];
+  statusFilter: string;
+  setStatusFilter: (status: string) => void;
 }) => {
   const getFunctionLink = (functionId: string) => {
     return `https://cloud.appwrite.io/console/project-fra-${APPWRITE_PROJECT}/functions/function-${functionId}/executions`;
   };
-  // const logs = [
-  //   {
-  //     $id: 'log-001',
-  //     $createdAt: '2025-07-10T22:02:30.000+00:00',
-  //     functionId: '686e8b26003633f21c41',
-  //     trigger: "http",
-  //     status: 'failed',
-  //     requestPath: "/update",
-  //     responseStatusCode: 500,
-  //     method: "PATCH",
-  //     duration: 0.15146398544312,
-  //   },
-  //   {
-  //     $id: 'log-002',
-  //     $createdAt: '2025-07-10T05:34:56.291+00:00',
-  //     functionId: '686e8b26003633f21c41',
-  //     trigger: "http",
-  //     status: 'completed',
-  //     requestPath: "/",
-  //     responseStatusCode: 200,
-  //     method: "GET",
-  //     duration: 0.43666005134583,
-  //   },
-  //   {
-  //     $id: 'log-002',
-  //     $createdAt: '2025-07-09T20:36:55.514+00:00',
-  //     functionId: '686e8b26003633f21c41',
-  //     trigger: "event",
-  //     status: 'processing',
-  //     responseStatusCode: 0,
-  //     requestPath: "/all",
-  //     method: "POST",
-  //     duration: 2.7086098194122,
-  //   },
-  //   {
-  //     $id: 'log-002',
-  //     $createdAt: '2025-07-09T20:34:56.291+00:00',
-  //     functionId: '686e8b26003633f21c41',
-  //     trigger: "http",
-  //     status: 'waiting',
-  //     requestPath: "/",
-  //     responseStatusCode: 0,
-  //     method: "GET",
-  //     duration: 0.20617008209229,
-  //   },
-  // ];
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -115,6 +73,7 @@ const ExecutionLogs = ({
         );
     }
   };
+
   const getStatusCodeBadge = (code: number) => {
     switch (code) {
       case 500:
@@ -158,44 +117,28 @@ const ExecutionLogs = ({
 
   return (
     <div className="space-y-6">
-      {/* Filters */}
-      {/* <div className="flex items-center space-x-4">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-          <Input
-            placeholder="Search logs..."
-            className="pl-10"
-          />
-        </div>
-        <Select>
-          <SelectTrigger className="w-[150px]">
-            <Filter className="w-4 h-4 mr-2" />
-            <SelectValue placeholder="Status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Status</SelectItem>
-            <SelectItem value="success">Success</SelectItem>
-            <SelectItem value="error">Error</SelectItem>
-            <SelectItem value="warning">Warning</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select>
-          <SelectTrigger className="w-[150px]">
-            <SelectValue placeholder="Function" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Functions</SelectItem>
-            <SelectItem value="user-authentication">user-authentication</SelectItem>
-            <SelectItem value="email-notifications">email-notifications</SelectItem>
-            <SelectItem value="image-processor">image-processor</SelectItem>
-            <SelectItem value="payment-webhook">payment-webhook</SelectItem>
-          </SelectContent>
-        </Select>
-      </div> */}
-
-      {/* Logs List */}
       <div className="space-y-3">
+        <div className="flex items-center space-x-4 mb-4">
+          <Select defaultValue="all" onValueChange={setStatusFilter} value={statusFilter}>
+            <SelectTrigger className="w-[150px]">
+              <Filter className="w-4 h-4" />
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Status</SelectItem>
+              <SelectItem value="completed">Completed</SelectItem>
+              <SelectItem value="failed">Failed</SelectItem>
+              <SelectItem value="processing">Processing</SelectItem>
+              <SelectItem value="waiting">Waiting</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
         {logs
+          .sort(
+            (a, b) =>
+              new Date(b.$createdAt).getTime() -
+              new Date(a.$createdAt).getTime()
+          )
           .map((log) => (
             <Card
               key={log.$id}

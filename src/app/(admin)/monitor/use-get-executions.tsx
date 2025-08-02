@@ -1,17 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { listAllExecutions } from "./actions";
 
-export const useGetAdminExecutions = () => {
+export const useGetAdminExecutions = (status?: string) => {
   return useQuery({
-    queryKey: ["executions"],
-    queryFn: async () => {
-      const executions = await listAllExecutions();
-      return executions;
-    },
+    queryKey: ["adminExecutions", status],
+    queryFn: async () => listAllExecutions(status),
     retry: false,
     refetchInterval: 5000,
     refetchOnMount: "always",
     refetchOnReconnect: "always",
     refetchOnWindowFocus: "always",
+    staleTime: 0
   });
 };
