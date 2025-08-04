@@ -5,7 +5,7 @@ import { Payment } from "@/types";
 import { ID } from "node-appwrite";
 import { UpdateDoctorDue } from "./actions";
 
-export const createPayment = async (data: Partial<Payment>): Promise<Payment> => {
+export const createPayment = async (data: any): Promise<Payment> => {
   const {databases} = await createAdminClient();
   const payment = await databases.createDocument<Payment>(
     DATABASE_ID,

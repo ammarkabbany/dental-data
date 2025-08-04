@@ -1,7 +1,7 @@
 import { account, avatars } from "@/lib/appwrite/client";
 import { User } from "@/types";
 
-export const getCurrent = async (): Promise<User | null> => {
+export const getCurrent = async () => {
   try {
     const user = await account.get();
     const prefAvatar = user.prefs.avatar;

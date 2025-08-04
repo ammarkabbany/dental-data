@@ -5,7 +5,9 @@ import { Models } from "appwrite";
  * Represents a user object.
  * Extends the base `Models.Document` type.
  */
-export type User = Models.User<Models.Preferences> & {
+export type User = Models.User<Models.Preferences & {
+  avatar?: string;
+}> & {
   avatar?: string;
 }
 

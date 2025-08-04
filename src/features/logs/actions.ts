@@ -6,7 +6,7 @@ import { AuditLogEntry } from "@/types";
 import { ID, Permission, Role } from "node-appwrite";
 
 export const LogAuditEvent = async (
-  data: Partial<AuditLogEntry> & {
+  data: any & {
     userId: string;
     teamId?: string;
   }
@@ -37,7 +37,7 @@ export const LogAuditEvent = async (
 
 // Log multiple audit events at once
 export const LogMultipleAuditEvents = async (
-  events: Array<Partial<AuditLogEntry> & { userId: string; teamId?: string }>
+  events: Array<any & { userId: string; teamId?: string }>
 ): Promise<void> => {
   const { databases } = await createAdminClient();
   const promises = events.map((event) => {

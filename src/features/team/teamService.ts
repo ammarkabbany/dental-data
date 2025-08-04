@@ -82,6 +82,8 @@ async function createTeam(name: string, userId: string, type: 'dental_lab' | 'cl
       ownerId: userId,
       maxCases: freePlan.maxCases,
       planExpiresAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+      casesUsed: 0,
+      planId: freePlan.$id,
     },
     [Permission.read(Role.team(id)), Permission.write(Role.team(id, "owner"))],
   );

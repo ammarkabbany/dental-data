@@ -6,7 +6,7 @@ interface TeamStore {
   teams: Team[];
   currentTeam: Team | null;
   setCurrentTeam: (team: Team | null) => void;
-  currentAppwriteTeam: Models.Team<Models.Preferences> | null;
+  currentAppwriteTeam: Models.Team<Models.Preferences & { currency?: string }> | null;
   setCurrentAppwriteTeam: (
     team: Models.Team<Models.Preferences> | null
   ) => void;

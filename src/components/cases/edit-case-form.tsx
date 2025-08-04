@@ -326,7 +326,7 @@ export const EditCaseForm = ({ selectedCase }: EditCaseFormProps) => {
       data: caseData, // Already parsed
       shade: selectedCase?.shade,
       due: selectedCase?.due,
-      invoice: selectedCase?.invoiceStatus, // Make sure this aligns with schema
+      invoice: selectedCase?.invoice, // Make sure this aligns with schema
       note: selectedCase?.note,
     },
   });

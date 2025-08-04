@@ -23,7 +23,7 @@ import { cn } from "@/lib/utils";
 
 export const getColumns = (
   permissions: PermissionCheckType,
-  prefs: Models.Preferences,
+  prefs: any,
   editingRowId: string | null,
   setEditingRowId: (id: string | null) => void,
 ): ColumnDef<Doctor>[] => [
