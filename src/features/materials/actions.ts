@@ -14,7 +14,7 @@ import { LogAuditEvent } from "../logs/actions";
 export const CreateMaterial = async (
   userId: string,
   teamId: string,
-  data: Partial<Material>
+  data: any
 ): Promise<{
   success: boolean;
   message: string;

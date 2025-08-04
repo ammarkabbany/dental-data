@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Models } from "appwrite";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 
-export const getColumns = (handleViewInvoice: (invoice: CaseInvoice) => void, prefs: Models.Preferences): ColumnDef<CaseInvoice>[] => [
+export const getColumns = (handleViewInvoice: (invoice: CaseInvoice) => void, prefs: any): ColumnDef<CaseInvoice>[] => [
   {
     accessorKey: "name",
     header: "Name",

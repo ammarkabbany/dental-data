@@ -29,7 +29,7 @@ import useTeamStore from "@/store/team-store";
 // Define prop types for PrintableTable
 type PrintableTableProps = {
   cases: Case[] | null;
-  teamPrefs: Models.Preferences | undefined;
+  teamPrefs: any | undefined;
   getDoctorById: (id: string) => Doctor | undefined;
   getMaterialById: (id: string) => Material | undefined;
   options: {

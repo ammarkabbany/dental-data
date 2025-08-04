@@ -20,7 +20,7 @@ import { LogAuditEvent } from "../logs/actions";
 export const CreateDoctor = async (
   userId: string,
   teamId: string,
-  data: Partial<Doctor>
+  data: any
 ): Promise<{
   success: boolean;
   message: string;

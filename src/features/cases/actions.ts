@@ -9,10 +9,20 @@ import {
   CASE_INVOICES_COLLECTION_ID,
   CASES_COLLECTION_ID,
   DATABASE_ID,
+  DOCTORS_COLLECTION_ID,
   DOCTORS_FUNCTION_ID,
+  TEAMS_COLLECTION_ID,
 } from "@/lib/constants";
-import { Case, CaseInvoice } from "@/types";
-import { AppwriteException, ExecutionMethod, ID, Permission, Query, Role } from "node-appwrite";
+import { Case, CaseInvoice, ToothCollection } from "@/types";
+import {
+  AppwriteException,
+  ExecutionMethod,
+  ID,
+  Models,
+  Permission,
+  Query,
+  Role,
+} from "node-appwrite";
 import { getTeamById, updateTeam } from "../team/teamService";
 import { LogAuditEvent } from "../logs/actions";
 import { isBefore } from "date-fns";
@@ -20,7 +30,7 @@ import { isBefore } from "date-fns";
 export const CreateCase = async (
   teamId: Case["teamId"],
   userId: Case["userId"],
-  data: Partial<Case>
+  data: any
 ): Promise<{
   success: boolean;
   message?: string;
@@ -57,7 +67,7 @@ export const CreateCase = async (
         ...data,
         patient: data.patient || "-",
         shade: data.shade || "-",
-        data: JSON.stringify(data.data),
+        data: JSON.stringify(data.data) as unknown as ToothCollection,
       },
       [
         Permission.read(Role.team(teamId)),
@@ -67,9 +77,36 @@ export const CreateCase = async (
       ]
     );
     if (team) {
-      await updateTeam(document.teamId, {
-        casesUsed: Math.max(0, (team.casesUsed || 0) + 1),
-      });
+      try {
+        await databases.incrementDocumentAttribute(
+          DATABASE_ID,
+          TEAMS_COLLECTION_ID,
+          teamId,
+          "casesUsed",
+          1
+        );
+      } catch (error) {
+        console.error("Error incrementing casesUsed:", error);
+      }
+    }
+
+    try {
+      await databases.incrementDocumentAttribute(
+        DATABASE_ID,
+        DOCTORS_COLLECTION_ID,
+        document.doctorId,
+        "totalCases",
+        1
+      );
+      await databases.incrementDocumentAttribute(
+        DATABASE_ID,
+        DOCTORS_COLLECTION_ID,
+        document.doctorId,
+        "due",
+        document.due || 0
+      );
+    } catch (error) {
+      console.error("Error incrementing totalCases:", error);
     }
 
     await LogAuditEvent({
@@ -106,7 +143,7 @@ export const CreateCase = async (
 export const UpdateCase = async (
   id: Case["$id"],
   teamId: Case["teamId"] | undefined,
-  data: Partial<Case>,
+  data: any,
   oldCase: Case
 ): Promise<Case | null> => {
   const { databases, functions } = await createAdminClient();
@@ -125,37 +162,36 @@ export const UpdateCase = async (
     }
   );
 
-  if (updatedDocument.due !== oldCase.due) {
-    await functions.createExecution(
-      DOCTORS_FUNCTION_ID,
-      JSON.stringify({
-        caseId: updatedDocument.$id,
-        doctorId: updatedDocument.doctorId,
-        oldDue: oldCase.due || 0,
-        newDue: updatedDocument.due || 0,
-      }),
-      true,
-      "/update",
-      ExecutionMethod.POST
+  if (updatedDocument.due > oldCase.due) {
+    await databases.incrementDocumentAttribute(
+      DATABASE_ID,
+      DOCTORS_COLLECTION_ID,
+      updatedDocument.doctorId,
+      "due",
+      updatedDocument.due - oldCase.due
     );
+  } else if (updatedDocument.due < oldCase.due) {
+    await databases.decrementDocumentAttribute(
+      DATABASE_ID,
+      DOCTORS_COLLECTION_ID,
+      updatedDocument.doctorId,
+      "due",
+      oldCase.due - updatedDocument.due,
+      0
+    );
+    // await functions.createExecution(
+    //   DOCTORS_FUNCTION_ID,
+    //   JSON.stringify({
+    //     caseId: updatedDocument.$id,
+    //     doctorId: updatedDocument.doctorId,
+    //     oldDue: oldCase.due || 0,
+    //     newDue: updatedDocument.due || 0,
+    //   }),
+    //   true,
+    //   "/update",
+    //   ExecutionMethod.POST
+    // );
   }
-
-  // update doctor
-  // const doctorId = updatedDocument.doctorId;
-  // const newDue = updatedDocument.due || 0;
-  // const oldDue = oldCase.due || 0;
-
-  // let result: number = 0;
-  // if (newDue < oldDue) {
-  //   // Decreased due (removed tooth or demoted material)
-  //   result = -(oldDue - newDue);
-  // } else if (newDue > oldDue) {
-  //   // Increased due (added tooth or promoted material)
-  //   result = newDue - oldDue;
-  // }
-  // if (doctorId) {
-  //   await UpdateDoctorDue(doctorId, result);
-  // }
 
   await LogAuditEvent({
     userId: updatedDocument.userId,
@@ -187,7 +223,6 @@ export const DeleteCase = async (
 
   const { databases, functions } = await createAdminClient();
 
-
   try {
     const response = await databases.deleteDocuments<Case>(
       DATABASE_ID,
@@ -197,11 +232,11 @@ export const DeleteCase = async (
     await functions.createExecution(
       DOCTORS_FUNCTION_ID,
       JSON.stringify({
-        changes: response.documents.map(c=> ({
+        changes: response.documents.map((c) => ({
           caseId: c.$id,
           doctorId: c.doctorId,
           amount: c.due || 0,
-        }))
+        })),
       }),
       true,
       "/delete",
@@ -345,9 +380,9 @@ export const CreateCaseInvoice = async (
       {
         teamId,
         userId,
-        cases: data.cases?.map(c => c.$id),
+        cases: data.cases?.map((c) => c.$id),
         ...data,
-      },
+      } as Omit<CaseInvoice, keyof Models.Document>,
       [
         // Permission.read(Role.team(teamId)),
         Permission.write(Role.team(teamId, "owner")),

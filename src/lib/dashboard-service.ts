@@ -36,17 +36,17 @@ export async function getDashboardData(teamId: string | undefined) {
     // Calculate stats
     const totalCases = cases.documents.length;
     const activeDoctors = doctors.documents.length;
-    const dueRevenue = cases.documents.reduce((sum, c) => sum + (c.dueAmount || 0), 0);
+    const dueRevenue = cases.documents.reduce((sum, c) => sum + (c.due || 0), 0);
 
     // Calculculate stats due today
     const today = new Date().toISOString().split('T')[0];
     const casesDueToday = cases.documents.filter(c => 
-      c.dueDate && c.dueDate.startsWith(today)
+      c.date && c.date.startsWith(today)
     ).length;
 
     // Recent cases
     const recentCases = cases.documents
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
       .slice(0, 5)
       .map(caseItem => {
         // Find the doctor name
@@ -54,11 +54,11 @@ export async function getDashboardData(teamId: string | undefined) {
 
         return {
           $id: caseItem.$id,
-          patientName: caseItem.patientName,
+          patientName: caseItem.patient,
           doctorName: doctor ? doctor.name : 'Unknown Doctor',
-          dueDate: caseItem.dueDate,
-          invoiceStatus: caseItem.invoiceStatus,
-          dueAmount: caseItem.dueAmount
+          dueDate: caseItem.date,
+          invoiceStatus: caseItem.invoice,
+          dueAmount: caseItem.due
         };
       });
 

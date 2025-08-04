@@ -56,7 +56,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       setUserLoading(true);
       const currentUser = await getCurrent();
-      setUser(currentUser);
+      setUser(currentUser as User);
       setIsAdmin(currentUser?.labels.includes('admin') ?? false);
       queryClient.setQueryData(['current'], currentUser);
     } catch (error) {

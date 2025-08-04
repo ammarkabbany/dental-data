@@ -9,7 +9,7 @@ import { isBefore } from "date-fns";
 
 export const CreateTemplate = async (
   teamId: Template["teamId"],
-  data: Partial<Template>
+  data: any
 ): Promise<Template | null> => {
   const { databases } = await createAdminClient();
 

@@ -82,14 +82,14 @@ async function getAnalyticsData({ teamId }: { teamId: string }) {
         ...analyticsData.documents[0],
         data: JSON.parse(analyticsData.documents[0].data),
         casesChartData: JSON.parse(analyticsData.documents[0].casesChartData),
-      } as AnalyticsEntry;
+      } as unknown as AnalyticsEntry;
     }
   }
   return {
     ...analytics,
     data: JSON.parse(analytics.data),
     casesChartData: JSON.parse(analytics.casesChartData),
-  } as AnalyticsEntry;
+  } as unknown as AnalyticsEntry;
 }
 
 export function useAnalyiticsData() {
