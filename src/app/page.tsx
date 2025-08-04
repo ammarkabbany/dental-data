@@ -32,6 +32,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plans } from "@/lib/constants";
 import { formatCurrency, getYearlyPrice } from "@/lib/format-utils";
 import MainFooter from "@/components/layout/Footer";
+import { VideoShowcaseSection } from "@/components/video-showcase";
 
 export default function Homepage() {
   const { handleLogin, isAuthenticated, isLoading } = useAuth();
@@ -70,6 +71,12 @@ export default function Homepage() {
               className="text-sm cursor-pointer font-medium hover:text-primary transition-colors"
             >
               Workflow
+            </div>
+            <div
+              onClick={() => handleClickScroll("showcase")}
+              className="text-sm cursor-pointer font-medium text-green-400 hover:text-primary transition-colors"
+            >
+              Showcase
             </div>
             <div onClick={() => handleClickScroll('pricing')} className="text-sm cursor-pointer font-medium hover:text-primary transition-colors">Pricing</div>
           </nav>
@@ -354,6 +361,9 @@ export default function Homepage() {
               </div>
             </div>
           </section>
+
+          {/* Video Showcase Section */}
+          <VideoShowcaseSection />
 
           {/* How it Works Section */}
           <section id="workflow" className="w-full py-24 md:py-32 lg:py-40 bg-background text-foreground">
