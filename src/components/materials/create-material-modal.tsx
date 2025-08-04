@@ -75,7 +75,7 @@ export const MaterialCreateModal = () => {
                     <FormItem>
                       <FormLabel>Name</FormLabel>
                       <FormControl>
-                        <Input maxLength={20} {...field} placeholder="Enter name" />
+                        <Input maxLength={20} {...field} placeholder="e.g Zircon, Emax, PMMA" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -94,7 +94,9 @@ export const MaterialCreateModal = () => {
                           onChange={(e) => {
                             field.onChange(e.target.valueAsNumber);
                           }}
-                          placeholder="Enter number"
+                          step={1}
+                          min={0}
+                          placeholder="e.g 100, 200, 300"
                         />
                       </FormControl>
                       <FormMessage />

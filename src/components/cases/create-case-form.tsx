@@ -486,9 +486,9 @@ export const CreateCaseForm = () => {
                     name="patient"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Patient</FormLabel>
+                        <FormLabel className="flex items-center justify-between">Patient <span className="text-muted-foreground">Auto fills as &quot; - &quot; if no value is provided</span></FormLabel>
                         <FormControl>
-                          <Input {...field} placeholder="Patient name" />
+                          <Input required {...field} placeholder="e.g John Doe" maxLength={32} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -499,7 +499,7 @@ export const CreateCaseForm = () => {
                     name="doctorId"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Doctor</FormLabel>
+                        <FormLabel className="flex items-center justify-between">Doctor <FormMessage className="mr-2"/></FormLabel>
                         <FormControl>
                           <CustomComboBox
                             label="doctor"
@@ -511,7 +511,7 @@ export const CreateCaseForm = () => {
                             previewValue={`${getDoctorById(field.value)?.name}`}
                           />
                         </FormControl>
-                        <FormMessage />
+                        {/* <FormMessage /> */}
                       </FormItem>
                     )}
                   />
@@ -521,7 +521,7 @@ export const CreateCaseForm = () => {
                       name="materialId"
                       render={({ field }) => (
                         <FormItem className="col-span-2">
-                          <FormLabel>Material</FormLabel>
+                          <FormLabel className="flex items-center justify-between">Material <FormMessage className="mr-2"/></FormLabel>
                           <FormControl>
                             <CustomComboBox
                               label="material"
@@ -535,7 +535,7 @@ export const CreateCaseForm = () => {
                               })`}
                             />
                           </FormControl>
-                          <FormMessage />
+                          {/* <FormMessage /> */}
                         </FormItem>
                       )}
                     />
@@ -549,7 +549,8 @@ export const CreateCaseForm = () => {
                             <Input
                               className="placeholder:text-muted-foreground/50"
                               {...field}
-                              placeholder="-"
+                              placeholder="e.g A2, 3M2"
+                              maxLength={6}
                             />
                           </FormControl>
                           <FormMessage />
@@ -569,6 +570,7 @@ export const CreateCaseForm = () => {
                               {...field}
                               date={field.value}
                               setDate={(v: Date) => {
+                                if (!v) return;
                                 field.onChange(
                                   new Date(v).toLocaleDateString("en-CA")
                                 );
@@ -612,7 +614,8 @@ export const CreateCaseForm = () => {
                           <Input
                             className="placeholder:text-muted-foreground/50"
                             {...field}
-                            placeholder="note"
+                            placeholder="e.g Case description, patient history, etc."
+                            maxLength={50}
                           />
                         </FormControl>
                         <FormMessage />
@@ -645,11 +648,9 @@ export const CreateCaseForm = () => {
                   name="data"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="z-30">
-                        Dental Chart
-                      </FormLabel>
+                      <FormMessage className="z-30 mb-2" />
                       <FormControl>
-                        <div>
+                        <div className="mt-4">
                           {!form.getValues().materialId && (
                             <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-20 flex items-center justify-center flex-col gap-2 rounded-lg">
                               <AlertCircle className="w-8 h-8 text-muted-foreground" />
@@ -670,7 +671,6 @@ export const CreateCaseForm = () => {
                           />
                         </div>
                       </FormControl>
-                      <FormMessage className="z-30" />
                     </FormItem>
                   )}
                 />

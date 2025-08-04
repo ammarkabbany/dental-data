@@ -76,7 +76,7 @@ export const CreateDoctorModal = () => {
                     <FormItem>
                       <FormLabel>Name</FormLabel>
                       <FormControl>
-                        <Input maxLength={32} {...field} placeholder="Enter name" />
+                        <Input maxLength={32} {...field} placeholder="e.g Dr. John, Dr. Smith" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
