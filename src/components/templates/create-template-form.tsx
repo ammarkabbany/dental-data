@@ -83,7 +83,7 @@ export const CreateTemplateForm = () => {
                     <FormItem>
                       <FormLabel>Name</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="Enter name" />
+                        <Input {...field} placeholder="e.g Template 1, Template 2, etc." maxLength={32} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -143,7 +143,7 @@ export const CreateTemplateForm = () => {
                       <FormItem>
                         <FormLabel>Note</FormLabel>
                         <FormControl>
-                          <Input {...field} placeholder="Enter note" />
+                          <Input {...field} placeholder="e.g Emergency case, etc." maxLength={50} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -156,7 +156,7 @@ export const CreateTemplateForm = () => {
                       <FormItem>
                         <FormLabel>Shade</FormLabel>
                         <FormControl>
-                          <Input {...field} placeholder="Enter shade" />
+                          <Input {...field} placeholder="e.g A2, 3M2" maxLength={6} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

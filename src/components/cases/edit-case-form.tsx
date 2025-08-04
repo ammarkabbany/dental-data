@@ -26,6 +26,7 @@ import useTeamStore from "@/store/team-store";
 import { useDoctorsStore } from "@/store/doctors-store";
 import { useMaterialsStore } from "@/store/material-store";
 import { useRouter } from "next/navigation";
+import { AlertCircle } from "lucide-react";
 
 interface EditCaseFormProps {
   selectedCase: Case;
@@ -375,12 +376,13 @@ export const EditCaseForm = ({ selectedCase }: EditCaseFormProps) => {
                   name="patient"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Patient</FormLabel>
+                      <FormLabel className="flex items-center justify-between">Patient <span className="text-muted-foreground">Auto fills as &quot; - &quot; if no value is provided</span></FormLabel>
                       <FormControl>
                         <Input
                           className="placeholder:text-muted-foreground/50"
                           {...field}
-                          placeholder="Enter patient name"
+                          placeholder="e.g John Doe"
+                          maxLength={32}
                         />
                       </FormControl>
                       <FormMessage />
@@ -392,7 +394,7 @@ export const EditCaseForm = ({ selectedCase }: EditCaseFormProps) => {
                   name="doctorId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Doctor</FormLabel>
+                      <FormLabel className="flex items-center justify-between">Doctor <FormMessage className="mr-2"/></FormLabel>
                       <FormControl>
                         <CustomComboBox
                           label="doctor"
@@ -403,7 +405,7 @@ export const EditCaseForm = ({ selectedCase }: EditCaseFormProps) => {
                           previewValue={`${getDoctorById(field.value)?.name || "Select Doctor"}`}
                         />
                       </FormControl>
-                      <FormMessage />
+                      {/* <FormMessage /> */}
                     </FormItem>
                   )}
                 />
@@ -413,7 +415,7 @@ export const EditCaseForm = ({ selectedCase }: EditCaseFormProps) => {
                     name="materialId"
                     render={({ field }) => (
                       <FormItem className="col-span-2">
-                        <FormLabel>Material</FormLabel>
+                        <FormLabel className="flex items-center justify-between">Material <FormMessage className="mr-2"/></FormLabel>
                         <FormControl>
                           <CustomComboBox
                             label="material"
@@ -427,7 +429,7 @@ export const EditCaseForm = ({ selectedCase }: EditCaseFormProps) => {
                             })`}
                           />
                         </FormControl>
-                        <FormMessage />
+                        {/* <FormMessage /> */}
                       </FormItem>
                     )}
                   />
@@ -441,7 +443,8 @@ export const EditCaseForm = ({ selectedCase }: EditCaseFormProps) => {
                           <Input
                             className="placeholder:text-muted-foreground/50"
                             {...field}
-                            placeholder="Enter shade"
+                            placeholder="e.g A2, 3M2"
+                            maxLength={6}
                           />
                         </FormControl>
                         <FormMessage />
@@ -460,6 +463,7 @@ export const EditCaseForm = ({ selectedCase }: EditCaseFormProps) => {
                           <DatePicker
                             date={field.value ? new Date(field.value) : undefined} // Ensure date is a Date object
                             setDate={(v: Date | undefined) => {
+                              if (!v) return;
                               field.onChange(
                                 v ? v.toLocaleDateString("en-CA") : undefined
                               );
@@ -505,7 +509,8 @@ export const EditCaseForm = ({ selectedCase }: EditCaseFormProps) => {
                         <Input
                           className="placeholder:text-muted-foreground/50"
                           {...field}
-                          placeholder="Enter any notes"
+                          placeholder="e.g Case description, patient history, etc."
+                          maxLength={50}
                         />
                       </FormControl>
                       <FormMessage />
@@ -532,13 +537,36 @@ export const EditCaseForm = ({ selectedCase }: EditCaseFormProps) => {
                   </Button>
                 </div>
               </div>
-              <div className="mt-4">
-                <TeethFormData
-                  data={teethData} // This should be the state variable
-                  checkedTeeth={checkedTeeth} // This should be the state variable
-                  materials={materials || []}
-                  handleChangeToothMaterial={handleChangeToothMaterial}
-                  handleCheckTeeth={handleCheckTeeth}
+              <div className="bg-card/50 p-4 border rounded-lg relative min-w-[360px]">
+                <FormField
+                  control={form.control}
+                  name="data"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormMessage className="z-30 mb-2" />
+                      <FormControl>
+                        <div className="mt-4">
+                          {!form.getValues().materialId && (
+                            <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-20 flex items-center justify-center flex-col gap-2 rounded-lg">
+                              <AlertCircle className="w-8 h-8 text-muted-foreground" />
+                              <p className="text-muted-foreground font-medium">
+                                Please select a material
+                              </p>
+                            </div>
+                          )}
+                          <TeethFormData
+                            data={teethData}
+                            checkedTeeth={checkedTeeth}
+                            materials={materials || []}
+                            handleChangeToothMaterial={
+                              handleChangeToothMaterial
+                            }
+                            handleCheckTeeth={handleCheckTeeth}
+                          />
+                        </div>
+                      </FormControl>
+                    </FormItem>
+                  )}
                 />
               </div>
             </div>
