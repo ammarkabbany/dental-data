@@ -33,15 +33,25 @@ export async function getAdminStats() {
     [Query.limit(1), Query.select(["$id"])]
   );
 
+  const subscriptions = await databases.listDocuments<Team>(
+    DATABASE_ID,
+    TEAMS_COLLECTION_ID,
+    [Query.or([
+      Query.equal('planId', 'starter'),
+      Query.equal('planId', 'pro'),
+      Query.equal('planId', 'business'),
+    ]), Query.select(["$id"])]
+  );
+
   const userList = await users.list([Query.limit(1)]);
   const teamList = await teams.list([Query.limit(1)]);
-
   return {
     cases: cases.total,
     doctors: doctors.total,
     materials: materials.total,
     users: userList.total,
     teams: teamList.total,
+    subscriptions: subscriptions.total,
   };
 }
 
@@ -95,20 +105,8 @@ export const getAllCases = async () => {
       DATABASE_ID,
       CASES_COLLECTION_ID,
       [
-        Query.limit(9999),
+        Query.limit(500),
         Query.orderDesc("date"),
-        Query.select([
-          "$id",
-          "doctorId",
-          "patient",
-          "date",
-          "userId",
-          "teamId",
-          "data",
-          "materialId",
-          "invoice",
-          "due"
-        ])
       ]
     );
     const doctorIds = [...new Set(cases.documents.map((c) => c.doctorId))];

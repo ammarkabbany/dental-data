@@ -104,7 +104,7 @@ export default function DashboardPage() {
     },
     {
       title: "New Doctor",
-      description: "Add doctors to your lab",
+      description: "Add doctors to your team",
       isPrimary: false,
       icon: <HugeiconsIcon icon={Doctor02Icon} className="size-5" />,
       onClick: () => openModal(Modals.CREATE_DOCTOR_MODAL),
@@ -112,7 +112,7 @@ export default function DashboardPage() {
     },
     {
       title: "New Material",
-      description: "Add materials to your lab",
+      description: "Add materials to your team",
       isPrimary: false,
       icon: <CubeIcon className="size-5" />,
       onClick: () => openModal(Modals.CREATE_MATERIAL_MODAL),
@@ -262,7 +262,7 @@ export default function DashboardPage() {
                     key={card.title}
                     coachmarkId="dashboardDoctors"
                     title="Add and See Doctors"
-                    description="Manage the doctors associated with your lab from here."
+                    description="Manage the doctors associated with your team from here."
                     position="bottom"
                   >
                     {cardElement}
@@ -274,7 +274,7 @@ export default function DashboardPage() {
                   <Coachmark
                     key={card.title}
                     coachmarkId="dashboardMaterials"
-                    title="Organize Lab Materials"
+                    title="Organize Team Materials"
                     description="Manage the materials used for cases."
                     position="bottom"
                   >

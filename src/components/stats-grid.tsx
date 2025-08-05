@@ -98,11 +98,12 @@ export function StatsCard({ title, value, change, icon, href }: StatsCardProps) 
 
 interface StatsGridProps {
   stats: StatsCardProps[];
+  className?: string;
 }
 
-export function StatsGrid({ stats }: StatsGridProps) {
+export function StatsGrid({ stats, className }: StatsGridProps) {
   return (
-    <div className={`grid grid-cols-2 min-md:grid-cols-3 border border-border rounded-xl bg-gradient-to-br from-sidebar/60 to-sidebar`}>
+    <div className={cn("grid grid-cols-2 min-md:grid-cols-3 border border-border rounded-xl bg-gradient-to-br from-sidebar/60 to-sidebar", className)}>
       {stats.map((stat) => (
         <StatsCard key={stat.title} {...stat} />
       ))}

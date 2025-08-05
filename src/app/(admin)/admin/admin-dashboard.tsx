@@ -4,7 +4,7 @@ import { StatsCardProps, StatsGrid } from "@/components/stats-grid";
 import { motion } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatNumbers } from "@/lib/format-utils";
-import { FileTextIcon, Users } from "lucide-react";
+import { CreditCardIcon, FileTextIcon, Users } from "lucide-react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Doctor02Icon, UserGroup03Icon } from "@hugeicons/core-free-icons";
 import { CubeIcon } from "@radix-ui/react-icons";
@@ -79,6 +79,16 @@ const AdminDashboard = () => {
       href: "/admin/teams",
       icon: <HugeiconsIcon icon={UserGroup03Icon} />,
     },
+    {
+      title: "Subscriptions",
+      value: formatNumbers(data?.subscriptions ?? 0),
+      // change: {
+      //   value: "0%",
+      //   trend: "down",
+      // },
+      href: "/admin/subscriptions",
+      icon: <CreditCardIcon className="size-6" />,
+    }
   ];
 
   return (
@@ -116,7 +126,6 @@ const AdminDashboard = () => {
             <StatsGrid stats={stats} />
           </motion.div>
         )}
-        {/* until logs are made */}
       </div>
   );
 };
