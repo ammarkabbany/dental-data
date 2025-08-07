@@ -31,7 +31,13 @@ export default function TeamPage() {
 
   if (isLoading) {
     return <main className="">
-      <Header />
+      <Header>
+          <nav className="hidden md:flex items-center gap-6">
+            <Link href="/" className="cursor-pointer font-semibold hover:text-primary transition-colors">
+              Home
+            </Link>
+          </nav>
+        </Header>
       <div className="flex items-center justify-center min-h-screen">
         <LoadingSpinner />
       </div>
@@ -44,7 +50,13 @@ export default function TeamPage() {
 
   if (!currentTeam) {
     return <main className="min-h-screen">
-      <Header />
+      <Header>
+          <nav className="hidden md:flex items-center gap-6">
+            <Link href="/" className="cursor-pointer font-semibold hover:text-primary transition-colors">
+              Home
+            </Link>
+          </nav>
+        </Header>
       <RedirectToOnboarding />
     </main>
   }
@@ -83,7 +95,13 @@ export default function TeamPage() {
 
   return (
     <main className="bg-gradient-to-b from-background to-muted/30 min-h-screen">
-      <Header />
+      <Header>
+          <nav className="hidden md:flex items-center gap-6">
+            <Link href="/" className="cursor-pointer font-semibold hover:text-primary transition-colors">
+              Home
+            </Link>
+          </nav>
+        </Header>
       <div className="max-w-7xl mx-auto space-y-6 pt-8 pb-12 px-4 sm:px-8">
         <motion.div
           initial={{ opacity: 0, y: -20 }}

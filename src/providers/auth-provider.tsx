@@ -86,7 +86,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // Clear React Query cache
       queryClient.clear();
 
-      window.location.replace(`${NEXT_URL}/login`)
+      window.location.replace(`${NEXT_URL}/`)
     } catch (error) {
       console.error('Error during logout:', error);
     }

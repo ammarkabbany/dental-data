@@ -59,26 +59,26 @@ export default function Homepage() {
     <>
       <div className="flex flex-col min-h-screen w-full mx-auto">
         <Header>
-          <nav className="hidden md:flex items-center gap-6">
+          <nav className="hidden text-sm font-medium lg:text-base lg:font-semibold md:flex items-center gap-6 lg:gap-8">
             <div
               onClick={() => handleClickScroll("features")}
-              className="text-sm cursor-pointer font-medium hover:text-primary transition-colors"
+              className="cursor-pointer hover:text-primary transition-colors"
             >
               Features
             </div>
             <div
               onClick={() => handleClickScroll("workflow")}
-              className="text-sm cursor-pointer font-medium hover:text-primary transition-colors"
+              className="cursor-pointer hover:text-primary transition-colors"
             >
               Workflow
             </div>
             <div
               onClick={() => handleClickScroll("showcase")}
-              className="text-sm cursor-pointer font-medium text-green-400 hover:text-primary transition-colors"
+              className="cursor-pointer text-purple-400 hover:text-purple-500 transition-colors"
             >
               Showcase
             </div>
-            <div onClick={() => handleClickScroll('pricing')} className="text-sm cursor-pointer font-medium hover:text-primary transition-colors">Pricing</div>
+            <div onClick={() => handleClickScroll('pricing')} className="cursor-pointer hover:text-primary transition-colors">Pricing</div>
           </nav>
         </Header>
 

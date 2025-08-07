@@ -16,16 +16,25 @@ import LoadingSpinner from "@/components/ui/loading-spinner";
 import AccountGeneralSettingsForm from "./account-general-settings-form";
 import { useAuth } from "@/providers/auth-provider";
 import MainFooter from "@/components/layout/Footer";
+import Link from "next/link";
 
 export default function TeamPage() {
-  const { isAuthenticated, isLoading } =
-    useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
   const [activeTab, setActiveTab] = useState("general");
 
   if (isLoading) {
     return (
       <main className="bg-gradient-to-b from-background to-muted/30">
-        <Header />
+        <Header>
+          <nav className="hidden md:flex items-center gap-6">
+            <Link
+              href="/"
+              className="cursor-pointer font-semibold hover:text-primary transition-colors"
+            >
+              Home
+            </Link>
+          </nav>
+        </Header>
         <div className="flex items-center justify-center min-h-screen">
           <LoadingSpinner />
         </div>
@@ -62,68 +71,78 @@ export default function TeamPage() {
 
   return (
     <>
-    <main className="bg-gradient-to-b from-background to-muted/30 min-h-screen">
-      <Header />
-      <div className="max-w-7xl mx-auto pt-8 pb-16 px-4 sm:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-          className="mb-8"
-        >
-          <h1 className="text-3xl font-bold">Account Settings</h1>
-          <p className="text-muted-foreground mt-1 max-w-lg">
-            Manage your account settings and preferences
-          </p>
-        </motion.div>
+      <main className="bg-gradient-to-b from-background to-muted/30 min-h-screen">
+        <Header>
+          <nav className="hidden md:flex items-center gap-6">
+            <Link
+              href="/"
+              className="cursor-pointer font-semibold hover:text-primary transition-colors"
+            >
+              Home
+            </Link>
+          </nav>
+        </Header>
+        <div className="max-w-7xl mx-auto pt-8 pb-16 px-4 sm:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="mb-8"
+          >
+            <h1 className="text-3xl font-bold">Account Settings</h1>
+            <p className="text-muted-foreground mt-1 max-w-lg">
+              Manage your account settings and preferences
+            </p>
+          </motion.div>
 
-        <Tabs
-          value={activeTab}
-          onValueChange={setActiveTab}
-          orientation="vertical"
-          className="w-full flex flex-col md:flex-row gap-8"
-        >
-          <Card className="md:w-64 flex-shrink-0 bg-card border-0 shadow-sm h-fit sticky top-8">
-            <CardContent className="p-4">
-              <TabsList className="flex flex-row md:flex-col gap-2 bg-transparent p-0 h-auto w-full overflow-x-auto md:overflow-visible">
-                <TabsTrigger
-                  value="general"
-                  onClick={() => setActiveTab("general")}
-                  className="w-full h-11 justify-start gap-3 px-3 py-2 rounded-md data-[state=active]:bg-primary/10 data-[state=active]:text-primary"
-                >
-                  <Settings className="size-4 flex-shrink-0" />
-                  General
-                </TabsTrigger>
-              </TabsList>
-            </CardContent>
-          </Card>
-
-          <div className="grow">
-            <Card className="border-0 shadow-sm">
-              <TabsContent value="general" className="m-0">
-                <CardHeader className="border-b pb-6">
-                  <CardTitle className="text-xl font-medium">
-                    General Settings
-                  </CardTitle>
-                  <CardDescription className="mt-1.5">
-                    Manage your account&apos;s basic information and preferences
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="p-6">
-                  <motion.div
-                    variants={containerVariants}
-                    initial="hidden"
-                    animate="visible"
-                    className="space-y-8"
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            orientation="vertical"
+            className="w-full flex flex-col md:flex-row gap-8"
+          >
+            <Card className="md:w-64 flex-shrink-0 bg-card border-0 shadow-sm h-fit sticky top-8">
+              <CardContent className="p-4">
+                <TabsList className="flex flex-row md:flex-col gap-2 bg-transparent p-0 h-auto w-full overflow-x-auto md:overflow-visible">
+                  <TabsTrigger
+                    value="general"
+                    onClick={() => setActiveTab("general")}
+                    className="w-full h-11 justify-start gap-3 px-3 py-2 rounded-md data-[state=active]:bg-primary/10 data-[state=active]:text-primary"
                   >
-                    <motion.div variants={itemVariants}>
-                      <AccountGeneralSettingsForm />
-                    </motion.div>
-                  </motion.div>
-                </CardContent>
-              </TabsContent>
+                    <Settings className="size-4 flex-shrink-0" />
+                    General
+                  </TabsTrigger>
+                </TabsList>
+              </CardContent>
+            </Card>
 
-              {/* <TabsContent value="notifications" className="m-0">
+            <div className="grow">
+              <Card className="border-0 shadow-sm">
+                <TabsContent value="general" className="m-0">
+                  <CardHeader className="border-b pb-6">
+                    <CardTitle className="text-xl font-medium">
+                      General Settings
+                    </CardTitle>
+                    <CardDescription className="mt-1.5">
+                      Manage your account&apos;s basic information and
+                      preferences
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="p-6">
+                    <motion.div
+                      variants={containerVariants}
+                      initial="hidden"
+                      animate="visible"
+                      className="space-y-8"
+                    >
+                      <motion.div variants={itemVariants}>
+                        <AccountGeneralSettingsForm />
+                      </motion.div>
+                    </motion.div>
+                  </CardContent>
+                </TabsContent>
+
+                {/* <TabsContent value="notifications" className="m-0">
                 <CardHeader className="border-b pb-6">
                   <CardTitle className="text-xl font-medium">Notification Settings</CardTitle>
                   <CardDescription className="mt-1.5">
@@ -138,12 +157,12 @@ export default function TeamPage() {
                   />
                 </CardContent>
               </TabsContent> */}
-            </Card>
-          </div>
-        </Tabs>
-      </div>
-    </main>
-    <MainFooter />
+              </Card>
+            </div>
+          </Tabs>
+        </div>
+      </main>
+      <MainFooter />
     </>
   );
 }

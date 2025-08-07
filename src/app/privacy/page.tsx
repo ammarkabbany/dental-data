@@ -11,7 +11,7 @@ export default function PrivacyPage() {
       <div className="flex flex-col min-h-screen w-full mx-auto">
         <Header>
           <nav className="hidden md:flex items-center gap-6">
-            <Link href="/" className="text-sm cursor-pointer font-medium hover:text-primary transition-colors">
+            <Link href="/" className="cursor-pointer font-semibold hover:text-primary transition-colors">
               Home
             </Link>
           </nav>

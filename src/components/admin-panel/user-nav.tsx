@@ -30,7 +30,7 @@ export function UserNav({side = "bottom", includeDetails = true}: {side?: "left"
       <TooltipProvider disableHoverableContent>
         <Tooltip delayDuration={100}>
           <TooltipTrigger asChild>
-            <DropdownMenuTrigger className="w-full transition p-1 hover:bg-muted/60 dark:hover:bg-neutral-700/60 duration-200 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring flex items-center justify-between gap-x-2">
+            <DropdownMenuTrigger className="w-full transition p-2 hover:bg-muted/60 dark:hover:bg-neutral-700/60 duration-200 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring flex items-center justify-between gap-x-2">
               <div className="flex items-center gap-2">
                 <UserAvatar className="size-8 md:size-9 ring-1 ring-border dark:ring-neutral-700 rounded-full" name={user?.name || ""} image={user?.avatar} />
                 {includeDetails && <div className="flex flex-col items-start">
